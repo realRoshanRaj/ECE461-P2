@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"net/http"
-	//"golang.org/x/oauth2" //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
+	//"golang.org/x/oauth2" //
 	//"golang.org/x/oauth2/github"
 	"context"
 	//"log"
