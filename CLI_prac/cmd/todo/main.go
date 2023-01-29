@@ -57,9 +57,6 @@ func main() {
 		client := &http.Client{}
 
 		//GRAPHQL
-		
-		//GRAPHQL
-
 		REST_api_link := "https://api.github.com/repos/" + input_parsed[3] + "/" + input_parsed[4] //converting github repo url to API url
 		req, err := http.NewRequest("GET", REST_api_link, nil)
 		if err != nil {
@@ -150,20 +147,20 @@ func graphql_func() { //should perform the graphQL call, DOES NOT WORK. authenti
 		  	}
 		`)
 
-		req.Header.Add("Authorization", "")
-	
-		// run it and capture the response
-		var respData struct {
-			Repository struct {
-				Issues struct {
-					TotalCount int
-				}
+	req.Header.Add("Authorization", "")
+
+	// run it and capture the response
+	var respData struct {
+		Repository struct {
+			Issues struct {
+				TotalCount int
 			}
 		}
-		if err := client.Run(context.Background(), req, &respData); err != nil {
-			fmt.Println(err)
-			return
-		}
-	
-		fmt.Println("Number of issues:", respData.Repository.Issues.TotalCount)
+	}
+	if err := client.Run(context.Background(), req, &respData); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Number of issues:", respData.Repository.Issues.TotalCount)
 }

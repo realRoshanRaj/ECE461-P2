@@ -13,6 +13,7 @@ help() {
 
 if [ $1 == "install" ]; then
   echo "INSTALLING DEPENDENCIES"
+  sudo apt install golang-go
   exit 0
 elif [ $1 == "build" ]; then
   echo "BUILDING"
@@ -24,11 +25,11 @@ elif [ $1 = "help" ]; then
   help
   exit 0
 elif [[ $1 =~ $urlPattern ]]; then
-  echo "VALID URL"
-  # RUN GO SCRIPT HERE
+  echo "URL_PATTERN $1"
+  ( cd CLI_prac ; go run ./cmd/todo -search $1)
   exit 0
 else
-  echo -e "\033[31mINVALID COMMAND\033[0m"
+  echo -e "\033[31mINVALID COMMAND: '$1'\033[0m"
   help
   exit 1
 fi
