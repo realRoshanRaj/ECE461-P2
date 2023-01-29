@@ -31,6 +31,7 @@ func main() {
 
 	//add := flag.Bool("add", false, "add a new todo")
 	search := flag.Bool("search", false, "search for repo")
+	readIO := flag.Bool("file", false, ".txt of repos to search")
 
 	//complete := flag.Int("complete", 0, "mark an item as completed")
 	//delete := flag.Int("delete", 0, "delete an item")
@@ -98,13 +99,15 @@ func main() {
 	// 		fmt.Fprintln(os.Stderr, err.Error())
 	// 		os.Exit(1)
 	// 	}
+	case *readIO:
+		//DO NOTHING FOR NOW
 
 	case *list:
 		graphql_func()
 		todos.Print()
 
 	default:
-		fmt.Fprintln(os.Stdout, "invalid Command")
+		fmt.Fprintln(os.Stdout, "Invalid Command")
 		os.Exit(0)
 	}
 }
@@ -130,14 +133,13 @@ func getInput(r io.Reader, args ...string) (string, error) { //something for fil
 }
 
 func graphql_func() { //should perform the graphQL call, DOES NOT WORK. authentication doesn't work idk how to fix
-	    // create a new client
-		client := graphql.NewClient("https://api.github.com/graphql")
+	// create a new client
+	client := graphql.NewClient("https://api.github.com/graphql")
 
-		// set the token for authentication
-		
-	
-		// make a request
-		req := graphql.NewRequest(`
+	// set the token for authentication
+
+	// make a request
+	req := graphql.NewRequest(`
 			query { 
 				repository(owner:"TypeStrong", name:"ts-node") { 
 			 		issues(states:OPEN) {

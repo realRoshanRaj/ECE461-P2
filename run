@@ -2,19 +2,25 @@
 
 # URL PATTERN GOTTEN FROM CHATGPT
 urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
-filePathPattern=''
+filePathPattern='.\.txt$'
 
 help() {
-  echo 'Usage: ./run [install|build|]'
+  echo 'Usage: ./run [install|build|URL_FILE|FILEPATH|test]'
+  echo '------------ Sample Commands ----------------------'
   echo 'install  - Installs any dependencies in userland'
   echo 'build    - Completes any compilation needed' 
   echo 'URL_FILE - Main function - rates a repo' 
+  echo 'FILEPATH - Main function - rates all repos in file' 
   echo 'test     - Runs test suite' 
+  echo '---------------------------------------------------'
 }
 
 # CHECK IF $1 EXISTS FIRST!!
-
-if [ $1 == 'install' ]; then
+if [ -z "$1" ]; then
+  echo -e "\033[31mERROR: No argument passed.\033[0m"
+  help
+  exit 1
+elif [ $1 == 'install' ]; then
   echo 'INSTALLING DEPENDENCIES'
   sudo apt install golang-go
   exit 0
@@ -29,6 +35,7 @@ elif [ $1 = 'help' ]; then
   exit 0
 elif [[ $1 =~ $filePathPattern ]]; then
   echo "FILEPATH_PATTERN $1"
+  ( cd CLI_prac ; go run ./cmd/todo -file $1)
   exit 0
 elif [[ $1 =~ $urlPattern ]]; then
   echo "URL_PATTERN $1"
