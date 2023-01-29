@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # URL PATTERN GOTTEN FROM CHATGPT
-urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
+#urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
+#urlPattern='^https:\/\/github\.com\/[a-zA-Z0-9-]+\/[a-zA-Z0-9-]+'
+urlPattern= 'https://github.com/TypeStrong/ts-node'
+#should only be valid urls from github, edge case for valid url but not github
+#cant really get it to work with regex
 
 help() {
   echo "Usage: ./run [install|build|]"
@@ -24,8 +28,9 @@ elif [ $1 = "help" ]; then
   help
   exit 0
 elif [[ $1 =~ $urlPattern ]]; then
-  echo "VALID URL"
+  # echo "VALID URL"
   # RUN GO SCRIPT HERE
+  go run ./cmd/todo $urlPattern
   exit 0
 else
   echo -e "\033[31mINVALID COMMAND\033[0m"
