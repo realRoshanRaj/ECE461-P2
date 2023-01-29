@@ -53,15 +53,13 @@ func main() {
 			os.Exit(1)
 		}
 
-		
 		client := &http.Client{}
 
 		//GRAPHQL
-		
+
 		//GRAPHQL
 
-
-		req, err := http.NewRequest("GET", "https://api.github.com/repos/TypeStrong/ts-node", nil)
+		req, err := http.NewRequest("GET", task, nil)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -137,14 +135,13 @@ func getInput(r io.Reader, args ...string) (string, error) {
 }
 
 func graphql_func() {
-	    // create a new client
-		client := graphql.NewClient("https://api.github.com/graphql")
+	// create a new client
+	client := graphql.NewClient("https://api.github.com/graphql")
 
-		// set the token for authentication
-		
-	
-		// make a request
-		req := graphql.NewRequest(`
+	// set the token for authentication
+
+	// make a request
+	req := graphql.NewRequest(`
 			query { 
 				repository(owner:"TypeStrong", name:"ts-node") { 
 			 		issues(states:OPEN) {
@@ -154,20 +151,20 @@ func graphql_func() {
 		  	}
 		`)
 
-		req.Header.Add("Authorization", "")
-	
-		// run it and capture the response
-		var respData struct {
-			Repository struct {
-				Issues struct {
-					TotalCount int
-				}
+	req.Header.Add("Authorization", "")
+
+	// run it and capture the response
+	var respData struct {
+		Repository struct {
+			Issues struct {
+				TotalCount int
 			}
 		}
-		if err := client.Run(context.Background(), req, &respData); err != nil {
-			fmt.Println(err)
-			return
-		}
-	
-		fmt.Println("Number of issues:", respData.Repository.Issues.TotalCount)
+	}
+	if err := client.Run(context.Background(), req, &respData); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Number of issues:", respData.Repository.Issues.TotalCount)
 }
