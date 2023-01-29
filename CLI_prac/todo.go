@@ -7,45 +7,38 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	//"time"
 )
 
-type Repo struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+type Repo struct { //Structure that will recieve important information from REST API request
 	URL         string `json:"html_url"`
+	NetScore	int 
+	RampUp		int	
+	Correctness int
+	BusFactor int
+	ResponsiveMaintainer int
+	License LName `json:"license"`
+	Name string
 }
 
-// type item struct {
-// 	Task	string
-// 	Done	bool
-// 	CreatedAt	time.Time
-// 	CompletedAt time.Time
-// }
+type LName struct { //substructure to hold nested json fields
+	Name string	`json:"name"`
+}
 
 type Repos []Repo
 
-//type Todos []item
-
 func (r *Repos) Search(task string, resp *http.Response) {
-	// todo := item{
-	// 	Task: task,
-	// 	Done: false,
-	// 	CreatedAt: time.Now(),
-	// 	CompletedAt: time.Time{},
-	// }
 
 	var repo Repo
-	json.NewDecoder(resp.Body).Decode(&repo)
+	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
 
-	// fmt.Println("Name: ", repo.Name)
-	// fmt.Println("Description: ", repo.Description)
-	// fmt.Println("URL: ", repo.URL)
-
-	new_repo := Repo{
-		Name:        repo.Name,
-		Description: repo.Description,
+	new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
 		URL:         repo.URL,
+		NetScore:	1,
+		RampUp:		1,
+		Correctness: 1,
+		BusFactor: 1,
+		ResponsiveMaintainer: 1,
+		Name: repo.License.Name,
 	}
 
 	*r = append(*r, new_repo)
@@ -64,7 +57,7 @@ func (r *Repos) Search(task string, resp *http.Response) {
 // 	return nil
 // }
 
-// func (t *Todos) Delete(index int) error {
+// func (t *Todos) Delete(index int) error { //in the future we could implement a sort of clear list function
 // 	ls := *t
 // 	if index <= 0 || index > len(ls){
 // 		return errors.New("invalid index")
@@ -75,7 +68,8 @@ func (r *Repos) Search(task string, resp *http.Response) {
 // 	return nil
 // }
 
-func (r *Repos) Load(filename string) error {
+
+func (r *Repos) Load(filename string) error { //reads the json
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -88,7 +82,7 @@ func (r *Repos) Load(filename string) error {
 		return err
 	}
 
-	err = json.Unmarshal(file, r)
+	err = json.Unmarshal([]byte(file), r)
 	if err != nil {
 		return err
 	}
@@ -107,6 +101,6 @@ func (r *Repos) Store(filename string) error {
 
 func (r *Repos) Print() {
 	for _, repo := range *r {
-		fmt.Printf("%s\n", repo.Name)
+		fmt.Printf("%s\n", repo.URL)
 	}
 }
