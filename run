@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# URL PATTERN GOTTEN FROM CHATGPT
+urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
+
+help() {
+  echo "Usage: ./run [install|build|]"
+  echo "install  - Installs any dependencies in userland"
+  echo "build    - Completes any compilation needed" 
+  echo "URL_FILE - Main function - rates a repo" 
+  echo "test     - Runs test suite" 
+}
+
+if [ $1 == "install" ]; then
+  echo "INSTALLING DEPENDENCIES"
+  exit 0
+elif [ $1 == "build" ]; then
+  echo "BUILDING"
+  exit 0
+elif [ $1 == "test" ]; then
+  echo "TESTING"
+  exit 0
+elif [ $1 = "help" ]; then
+  help
+  exit 0
+elif [[ $1 =~ $urlPattern ]]; then
+  echo "VALID URL"
+  # RUN GO SCRIPT HERE
+  exit 0
+else
+  echo -e "\033[31mINVALID COMMAND\033[0m"
+  help
+  exit 1
+fi
