@@ -2,27 +2,33 @@
 
 # URL PATTERN GOTTEN FROM CHATGPT
 urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
+filePathPattern=''
 
 help() {
-  echo "Usage: ./run [install|build|]"
-  echo "install  - Installs any dependencies in userland"
-  echo "build    - Completes any compilation needed" 
-  echo "URL_FILE - Main function - rates a repo" 
-  echo "test     - Runs test suite" 
+  echo 'Usage: ./run [install|build|]'
+  echo 'install  - Installs any dependencies in userland'
+  echo 'build    - Completes any compilation needed' 
+  echo 'URL_FILE - Main function - rates a repo' 
+  echo 'test     - Runs test suite' 
 }
 
-if [ $1 == "install" ]; then
-  echo "INSTALLING DEPENDENCIES"
+# CHECK IF $1 EXISTS FIRST!!
+
+if [ $1 == 'install' ]; then
+  echo 'INSTALLING DEPENDENCIES'
   sudo apt install golang-go
   exit 0
-elif [ $1 == "build" ]; then
-  echo "BUILDING"
+elif [ $1 == 'build' ]; then
+  echo 'BUILDING'
   exit 0
-elif [ $1 == "test" ]; then
-  echo "TESTING"
+elif [ $1 == 'test' ]; then
+  echo 'TESTING'
   exit 0
-elif [ $1 = "help" ]; then
+elif [ $1 = 'help' ]; then
   help
+  exit 0
+elif [[ $1 =~ $filePathPattern ]]; then
+  echo "FILEPATH_PATTERN $1"
   exit 0
 elif [[ $1 =~ $urlPattern ]]; then
   echo "URL_PATTERN $1"
