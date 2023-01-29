@@ -1,4 +1,5 @@
 help:
+	@printf "%-20s %s\n" "------ Makefile Commands --------"
 	@printf "%-20s %s\n" "Target" "Description"
 	@printf "%-20s %s\n" "------" "-----------"
 	@make -pqR : 2>/dev/null \
@@ -6,17 +7,21 @@ help:
 	| sort \
 	| egrep -v -e '^[^[:alnum:]]' -e '^$@$$' \
 	| xargs -I _ sh -c 'printf "%-20s " _; make _ -nB | (grep -i "^# Help:" || echo "") | tail -1 | sed "s/^# Help: //g"'
+	@printf "%-20s %s\n" "------ ./run Commands -----------"
+	./run help
+	@printf "%-20s %s\n" "---------------------------------"
 
-run:
-	@# Help: Runs main
-
-# EXAMPLE: pip install _____
-setup:
+install:
 	@# Help: Runs setup commands
-	pip install robin_stocks
-	pip install xmltodict
-	pip install pyopt
-	pip install discord
+	./run install
+
+build:
+	@# Help: Builds project 
+	./run build 
+
+test:
+	@# Help: Runs test suite 
+	./run test 
 
 git: clean
 	@# Help: Automates the git push workflow
@@ -33,6 +38,6 @@ pull:
 
 # EXAMPLE @rm -rf ________ || true
 clean:
-	@# Help: Removes pycache
+	@# Help: Removes unnecessary files 
 
-.PHONY: help run git pull clean
+.PHONY: help install build git pull clean
