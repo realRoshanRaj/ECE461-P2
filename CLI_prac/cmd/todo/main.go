@@ -19,6 +19,8 @@ import (
 	"github.com/machinebox/graphql"
 
 	"github.com/acestti/todo-app"
+
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -104,7 +106,7 @@ func main() {
 
 	case *list:
 		graphql_func()
-		todos.Print()
+		// todos.Print()
 
 	default:
 		fmt.Fprintln(os.Stdout, "Invalid Command")
@@ -137,11 +139,14 @@ func graphql_func() { //should perform the graphQL call, DOES NOT WORK. authenti
 	client := graphql.NewClient("https://api.github.com/graphql")
 
 	// set the token for authentication
+	godotenv.Load("tokens.env")
+	token := os.Getenv("token")
+	
 
 	// make a request
 	req := graphql.NewRequest(`
 			query { 
-				repository(owner:"TypeStrong", name:"ts-node") { 
+				repository(owner:"nodejs", name:"node") { 
 			 		issues(states:OPEN) {
 						totalCount
 			  		}
@@ -149,7 +154,7 @@ func graphql_func() { //should perform the graphQL call, DOES NOT WORK. authenti
 		  	}
 		`)
 
-	req.Header.Add("Authorization", "")
+	req.Header.Add("Authorization", "Bearer " + token)
 
 	// run it and capture the response
 	var respData struct {
@@ -163,6 +168,6 @@ func graphql_func() { //should perform the graphQL call, DOES NOT WORK. authenti
 		fmt.Println(err)
 		return
 	}
-
+	fmt.Println(token)
 	fmt.Println("Number of issues:", respData.Repository.Issues.TotalCount)
 }
