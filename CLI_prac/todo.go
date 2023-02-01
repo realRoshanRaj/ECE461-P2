@@ -26,7 +26,15 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Search(task string, resp *http.Response) {
+type respDataql struct { //type that stores data from graphql
+	Repository struct {
+		Issues struct {
+			TotalCount int
+		}
+	}
+}
+
+func (r *Repos) Search(task string, resp *http.Response, NS int, RU int, C int, BF int, RM int) {
 
 	var repo Repo
 	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
