@@ -1,6 +1,6 @@
 # ece461-project
 
-Bartosz Stoppel
 Alonso Cestti
-Nahush Walvekar
+Bartosz Stoppel
 Nandini Krishna
+Nahush Walvekar
