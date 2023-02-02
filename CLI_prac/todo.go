@@ -26,6 +26,7 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
+
 type respDataql struct { //type that stores data from graphql
 	Repository struct {
 		Issues struct {

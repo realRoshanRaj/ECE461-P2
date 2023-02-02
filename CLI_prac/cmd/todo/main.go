@@ -81,6 +81,7 @@ func main() {
 			os.Exit(1)
 		}
 		defer resp.Body.Close()
+
 		todos.Search(input_URL, resp, scores[0], scores[1], scores[2], scores[3], scores[4]) //magic here
 
 		err = todos.Store(todoFile)
@@ -137,7 +138,7 @@ func getInput(r io.Reader, args ...string) (string, error) { //something for fil
 	text := scanner.Text()
 
 	if len(text) == 0 {
-		return "", errors.New("Empty todo is not invalid")
+		return "", errors.New("empty todo is not invalid")
 	}
 
 	return text, nil
