@@ -26,7 +26,7 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Search(task string, resp *http.Response) {
+func (r *Repos) Search(resp *http.Response) {
 
 	var repo Repo
 	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
