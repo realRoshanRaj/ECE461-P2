@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"math"
 
 	"net/http"
 	//"golang.org/x/oauth2"
@@ -64,7 +65,7 @@ func main() {
 		//GRAPH QL
 		//scores [5]int 
 		scores := graphql_func(input_parsed[3], input_parsed[4]) //better way than to copy array?
-		fmt.Println(scores)
+		//fmt.Println(scores)
 
 		//GRAPH QL END
 		REST_api_link := "https://api.github.com/repos/" + input_parsed[3] + "/" + input_parsed[4] //converting github repo url to API url
@@ -81,9 +82,11 @@ func main() {
 			os.Exit(1)
 		}
 		defer resp.Body.Close()
-		todos.Search(input_URL, resp, 1, 1, 1, 1, 1) //magic here
+		todos.Search(input_URL, resp, scores[0], scores[1], scores[2], scores[3], scores[4]) //magic here
 
 		err = todos.Store(todoFile)
+
+		//1- range(ind)/tot 
 
 	// case *complete > 0:
 	// 	err := todos.Complete(*complete)
@@ -164,12 +167,12 @@ type respDataql2 struct { //type that stores data from graphql
 	}
 }
 
-func graphql_func(repo_owner string, repo_name string) []int { //seems to be working as long as token is stored in tokens.env
+func graphql_func(repo_owner string, repo_name string) []float64 { //seems to be working as long as token is stored in tokens.env
 	// create a new client
 	client := graphql.NewClient("https://api.github.com/graphql")
 
 
-	scores := [5]int{0,0,0,0,0}
+	scores := [5]float64{0,0,0,0,0}
 	// set the token for authentication
 	godotenv.Load("tokens.env")
 	token := os.Getenv("token")
@@ -264,8 +267,23 @@ func graphql_func(repo_owner string, repo_name string) []int { //seems to be wor
     secondDate := time.Date(y2, time.Month(m2), d2, h2, 0, 0, 0, time.UTC)
 	difference := firstDate.Sub(secondDate).Hours()
 
-	fmt.Println(difference)
+	//time it takes to resolve, 3 days is the max, otherwise its a zero
+	if difference > float64(72){
+		scores[4] = roundFloat(0, 3)
+	}else{
+		scores[4] = roundFloat(1 - float64(difference) / float64(72), 3)
+	}
+
+	//closed issues / total issues score of correctness
+	scores[2] = roundFloat(float64(respData2.Repository.Issues.TotalCount) / (float64(respData1.Repository.Issues.TotalCount) + float64(respData2.Repository.Issues.TotalCount)), 3)
+	
 
 	return scores[:]
 }
+
+func roundFloat(val float64, precision uint) float64 {
+    ratio := math.Pow(10, float64(precision))
+    return math.Round(val*ratio) / ratio
+}
+
 
