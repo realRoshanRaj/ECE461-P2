@@ -21,9 +21,7 @@ import (
 	"github.com/machinebox/graphql"
 
 	"github.com/acestti/todo-app"
-
 	"time"
-
 	"github.com/joho/godotenv"
 )
 
@@ -37,6 +35,7 @@ func main() {
 
 	//add := flag.Bool("add", false, "add a new todo")
 	search := flag.Bool("search", false, "search for repo")
+	readIO := flag.Bool("file", false, ".txt of repos to search")
 
 	//complete := flag.Int("complete", 0, "mark an item as completed")
 	//delete := flag.Int("delete", 0, "delete an item")
@@ -111,13 +110,15 @@ func main() {
 	// 		fmt.Fprintln(os.Stderr, err.Error())
 	// 		os.Exit(1)
 	// 	}
+	case *readIO:
+		//DO NOTHING FOR NOW
 
 	case *list:
-		//graphql_func()
+		graphql_func()
 		// todos.Print()
 
 	default:
-		fmt.Fprintln(os.Stdout, "invalid Command")
+		fmt.Fprintln(os.Stdout, "Invalid Command")
 		os.Exit(0)
 	}
 }
@@ -254,6 +255,7 @@ func graphql_func(repo_owner string, repo_name string) []float64 { //seems to be
 	if err != nil{
 		return scores[:]
 	}
+  
 	d2, err := strconv.Atoi(date2[8:9])
 	if err != nil{
 		return scores[:]
