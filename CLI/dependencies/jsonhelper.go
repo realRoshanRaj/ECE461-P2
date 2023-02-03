@@ -10,11 +10,11 @@ import (
 
 type Repo struct { //Structure that will recieve important information from REST API request
 	URL         string `json:"html_url"`
-	NetScore	int 
-	RampUp		int	
-	Correctness int
-	BusFactor int
-	ResponsiveMaintainer int
+	NetScore	float64 
+	RampUp		float64	
+	Correctness float64
+	BusFactor float64
+	ResponsiveMaintainer float64
 	License LName `json:"license"`
 	Name string
 }
@@ -25,22 +25,23 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Search(resp *http.Response) {
+func (r *Repos) Search(task string, resp *http.Response, NS float64, RU float64, C float64, BF float64, RM float64) {
 
-	var repo Repo
-	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
+    var repo Repo
+    json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
 
-	new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
-		URL:         repo.URL,
-		NetScore:	1,
-		RampUp:		1,
-		Correctness: 1,
-		BusFactor: 1,
-		ResponsiveMaintainer: 1,
-		Name: repo.License.Name,
-	}
+    new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
+        URL:         repo.URL,
+        NetScore:    NS,
+        RampUp:        RU,
+        Correctness: C,
+        BusFactor: BF,
+        ResponsiveMaintainer: RM,
+        Name: repo.License.Name,
+    }
 
-	*r = append(*r, new_repo)
+    *r = append(*r, new_repo)
+
 }
 
 func (r *Repos) Load(filename string) error { //reads the json
@@ -69,8 +70,8 @@ func (r *Repos) Store(filename string) error {
 	if err != nil {
 		return err
 	}
-
-	return os.WriteFile(filename, data, 0666)
+	
+	return os.WriteFile(filename, data, 0644)
 }
 
 
