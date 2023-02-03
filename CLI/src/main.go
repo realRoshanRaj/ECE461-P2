@@ -2,6 +2,11 @@ package main
 
 import (
 	dep "CLI/dependencies"
+	"context"
+	"math"
+	"strconv"
+	"time"
+
 	// json "encoding/json"
 
 	"flag"
@@ -14,6 +19,8 @@ import (
 
 	"os"
 	"strings"
+
+	"github.com/machinebox/graphql"
 )
 const (
 	testJson = "test.json"
@@ -36,8 +43,15 @@ func main() {
 
 	initFlags()
 
-	getJsonFromHttpClient(args[0], string(token)) // using args[0] to test should be made sure is URL
+	resp := getHttpClient(args[0], string(token)) // using args[0] to test should be made sure is URL
+
+	repos := &dep.Repos{}
+
+	input_parsed := strings.Split(args[0], "/")
+	metrics := graphql_func(input_parsed[3], input_parsed[4]) 
 	
+	repos.Search(args[0], resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
+	repos.Store(testJson)
 }
 
 func initFlags(){
@@ -52,7 +66,7 @@ func initFlags(){
 	flag.Parse()
 }
 
-func getJsonFromHttpClient(httpUrl string, token string){
+func getHttpClient(httpUrl string, token string) *http.Response {
 	client := &http.Client{}
 
 	link := strings.Split(httpUrl, "https://github.com/")
@@ -90,12 +104,156 @@ func getJsonFromHttpClient(httpUrl string, token string){
 	}
 	os.WriteFile("requestDump.log", requestDump, 0666);
 
-	repos := &dep.Repos{}
+	return resp
+}
 
-	repos.Search(resp) // REALLY BAD NAME this doesn't search it decodes the new response and appends a repo struct into repos
-
-	err = repos.Store(testJson)
-	if err != nil {
-		os.Exit(1)
+type respDataql1 struct { //type that stores data from graphql
+	Repository struct {
+		Issues struct {
+			TotalCount int
+		}
+		PullRequests struct {
+			TotalCount int
+		}
 	}
+}
+
+type respDataql2 struct { //type that stores data from graphql
+	Repository struct {
+		Issues struct {
+			TotalCount int
+		}
+		PullRequests struct{
+			Nodes []struct{
+				CreatedAt string
+				MergedAt string
+			}
+		}
+	}
+}
+
+func graphql_func(repo_owner string, repo_name string) []float64 { //seems to be working as long as token is stored in tokens.env
+	// create a new client
+	client := graphql.NewClient("https://api.github.com/graphql")
+
+	
+	scores := [5]float64{0,0,0,0,0}
+	// set the token for authentication
+
+	token1, err:= os.ReadFile(".env")
+	token := string(token1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	// make a request
+	req1 := graphql.NewRequest(`
+	query { 
+		repository(owner:"`+repo_owner+`", name:"`+repo_name+`") { 
+			issues(states: OPEN) {
+				totalCount
+			}
+			pullRequests(states: MERGED){
+				totalCount
+			}
+		}
+	}
+	`)
+	
+	req1.Header.Add("Authorization", "Bearer " + token)
+	var respData1 respDataql1
+	if err := client.Run(context.Background(), req1, &respData1); err != nil {
+		fmt.Println(err)
+		return scores[:]
+	}
+	//fmt.Println("Number of issues:", respData1.Repository.Issues.TotalCount)
+	//40% of the last pull requests perhaps arbitrary number
+	perc_PR1 := math.Min(20, float64(respData1.Repository.PullRequests.TotalCount) * float64(0.4))
+	perc_PR := int(perc_PR1)
+	//fmt.Println(perc_PR)
+	
+	req2 := graphql.NewRequest(`
+	query {
+		repository(owner:"`+repo_owner+`", name:"`+repo_name+`") { 
+			issues(states: CLOSED) {
+				totalCount
+			}
+			pullRequests (last: ` + strconv.Itoa(perc_PR)+ `, states: MERGED) {
+				nodes{
+					createdAt
+					mergedAt
+				}
+			}
+		}
+	}
+	`)
+	req2.Header.Add("Authorization", "Bearer " + token)	
+	
+	var respData2 respDataql2
+	if err := client.Run(context.Background(), req2, &respData2); err != nil {
+		fmt.Println(err)
+		return scores[:]
+	}
+	//fmt.Println(token)
+	
+	date1 := respData2.Repository.PullRequests.Nodes[0].MergedAt
+
+	y1, err := strconv.Atoi(date1[0:3])
+	if err != nil{
+		return scores[:]
+	}
+	m1, err := strconv.Atoi(date1[5:6])
+	if err != nil{
+		return scores[:]
+	}
+	d1, err := strconv.Atoi(date1[8:9])
+	if err != nil{
+		return scores[:]
+	}
+	h1, err := strconv.Atoi(date1[11:12])
+	if err != nil{
+		fmt.Println("hello")
+		return scores[:]
+	}
+	date2 := respData2.Repository.PullRequests.Nodes[0].CreatedAt
+	y2, err := strconv.Atoi(date2[0:3])
+	if err != nil{
+		return scores[:]
+	}
+
+	m2, err := strconv.Atoi(date2[5:6])
+	if err != nil{
+		return scores[:]
+	}
+	d2, err := strconv.Atoi(date2[8:9])
+	if err != nil{
+		return scores[:]
+	}
+	h2, err := strconv.Atoi(date2[11:12])
+	if err != nil{
+		return scores[:]
+	}
+
+	firstDate := time.Date(y1, time.Month(m1), d1, h1, 0, 0, 0, time.UTC)
+    secondDate := time.Date(y2, time.Month(m2), d2, h2, 0, 0, 0, time.UTC)
+	difference := math.Abs(firstDate.Sub(secondDate).Hours())
+
+	//time it takes to resolve, 3 days is the max, otherwise its a zero
+	if difference > float64(72){
+		scores[4] = 0
+	}else{
+		scores[4] = roundFloat(1 - (float64(difference) / float64(72)), 3)
+		fmt.Printf("differenece: %f\n",difference)
+	}
+
+	//closed issues / total issues score of correctness
+	scores[2] = roundFloat(float64(respData2.Repository.Issues.TotalCount) / (float64(respData1.Repository.Issues.TotalCount) + float64(respData2.Repository.Issues.TotalCount)), 3)
+	
+	fmt.Println(scores)
+	return scores[:]
+}
+
+func roundFloat(val float64, precision uint) float64 {
+    ratio := math.Pow(10, float64(precision))
+    return math.Round(val*ratio) / ratio
 }

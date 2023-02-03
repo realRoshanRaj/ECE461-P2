@@ -130,39 +130,3 @@ func getInput(r io.Reader, args ...string) (string, error) { //something for fil
 
 	return text, nil
 }
-
-func graphql_func() { //should perform the graphQL call, DOES NOT WORK. authentication doesn't work idk how to fix
-	    // create a new client
-		client := graphql.NewClient("https://api.github.com/graphql")
-
-		// set the token for authentication
-		
-	
-		// make a request
-		req := graphql.NewRequest(`
-			query { 
-				repository(owner:"TypeStrong", name:"ts-node") { 
-			 		issues(states:OPEN) {
-						totalCount
-			  		}
-				}
-		  	}
-		`)
-
-	req.Header.Add("Authorization", "")
-
-	// run it and capture the response
-	var respData struct {
-		Repository struct {
-			Issues struct {
-				TotalCount int
-			}
-		}
-	}
-	if err := client.Run(context.Background(), req, &respData); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("Number of issues:", respData.Repository.Issues.TotalCount)
-}
