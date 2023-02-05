@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "get-repository-url": "^2.0.0"
+  }
+}
