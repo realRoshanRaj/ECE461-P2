@@ -68,7 +68,7 @@ func main() {
 
 		//if url is npm turn into github url
 		if strings.HasPrefix(urls[i], "https://www.npmjs") {
-			data, err := exec.Command("C:\\Program Files\\nodejs\\node", "giturl.js", urls[i]).Output()
+			data, err := exec.Command("node", "giturl.js", urls[i]).Output()
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -77,7 +77,7 @@ func main() {
 		}
 
 		resp := getHttpClient(urls[i], string(token)) // using args[0] to test should be made sure is URL
-		
+
 		repos := &dep.Repos{}
 
 		input_parsed := strings.Split(urls[i], "/")
@@ -163,7 +163,7 @@ type respDataql1 struct { //type that stores data from graphql
 		Expcase struct { //readme.markdown
 			Text string
 		}
-		Commits struct{
+		Commits struct {
 			History struct {
 				TotalCount int
 			}
@@ -322,7 +322,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	//rampup... has readme
 	if (respData1.Repository.Upcase.Text != "") || (respData1.Repository.Downcase.Text != "") ||
-	 (respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != ""){
+		(respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != "") {
 		scores[1] = 1
 	} else {
 		scores[1] = 0

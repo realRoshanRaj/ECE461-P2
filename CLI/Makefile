@@ -20,7 +20,6 @@ install:
 
 build:
 	@# Help: Builds project 
-	#./run build 
 	go build -o ${EXEC} src/main.go
 
 test:

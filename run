@@ -22,13 +22,25 @@ if [ -z "$1" ]; then
   exit 1
 elif [ $1 == 'install' ]; then
   echo 'INSTALLING DEPENDENCIES'
-  sudo apt install golang-go
+  # sudo apt install golang-go
+  cd CLI
+  go get "github.com/joho/godotenv"
+  go get "github.com/machinebox/graphql"
   exit 0
 elif [ $1 == 'build' ]; then
   echo 'BUILDING'
+  cd CLI/
+  make build
   exit 0
 elif [ $1 == 'test' ]; then
   echo 'TESTING'
+  cd CLI/
+  make test
+  exit 0
+elif [ $1 == 'URL_FILE' ]; then
+  echo 'TESTING'
+  cd CLI/
+  make test
   exit 0
 elif [ $1 = 'help' ]; then
   help
