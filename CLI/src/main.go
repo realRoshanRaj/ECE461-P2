@@ -77,7 +77,7 @@ func main() {
 		}
 
 		resp := getHttpClient(urls[i], string(token)) // using args[0] to test should be made sure is URL
-
+		
 		repos := &dep.Repos{}
 
 		input_parsed := strings.Split(urls[i], "/")
@@ -151,6 +151,23 @@ type respDataql1 struct { //type that stores data from graphql
 		PullRequests struct {
 			TotalCount int
 		}
+		Upcase struct { //README.md
+			Text string
+		}
+		Downcase struct { //readme.md
+			Text string
+		}
+		Capcase struct { //Readme.md
+			Text string
+		}
+		Expcase struct { //readme.markdown
+			Text string
+		}
+		Commits struct{
+			History struct {
+				TotalCount int
+			}
+		}
 	}
 }
 
@@ -184,6 +201,33 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			pullRequests(states: MERGED){
 				totalCount
 			}
+			upcase: object(expression: "HEAD:README.md") {
+				... on Blob {
+					text
+				}
+			}
+			downcase: object(expression: "HEAD:README.md") {
+				... on Blob {
+					text
+				}
+			}
+			capcase: object(expression: "HEAD:Readme.md") {
+				... on Blob {
+					text
+				}
+			}
+			expcase: object(expression: "HEAD:readme.markdown") {
+				... on Blob {
+					text
+				}
+			}
+			commits: object(expression: "HEAD") {
+				... on Commit {
+				  history {
+					   totalCount
+					}
+				}
+			}
 		}
 	}
 	`)
@@ -194,7 +238,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		fmt.Println(err)
 		return scores[:]
 	}
-	//fmt.Println("Number of issues:", respData1.Repository.Issues.TotalCount)
+	//fmt.Println("Number of issues:", respData1.Repository.Downcase.Text)
 	//40% of the last pull requests perhaps arbitrary number
 	perc_PR1 := math.Min(20, float64(respData1.Repository.PullRequests.TotalCount)*float64(0.4))
 	perc_PR := int(perc_PR1)
@@ -270,12 +314,22 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		scores[4] = 0
 	} else {
 		scores[4] = roundFloat(1-(float64(difference)/float64(72)), 3)
-		fmt.Printf("differenece: %f\n", difference)
+		//fmt.Printf("differenece: %f\n", difference)
 	}
 
 	//closed issues / total issues score of correctness
 	scores[2] = roundFloat(float64(respData2.Repository.Issues.TotalCount)/(float64(respData1.Repository.Issues.TotalCount)+float64(respData2.Repository.Issues.TotalCount)), 3)
 
+	//rampup... has readme
+	if (respData1.Repository.Upcase.Text != "") || (respData1.Repository.Downcase.Text != "") ||
+	 (respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != ""){
+		scores[1] = 1
+	} else {
+		scores[1] = 0
+	}
+
+	//will serve as denominator *NOT FINAL SCORE*
+	scores[3] = float64(respData1.Repository.Commits.History.TotalCount)
 	fmt.Println(scores)
 	return scores[:]
 }
