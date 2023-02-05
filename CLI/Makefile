@@ -1,5 +1,6 @@
 EXEC := run
 URL_TEST := https://github.com/nodejs/node
+URL_FILE := URL_FILE.txt
 help:
 	@printf "%-20s %s\n" "------ Makefile Commands --------"
 	@printf "%-20s %s\n" "Target" "Description"
@@ -25,7 +26,7 @@ build:
 test:
 	@# Help: Runs test suite 
 	#./run test 
-	./${EXEC} ${URL_TEST}
+	./${EXEC} ${URL_FILE}
 
 git: clean
 	@# Help: Automates the git push workflow

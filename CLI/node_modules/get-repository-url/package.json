@@ -1,0 +1,76 @@
+{
+  "name": "get-repository-url",
+  "description": "Get the GitHub repository URL from a NPM package name.",
+  "version": "2.0.0",
+  "homepage": "https://github.com/jonschlinkert/get-repository-url",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "contributors": [
+    "Fabian Iwand (https://twitter.com/mootari)",
+    "Jon Schlinkert (http://twitter.com/jonschlinkert)"
+  ],
+  "repository": "jonschlinkert/get-repository-url",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/get-repository-url/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "bin",
+    "bin/cli.js",
+    "index.js"
+  ],
+  "main": "index.js",
+  "bin": "bin/cli.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "get-pkg": "^1.0.0",
+    "parse-github-url": "^1.0.2"
+  },
+  "devDependencies": {
+    "gulp-format-md": "^1.0.0",
+    "mocha": "^5.2.0"
+  },
+  "keywords": [
+    "get",
+    "json",
+    "module",
+    "npm",
+    "object",
+    "package",
+    "package.json",
+    "pkg",
+    "pkgs",
+    "repository",
+    "url"
+  ],
+  "verb": {
+    "run": true,
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "related": {
+      "list": [
+        "get-pkg",
+        "get-pkgs",
+        "github-base"
+      ]
+    },
+    "reflinks": [
+      "get-pkgs",
+      "verb",
+      "verb-generate-readme"
+    ],
+    "lint": {
+      "reflinks": true
+    }
+  }
+}
