@@ -76,14 +76,16 @@ func main() {
 			fmt.Println(urls[i])
 		}
 
-		resp := getHttpClient(urls[i], string(token)) // using args[0] to test should be made sure is URL
-		
+		resp := getHttpClient(urls[i], string(token))       // using args[0] to test should be made sure is URL
+		resp1 := getContributorData(urls[i], string(token)) //contributor data
+		//fmt.Println(resp1)
+
 		repos := &dep.Repos{}
 
 		input_parsed := strings.Split(urls[i], "/")
 		metrics := graphql_func(input_parsed[3], input_parsed[4], token)
 
-		repos.Search(urls[i], resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
+		repos.Search(urls[i], resp, resp1, metrics[1], metrics[2], metrics[3], metrics[4])
 		repos.Store(testJson)
 
 		fmt.Print("\n")
@@ -101,6 +103,44 @@ func initFlags() {
 	//delete = flag.Int("delete", 0, "delete an item")
 
 	flag.Parse()
+}
+
+func getContributorData(httpUrl string, token string) *http.Response {
+	client := &http.Client{}
+
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] + "/contributors" //converting github repo url to API url
+	fmt.Println(REST_api_link)
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", token)
+
+	// Make the GET request to the GitHub API
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+
+	responseDump, err := httputil.DumpResponse(resp, true)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Here the 0666 is the same as chmod parameters in linux
+	os.WriteFile("responseDump1.log", responseDump, 0666)
+
+	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
+
+	requestDump, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	os.WriteFile("requestDump1.log", requestDump, 0666)
+
+	return resp
 }
 
 func getHttpClient(httpUrl string, token string) *http.Response {
@@ -163,7 +203,7 @@ type respDataql1 struct { //type that stores data from graphql
 		Expcase struct { //readme.markdown
 			Text string
 		}
-		Commits struct{
+		Commits struct {
 			History struct {
 				TotalCount int
 			}
@@ -171,19 +211,33 @@ type respDataql1 struct { //type that stores data from graphql
 	}
 }
 
-type respDataql2 struct { //type that stores data from graphql
+type respDataql2 struct {
 	Repository struct {
 		Issues struct {
-			TotalCount int
-		}
+			TotalCount int `json:"totalCount"`
+		} `json:"issues"`
 		PullRequests struct {
 			Nodes []struct {
-				CreatedAt string
-				MergedAt  string
-			}
-		}
-	}
+				CreatedAt string `json:"createdAt"`
+				MergedAt  string `json:"mergedAt"`
+			} `json:"nodes"`
+		} `json:"pullRequests"`
+	} `json:"repository"`
 }
+
+// type respDataql2 struct { //type that stores data from graphql
+// 	Repository struct {
+// 		Issues struct {
+// 			TotalCount int
+// 		}
+// 		PullRequests struct {
+// 			Nodes []struct {
+// 				CreatedAt string
+// 				MergedAt  string
+// 			}
+// 		}
+// 	}
+// }
 
 func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is stored in tokens.env
 	// create a new client
@@ -267,62 +321,67 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		return scores[:]
 	}
 
-	date1 := respData2.Repository.PullRequests.Nodes[0].MergedAt
+	difference_sum := 0.0
 
-	y1, err := strconv.Atoi(date1[0:3])
-	if err != nil {
-		return scores[:]
-	}
-	m1, err := strconv.Atoi(date1[5:6])
-	if err != nil {
-		return scores[:]
-	}
-	d1, err := strconv.Atoi(date1[8:9])
-	if err != nil {
-		return scores[:]
-	}
-	h1, err := strconv.Atoi(date1[11:12])
-	if err != nil {
-		fmt.Println("hello")
-		return scores[:]
-	}
-	date2 := respData2.Repository.PullRequests.Nodes[0].CreatedAt
-	y2, err := strconv.Atoi(date2[0:3])
-	if err != nil {
-		return scores[:]
+	//fmt.Println(respData2)
+	for i := 0; i < perc_PR; i++ {
+		date1 := respData2.Repository.PullRequests.Nodes[i].MergedAt
+
+		y1, err := strconv.Atoi(date1[0:3])
+		if err != nil {
+			return scores[:]
+		}
+		m1, err := strconv.Atoi(date1[5:6])
+		if err != nil {
+			return scores[:]
+		}
+		d1, err := strconv.Atoi(date1[8:9])
+		if err != nil {
+			return scores[:]
+		}
+		h1, err := strconv.Atoi(date1[11:12])
+		if err != nil {
+			return scores[:]
+		}
+		date2 := respData2.Repository.PullRequests.Nodes[i].CreatedAt
+		y2, err := strconv.Atoi(date2[0:3])
+		if err != nil {
+			return scores[:]
+		}
+
+		m2, err := strconv.Atoi(date2[5:6])
+		if err != nil {
+			return scores[:]
+		}
+		d2, err := strconv.Atoi(date2[8:9])
+		if err != nil {
+			return scores[:]
+		}
+		h2, err := strconv.Atoi(date2[11:12])
+		if err != nil {
+			return scores[:]
+		}
+
+		firstDate := time.Date(y1, time.Month(m1), d1, h1, 0, 0, 0, time.UTC)
+		secondDate := time.Date(y2, time.Month(m2), d2, h2, 0, 0, 0, time.UTC)
+		difference_sum += math.Abs(firstDate.Sub(secondDate).Hours())
 	}
 
-	m2, err := strconv.Atoi(date2[5:6])
-	if err != nil {
-		return scores[:]
-	}
-	d2, err := strconv.Atoi(date2[8:9])
-	if err != nil {
-		return scores[:]
-	}
-	h2, err := strconv.Atoi(date2[11:12])
-	if err != nil {
-		return scores[:]
-	}
-
-	firstDate := time.Date(y1, time.Month(m1), d1, h1, 0, 0, 0, time.UTC)
-	secondDate := time.Date(y2, time.Month(m2), d2, h2, 0, 0, 0, time.UTC)
-	difference := math.Abs(firstDate.Sub(secondDate).Hours())
+	difference := difference_sum / float64(perc_PR)
 
 	//time it takes to resolve, 3 days is the max, otherwise its a zero
 	if difference > float64(72) {
 		scores[4] = 0
 	} else {
-		scores[4] = roundFloat(1-(float64(difference)/float64(72)), 3)
-		//fmt.Printf("differenece: %f\n", difference)
+		scores[4] = dep.RoundFloat(1-(float64(difference)/float64(72)), 3)
 	}
 
 	//closed issues / total issues score of correctness
-	scores[2] = roundFloat(float64(respData2.Repository.Issues.TotalCount)/(float64(respData1.Repository.Issues.TotalCount)+float64(respData2.Repository.Issues.TotalCount)), 3)
+	scores[2] = dep.RoundFloat(float64(respData2.Repository.Issues.TotalCount)/(float64(respData1.Repository.Issues.TotalCount)+float64(respData2.Repository.Issues.TotalCount)), 3)
 
 	//rampup... has readme
 	if (respData1.Repository.Upcase.Text != "") || (respData1.Repository.Downcase.Text != "") ||
-	 (respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != ""){
+		(respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != "") {
 		scores[1] = 1
 	} else {
 		scores[1] = 0
@@ -330,11 +389,5 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	//will serve as denominator *NOT FINAL SCORE*
 	scores[3] = float64(respData1.Repository.Commits.History.TotalCount)
-	fmt.Println(scores)
 	return scores[:]
-}
-
-func roundFloat(val float64, precision uint) float64 {
-	ratio := math.Pow(10, float64(precision))
-	return math.Round(val*ratio) / ratio
 }
