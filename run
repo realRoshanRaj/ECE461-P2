@@ -34,8 +34,8 @@ elif [ $1 == 'build' ]; then
   exit 0
 elif [ $1 == 'test' ]; then
   echo 'TESTING'
-  cd CLI/
-  make test
+  go test -coverprofile=coverage.out
+  go tool cover -html=coverage.out
   exit 0
 elif [ $1 == 'URL_FILE' ]; then
   echo 'TESTING'
