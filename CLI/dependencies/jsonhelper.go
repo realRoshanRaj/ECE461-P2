@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	// "log"
+	"math"
 	"net/http"
 	"os"
-	"math"
+
+	// nd "github.com/scizorman/go-ndjson"
 )
 
 type Cont []struct { //best contributor
@@ -25,6 +28,7 @@ type Repo struct { //Structure that will recieve important information from REST
 	Correctness float64
 	BusFactor float64
 	ResponsiveMaintainer float64
+	LicenseScore float64
 	License LName `json:"license"`
 	// Name string
 }
@@ -35,7 +39,7 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Search(task string, resp *http.Response, resp1 *http.Response, RU float64, C float64, totalCommits float64, RM float64) {
+func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, RU float64, C float64, totalCommits float64, RM float64) {
 
     var repo Repo
     json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
@@ -45,8 +49,6 @@ func (r *Repos) Search(task string, resp *http.Response, resp1 *http.Response, R
     json.NewDecoder(resp1.Body).Decode(&cont) //decodes response and stores info in repo struct
 	//fmt.Println(cont[0].Contributions)
 
-	fmt.Println(repo.URL)
-	fmt.Println(task)
     new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
         URL:         repo.URL,
         RampUp:        RU,
@@ -63,9 +65,8 @@ func (r *Repos) Search(task string, resp *http.Response, resp1 *http.Response, R
 		LicenseComp = 0
 	}
 	new_repo.NetScore = RoundFloat((LicenseComp*(new_repo.Correctness + 3*new_repo.ResponsiveMaintainer + new_repo.BusFactor+ 2*new_repo.RampUp))/7.0, 3)
-
+	new_repo.LicenseScore = LicenseComp
     *r = append(*r, new_repo)
-
 }
 
 func (r *Repos) Load(filename string) error { //reads the json
@@ -94,14 +95,26 @@ func (r *Repos) Store(filename string) error {
 	if err != nil {
 		return err
 	}
-	
-	return os.WriteFile(filename, data, 0644)
+	// f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0644);
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close();
+	// if _, err := f.WriteString(string(data)); err != nil {
+	// 	log.Fatal(err)
+	// }
+	os.WriteFile(filename,data, 0644);
+	return err;
 }
 
-
 func (r *Repos) Print() {
+
+	fmt.Printf("Format\n")
+	fmt.Printf("https://host.com/url/to/repository\n")
+	fmt.Printf("NetScore    RampUp    Correctness    BusFactor    ResponsiveMaintainer    license\n")
 	for _, repo := range *r {
 		fmt.Printf("%s\n", repo.URL)
+		fmt.Printf("%.3f	%.3f	%.3f	%.3f	%.3f	%s\n", repo.NetScore, repo.RampUp, repo.Correctness, repo.BusFactor, repo.ResponsiveMaintainer, repo.License.Name)
 	}
 }
 

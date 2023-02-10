@@ -1,4 +1,4 @@
-EXEC := run
+EXEC := main
 URL_TEST := https://github.com/nodejs/node
 URL_FILE := URL_FILE.txt
 help:
@@ -16,16 +16,21 @@ help:
 
 install:
 	@# Help: Runs setup commands
-	./run install
+	go get "github.com/joho/godotenv"
+	go get "github.com/machinebox/graphql"
+	go get "github.com/scizorman/go-ndjson"
 
 build:
 	@# Help: Builds project 
 	go build -o ${EXEC} src/main.go
 
+url: build
+	./${EXEC} ${URL_FILE}
+
 test:
 	@# Help: Runs test suite 
 	#./run test 
-	./${EXEC} ${URL_FILE}
+	
 
 git: clean
 	@# Help: Automates the git push workflow

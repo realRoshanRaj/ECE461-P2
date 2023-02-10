@@ -9,7 +9,6 @@ import (
 
 	// json "encoding/json"
 
-	"flag"
 	"fmt"
 
 	// "io/ioutil"
@@ -29,30 +28,33 @@ import (
 const (
 	testJson = "test.json"
 )
+var token string;
+var repos *dep.Repos;
 
-var input_URL string
+func init(){
+	// Loads token into environment variables along with other things in the .env file
+	godotenv.Load(".env")
+	token = os.Getenv("GITHUB_TOKEN")
+	repos = &dep.Repos{}
 
+}
 func main() {
 
 	args := os.Args[1:]
 	if len(args) == 0 {
-		fmt.Printf("Please enter ./run -help for help\n")
+		fmt.Printf("Please enter ./run help for help\n")
 		os.Exit(0)
 	}
-
-	godotenv.Load(".env")
-	token := os.Getenv("GITHUB_TOKEN")
-
-	initFlags()
-
+	
+	// Expects File path to be first arguement
 	urlfile, err := os.Open(args[0])
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer urlfile.Close()
 
+	// Read URLS from the file
 	var urls []string
-
 	scanner := bufio.NewScanner(urlfile)
 	for scanner.Scan() {
 		// fmt.Println(scanner.Text())
@@ -62,125 +64,117 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// For each URL fetch data 
 	for i := 0; i < len(urls); i++ {
-
-		fmt.Println(urls[i])
-
 		//if url is npm turn into github url
-		if strings.HasPrefix(urls[i], "https://www.npmjs") {
-			data, err := exec.Command("node", "giturl.js", urls[i]).Output()
-			if err != nil {
-				log.Fatal(err)
-			}
-			urls[i] = strings.TrimSuffix(string(data), "\n")
-			fmt.Println(urls[i])
+		convertUrl(&urls[i])
+
+		// Gets HTTP response from Rest API
+		repo_resp := getRepoResponse(urls[i]) // repository data
+		contri_resp := getContributorResponse(urls[i]) //contributor data
+
+		split_url := strings.Split(urls[i], "/")
+		repo_owner := split_url[3];
+		repo_name := split_url[4];
+
+		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
+		metrics := graphql_func(repo_owner, repo_name, token)
+
+		// Inserts the metrics into final function to do math on them and make a new struct out of them
+		repos.Construct(repo_resp, contri_resp, metrics[1], metrics[2], metrics[3], metrics[4])
+	}
+
+	repos.Print()
+
+	repos.Store(testJson)
+}
+
+// Converts npm url to github url
+func convertUrl(url *string){
+	if strings.HasPrefix(*url, "https://www.npmjs") {
+		data, err := exec.Command("node", "giturl.js", *url).Output()
+		if err != nil {
+			log.Fatal(err)
 		}
-
-		resp := getHttpClient(urls[i], string(token))       // using args[0] to test should be made sure is URL
-		resp1 := getContributorData(urls[i], string(token)) //contributor data
-		//fmt.Println(resp1)
-
-		repos := &dep.Repos{}
-
-		input_parsed := strings.Split(urls[i], "/")
-		metrics := graphql_func(input_parsed[3], input_parsed[4], token)
-
-		repos.Search(urls[i], resp, resp1, metrics[1], metrics[2], metrics[3], metrics[4])
-		repos.Store(testJson)
-
-		fmt.Print("\n")
+		*url = strings.TrimSuffix(string(data), "\n")
 	}
-
 }
 
-func initFlags() {
-	// TO-DO implement all the flags and their uses IF NEED BE
-
-	input_URL = *(flag.String("search", "", "search for repo"))
-	//list = flag.Bool("list", false, "list all todos")
-	//add = flag.Bool("add", false, "add a new todo")
-	//complete = flag.Int("complete", 0, "mark an item as completed")
-	//delete = flag.Int("delete", 0, "delete an item")
-
-	flag.Parse()
-}
-
-func getContributorData(httpUrl string, token string) *http.Response {
+func getRepoResponse(httpUrl string) *http.Response {
 	client := &http.Client{}
-
-	link := strings.Split(httpUrl, "https://github.com/")
-	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] + "/contributors" //converting github repo url to API url
-	fmt.Println(REST_api_link)
-	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	req.Header.Add("Authorization", token)
-
-	// Make the GET request to the GitHub API
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer resp.Body.Close()
-
-	responseDump, err := httputil.DumpResponse(resp, true)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	// Here the 0666 is the same as chmod parameters in linux
-	os.WriteFile("responseDump1.log", responseDump, 0666)
-
-	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
-
-	requestDump, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	os.WriteFile("requestDump1.log", requestDump, 0666)
-
-	return resp
-}
-
-func getHttpClient(httpUrl string, token string) *http.Response {
-	client := &http.Client{}
-
+	
+	// Make sure the URL is to the repository main page
 	link := strings.Split(httpUrl, "https://github.com/")
 	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] //converting github repo url to API url
 	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	req.Header.Add("Authorization", token)
-
+	req.Header.Add("Authorization", "Bearer "+token)
+	
 	// Make the GET request to the GitHub API
-	resp, err := client.Do(req)
+	repo_resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer resp.Body.Close()
-
+	defer repo_resp.Body.Close()
+	
 	/* Dumps the contents of the body of the request and the response
 	*  into readable formats as in the html
-	 */
-	responseDump, err := httputil.DumpResponse(resp, true)
+	*/
+	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
+	responseDump, err := httputil.DumpResponse(repo_resp, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	// Here the 0666 is the same as chmod parameters in linux
-	os.WriteFile("responseDump.log", responseDump, 0666)
-
+	os.WriteFile("responseDumpRepo.log", responseDump, 0666)
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
-
 	requestDump, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	os.WriteFile("requestDump.log", requestDump, 0666)
+	os.WriteFile("requestDumpRepo.log", requestDump, 0666)
+	
+	return repo_resp
+}
 
-	return resp
+func getContributorResponse(httpUrl string) *http.Response {
+	client := &http.Client{}
+
+	// Make sure the URL is the contributors page
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] + "/contributors" //converting github repo url to API url
+	// fmt.Println(REST_api_link)
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitHub API
+	repo_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer repo_resp.Body.Close()
+
+
+	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
+	responseDump, err := httputil.DumpResponse(repo_resp, true)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	// Here the 0666 is the same as chmod parameters in linux
+	os.WriteFile("responseDumpContributor.log", responseDump, 0666)
+	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
+	requestDump, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	os.WriteFile("requestDumpContributor.log", requestDump, 0666)
+
+	return repo_resp
 }
 
 type respDataql1 struct { //type that stores data from graphql
@@ -224,20 +218,6 @@ type respDataql2 struct {
 		} `json:"pullRequests"`
 	} `json:"repository"`
 }
-
-// type respDataql2 struct { //type that stores data from graphql
-// 	Repository struct {
-// 		Issues struct {
-// 			TotalCount int
-// 		}
-// 		PullRequests struct {
-// 			Nodes []struct {
-// 				CreatedAt string
-// 				MergedAt  string
-// 			}
-// 		}
-// 	}
-// }
 
 func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is stored in tokens.env
 	// create a new client
@@ -289,8 +269,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	req1.Header.Add("Authorization", "Bearer "+token)
 	var respData1 respDataql1
 	if err := client.Run(context.Background(), req1, &respData1); err != nil {
-		fmt.Println(err)
-		return scores[:]
+		log.Fatal(err)
 	}
 	//fmt.Println("Number of issues:", respData1.Repository.Downcase.Text)
 	//40% of the last pull requests perhaps arbitrary number
@@ -317,13 +296,11 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	var respData2 respDataql2
 	if err := client.Run(context.Background(), req2, &respData2); err != nil {
-		fmt.Println(err)
-		return scores[:]
+		log.Fatal(err)
 	}
 
 	difference_sum := 0.0
 
-	//fmt.Println(respData2)
 	for i := 0; i < perc_PR; i++ {
 		date1 := respData2.Repository.PullRequests.Nodes[i].MergedAt
 

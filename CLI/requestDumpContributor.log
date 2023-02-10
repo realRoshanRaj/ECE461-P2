@@ -1,0 +1,4 @@
+GET /repos/browserify/browserify/contributors HTTP/1.1
+Host: api.github.com
+Authorization: Bearer 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
+
