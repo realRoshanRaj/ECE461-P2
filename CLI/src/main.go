@@ -2,18 +2,18 @@ package main
 
 import (
 	dep "CLI/dependencies"
+	"bufio"
 	"context"
-	"math"
-	"strconv"
-	"time"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"net/http/httputil"
-	"bufio"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
+	"time"
 
 	// These are dependencies must be installed with go get make sure in makefile
 	"github.com/joho/godotenv"
@@ -21,12 +21,13 @@ import (
 )
 
 const (
-	testJson = "test.json"
+	testJson = "test.ndjson"
 )
-var token string;
-var repos *dep.Repos;
 
-func init(){
+var token string
+var repos *dep.Repos
+
+func init() {
 	// Loads token into environment variables along with other things in the .env file
 	godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
@@ -40,7 +41,7 @@ func main() {
 		fmt.Printf("Please enter ./run help for help\n")
 		os.Exit(0)
 	}
-	
+
 	// Expects File path to be first arguement
 	urlfile, err := os.Open(args[0])
 	if err != nil {
@@ -59,19 +60,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// For each URL fetch data 
+	// For each URL fetch data
 	for i := 0; i < len(urls); i++ {
 		//if url is npm turn into github url
 		convertUrl(&urls[i])
 
 		// Used for Graphql
 		split_url := strings.Split(urls[i], "/")
-		repo_owner := split_url[3];
-		repo_name := split_url[4];
+		repo_owner := split_url[3]
+		repo_name := split_url[4]
 
 		// Gets HTTP response from Rest API
 
-		repo_resp := getRepoResponse(urls[i]) // repository data
+		repo_resp := getRepoResponse(urls[i])          // repository data
 		contri_resp := getContributorResponse(urls[i]) //contributor data
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
@@ -86,7 +87,7 @@ func main() {
 }
 
 // Converts npm url to github url
-func convertUrl(url *string){
+func convertUrl(url *string) {
 	if strings.HasPrefix(*url, "https://www.npmjs") {
 		data, err := exec.Command("node", "giturl.js", *url).Output()
 		if err != nil {
@@ -98,7 +99,7 @@ func convertUrl(url *string){
 
 func getRepoResponse(httpUrl string) *http.Response {
 	client := &http.Client{}
-	
+
 	// Make sure the URL is to the repository main page
 	link := strings.Split(httpUrl, "https://github.com/")
 	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] //converting github repo url to API url
@@ -107,17 +108,17 @@ func getRepoResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	req.Header.Add("Authorization", "Bearer "+token)
-	
+
 	// Make the GET request to the GitHub API
 	repo_resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer repo_resp.Body.Close()
-	
+
 	/* Dumps the contents of the body of the request and the response
 	*  into readable formats as in the html
-	*/
+	 */
 	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
 	responseDump, err := httputil.DumpResponse(repo_resp, true)
 	if err != nil {
@@ -131,7 +132,7 @@ func getRepoResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	os.WriteFile("requestDumpRepo.log", requestDump, 0666)
-	
+
 	return repo_resp
 }
 
@@ -353,7 +354,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	//rampup... has readme
 	if (respData1.Repository.Upcase.Text != "") || (respData1.Repository.Downcase.Text != "") ||
-	 (respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != ""){
+		(respData1.Repository.Capcase.Text != "") || (respData1.Repository.Expcase.Text != "") {
 		scores[1] = 1
 	} else {
 		scores[1] = 0
