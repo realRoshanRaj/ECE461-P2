@@ -15,7 +15,7 @@ import (
 	"os/exec"
 	"strings"
 
-	// These are dependencies must be installed with go get
+	// These are dependencies must be installed with go get make sure in makefile
 	"github.com/joho/godotenv"
 	"github.com/machinebox/graphql"
 )
@@ -82,7 +82,6 @@ func main() {
 	}
 
 	repos.Print()
-
 	repos.Store(testJson)
 }
 
@@ -155,7 +154,6 @@ func getContributorResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	defer repo_resp.Body.Close()
-
 
 	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
 	responseDump, err := httputil.DumpResponse(repo_resp, true)
@@ -268,6 +266,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	if err := client.Run(context.Background(), req1, &respData1); err != nil {
 		log.Fatal(err)
 	}
+
 	//fmt.Println("Number of issues:", respData1.Repository.Downcase.Text)
 	//40% of the last pull requests perhaps arbitrary number
 	perc_PR1 := math.Min(20, float64(respData1.Repository.PullRequests.TotalCount)*float64(0.4))
@@ -362,5 +361,6 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	//will serve as denominator *NOT FINAL SCORE*
 	scores[3] = float64(respData1.Repository.Commits.History.TotalCount)
+
 	return scores[:]
 }
