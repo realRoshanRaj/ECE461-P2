@@ -1,3 +1,11 @@
 .env
+main
+run
 responseDump.log
 requestDump.log
+requestDumpgraphql.log
+responseDumpgraphql.log
+requestDumpContributor.log
+responseDumpContributor.log
+requestDumpRepo.log
+responseDumpRepo.log

@@ -1,5 +1,4 @@
 EXEC := run
-
 help:
 	@printf "%-20s %s\n" "------ Makefile Commands --------"
 	@printf "%-20s %s\n" "Target" "Description"
@@ -15,11 +14,16 @@ help:
 
 install:
 	@# Help: Runs setup commands
-	./run install
+	go get "github.com/joho/godotenv"
+	go get "github.com/machinebox/graphql"
+	go get "github.com/scizorman/go-ndjson"
 
 build:
 	@# Help: Builds project 
 	go build -o ${EXEC} src/main.go
+
+url: build
+	./${EXEC} ${URL_FILE}
 
 test:
 	@# Help: Runs test suite 
