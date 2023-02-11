@@ -29,3 +29,5 @@ import (
 	// "github.com/joho/godotenv"
 	// "github.com/machinebox/graphql"
 )
+
+type
