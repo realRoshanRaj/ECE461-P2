@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	// "log"
 	"math"
 	"net/http"
 	"os"
 
+	// These are dependencies must be installed with go get
 	// nd "github.com/scizorman/go-ndjson"
 )
 
@@ -95,6 +95,7 @@ func (r *Repos) Store(filename string) error {
 	if err != nil {
 		return err
 	}
+	// This would be needed if we needed to append to file instead
 	// f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0644);
 	// if err != nil {
 	// 	log.Fatal(err)
@@ -103,6 +104,7 @@ func (r *Repos) Store(filename string) error {
 	// if _, err := f.WriteString(string(data)); err != nil {
 	// 	log.Fatal(err)
 	// }
+
 	os.WriteFile(filename,data, 0644);
 	return err;
 }

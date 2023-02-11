@@ -1,7 +1,11 @@
 .env
+main
+run
 responseDump.log
 requestDump.log
 requestDumpgraphql.log
 responseDumpgraphql.log
-main
-run
+requestDumpContributor.log
+responseDumpContributor.log
+requestDumpRepo.log
+responseDumpRepo.log

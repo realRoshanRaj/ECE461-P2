@@ -6,21 +6,16 @@ import (
 	"math"
 	"strconv"
 	"time"
-
-	// json "encoding/json"
-
 	"fmt"
-
-	// "io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
-
 	"bufio"
 	"os"
 	"os/exec"
 	"strings"
 
+	// These are dependencies must be installed with go get
 	"github.com/joho/godotenv"
 	"github.com/machinebox/graphql"
 )
@@ -69,13 +64,15 @@ func main() {
 		//if url is npm turn into github url
 		convertUrl(&urls[i])
 
-		// Gets HTTP response from Rest API
-		repo_resp := getRepoResponse(urls[i]) // repository data
-		contri_resp := getContributorResponse(urls[i]) //contributor data
-
+		// Used for Graphql
 		split_url := strings.Split(urls[i], "/")
 		repo_owner := split_url[3];
 		repo_name := split_url[4];
+
+		// Gets HTTP response from Rest API
+
+		repo_resp := getRepoResponse(urls[i]) // repository data
+		contri_resp := getContributorResponse(urls[i]) //contributor data
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := graphql_func(repo_owner, repo_name, token)
@@ -325,7 +322,6 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		if err != nil {
 			return scores[:]
 		}
-
 		m2, err := strconv.Atoi(date2[5:6])
 		if err != nil {
 			return scores[:]
