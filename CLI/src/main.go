@@ -31,7 +31,6 @@ func init(){
 	godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 	repos = &dep.Repos{}
-
 }
 func main() {
 

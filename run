@@ -3,6 +3,7 @@
 # URL PATTERN GOTTEN FROM CHATGPT
 urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
 filePathPattern='.\.txt$'
+dir='CLI/'
 
 help() {
   echo 'Usage: ./run [install|build|URL_FILE|FILEPATH|test]'
@@ -23,22 +24,22 @@ if [ -z "$1" ]; then
 elif [ $1 == 'install' ]; then
   echo 'INSTALLING DEPENDENCIES'
   # sudo apt install golang-go
-  cd CLI
+  cd $dir 
   make install
   exit 0
 elif [ $1 == 'build' ]; then
   echo 'BUILDING'
-  cd CLI/
+  cd $dir 
   make build
   exit 0
 elif [ $1 == 'test' ]; then
   echo 'TESTING'
-  go test -coverprofile=coverage.out
-  go tool cover -html=coverage.out
+  cd $dir;
+  go test ./cmd/todo -cover
   exit 0
 elif [ $1 == 'URL_FILE' ]; then
   echo 'RUNNING'
-  cd CLI/
+  cd $dir 
   make url
   exit 0
 elif [ $1 = 'help' ]; then
