@@ -27,7 +27,7 @@ url: build
 
 test:
 	@# Help: Runs test suite 
-	./run test 
+	go test -cover
 
 git: clean
 	@# Help: Automates the git push workflow

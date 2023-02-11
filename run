@@ -34,8 +34,8 @@ elif [ $1 == 'build' ]; then
   exit 0
 elif [ $1 == 'test' ]; then
   echo 'TESTING'
-  cd $dir;
-  go test ./cmd/todo -cover
+  cd CLI 
+  go test src -cover
   exit 0
 elif [ $1 == 'URL_FILE' ]; then
   echo 'RUNNING'
@@ -47,11 +47,11 @@ elif [ $1 = 'help' ]; then
   exit 0
 elif [[ $1 =~ $filePathPattern ]]; then
   echo "FILEPATH_PATTERN $1"
-  ( cd CLI_prac ; go run ./cmd/todo -file $1)
+  ( cd CLI ; go run -file $1)
   exit 0
 elif [[ $1 =~ $urlPattern ]]; then
   echo "URL_PATTERN $1"
-  ( cd CLI_prac ; go run ./cmd/todo -search $1)
+  ( cd CLI ; go run src -search $1)
   exit 0
 else
   echo -e "\033[31mINVALID COMMAND: '$1'\033[0m"
