@@ -24,8 +24,7 @@ elif [ $1 == 'install' ]; then
   echo 'INSTALLING DEPENDENCIES'
   # sudo apt install golang-go
   cd CLI
-  go get "github.com/joho/godotenv"
-  go get "github.com/machinebox/graphql"
+  make install
   exit 0
 elif [ $1 == 'build' ]; then
   echo 'BUILDING'
@@ -38,9 +37,9 @@ elif [ $1 == 'test' ]; then
   make test
   exit 0
 elif [ $1 == 'URL_FILE' ]; then
-  echo 'TESTING'
+  echo 'RUNNING'
   cd CLI/
-  make test
+  make url
   exit 0
 elif [ $1 = 'help' ]; then
   help
