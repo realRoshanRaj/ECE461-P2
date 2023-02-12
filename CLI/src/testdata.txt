@@ -1,2 +1,0 @@
-https://github.com/lodash/lodash
-https://github.com/nullivex/nodist

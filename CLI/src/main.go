@@ -32,11 +32,36 @@ var log_file string
 var log_level int
 var repos *dep.Repos
 
-func init() {
-	// Loads token into environment variables along with other things in the .env file
-	// godotenv.Load(".env")
+// func init() {
+// 	// Loads token into environment variables along with other things in the .env file
+// 	// godotenv.Load(".env")
+// 	var err error
+// 	token = os.Getenv("GITHUB_TOKEN")
+// 	if err != nil {
+// 		log.Fatal(err, "couldn't find GITHUB_TOKEN environment variable")
+// 	}
+// 	log_file = os.Getenv("LOG_FILE")
+// 	if err != nil {
+// 		log.Fatal(err, "couldn't find LOG_FILE environment variable")
+// 	}
+// 	// Clears file
+// 	empty := []byte {};
+// 	storeLog(log_file, empty , "", true)
+
+// 	log_level , err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
+// 	if err != nil {
+// 		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
+// 	}
+// 	repos = &dep.Repos{}
+// }
+func main() {
+
+	//init
+
 	var err error
 	token = os.Getenv("GITHUB_TOKEN")
+	// fmt.Println(token)
+
 	if err != nil {
 		log.Fatal(err, "couldn't find GITHUB_TOKEN environment variable")
 	}
@@ -53,9 +78,9 @@ func init() {
 		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
 	}
 	repos = &dep.Repos{}
-}
-func main() {
 
+	//
+	
 	args := os.Args[1:]
 	if len(args) == 0 {
 		fmt.Printf("Please enter ./run help for help\n")
@@ -100,7 +125,7 @@ func main() {
 		// Gets HTTP response from Rest API
 
 		repo_resp := getRepoResponse(urls[i])          // repository data
-		fmt.Println(repo_resp)
+		// fmt.Println(token)
 
 		
 		contri_resp := getContributorResponse(urls[i]) //contributor data

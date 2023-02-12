@@ -16,23 +16,23 @@ import (
 	"os"
 	"strings"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	// "github.com/machinebox/graphql"
 )
 
-func TestInit(t *testing.T) {
-	os.Setenv("GITHUB_TOKEN", "test_token")
-	defer os.Unsetenv("GITHUB_TOKEN")
+// func TestInit(t *testing.T) {
+// 	os.Setenv("GITHUB_TOKEN", "test_token")
+// 	defer os.Unsetenv("GITHUB_TOKEN")
 
-	godotenv.Load(".env")
-	token := os.Getenv("GITHUB_TOKEN")
+// 	godotenv.Load(".env")
+// 	token := os.Getenv("GITHUB_TOKEN")
 
-	if token != "test_token" { t.Errorf("Expected token to be 'test_token', but got %s", token) }
-	if repos == nil { t.Errorf("Repos dne")	}
-}
+// 	if token != "test_token" { t.Errorf("Expected token to be 'test_token', but got %s", token) }
+// 	if repos == nil { t.Errorf("Repos dne")	}
+// }
 
 func TestConvertUrl(t *testing.T) {
-	godotenv.Load(".env")
+	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
 	tests := []struct {
@@ -55,7 +55,7 @@ func TestConvertUrl(t *testing.T) {
 }
 
 func TestGetRepoResponse(t *testing.T) {
-	godotenv.Load(".env")
+	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
 	resp := getRepoResponse("https://github.com/nullivex/nodist")
@@ -75,7 +75,7 @@ func TestGetRepoResponse(t *testing.T) {
 
 
 func TestGetContributorResponse(t *testing.T) {
-	godotenv.Load(".env")
+	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
 	testCases := []struct {
