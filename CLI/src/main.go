@@ -71,6 +71,11 @@ func main() {
 		repo_owner := split_url[3]
 		repo_name := split_url[4]
 
+
+		fmt.Printf("SPLIT URL: %s\n", split_url)
+		fmt.Printf("REPO OWNER: %s\n", repo_owner)
+		fmt.Printf("REPO NAME: %s\n", repo_name)
+
 		// Gets HTTP response from Rest API
 
 		repo_resp := getRepoResponse(urls[i])          // repository data
@@ -94,9 +99,10 @@ func convertUrl(url *string) {
 	if strings.HasPrefix(*url, "https://www.npmjs") {
 		data, err := exec.Command("node", "giturl.js", *url).Output()
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("Error:", err)
+		} else {
+			*url = strings.TrimSuffix(string(data), "\n")
 		}
-		*url = strings.TrimSuffix(string(data), "\n")
 	}
 }
 
@@ -226,8 +232,8 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	// make a request
 	req1 := graphql.NewRequest(`
-	query { 
-		repository(owner:"` + repo_owner + `", name:"` + repo_name + `") { 
+	query {
+		repository(owner:"` + repo_owner + `", name:"` + repo_name + `") {
 			issues(states: OPEN) {
 				totalCount
 			}
@@ -279,7 +285,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	req2 := graphql.NewRequest(`
 	query {
-		repository(owner:"` + repo_owner + `", name:"` + repo_name + `") { 
+		repository(owner:"` + repo_owner + `", name:"` + repo_name + `") {
 			issues(states: CLOSED) {
 				totalCount
 			}

@@ -1,5 +1,0 @@
-{"html_url":"https://github.com/cloudinary/cloudinary_npm","NetScore":0.787,"RampUp":1,"Correctness":0.956,"BusFactor":0.87,"ResponsiveMaintainer":0.562,"LicenseScore":1,"license":{"name":""}}
-{"html_url":"https://github.com/nullivex/nodist","NetScore":0.698,"RampUp":1,"Correctness":0.793,"BusFactor":0.19,"ResponsiveMaintainer":0.635,"LicenseScore":1,"license":{"name":"MIT License"}}
-{"html_url":"https://github.com/expressjs/express","NetScore":0.586,"RampUp":1,"Correctness":0.968,"BusFactor":0.326,"ResponsiveMaintainer":0.27,"LicenseScore":1,"license":{"name":"MIT License"}}
-{"html_url":"https://github.com/browserify/browserify","NetScore":0.532,"RampUp":1,"Correctness":0.763,"BusFactor":0.961,"ResponsiveMaintainer":0,"LicenseScore":1,"license":{"name":"MIT License"}}
-{"html_url":"https://github.com/lodash/lodash","NetScore":0.441,"RampUp":1,"Correctness":0.924,"BusFactor":0.16,"ResponsiveMaintainer":0,"LicenseScore":1,"license":{"name":"Other"}}

@@ -1,4 +1,7 @@
 EXEC := run
+URL_TEST := https://github.com/nodejs/node
+URL_FILE := URL_file.txt
+
 help:
 	@printf "%-20s %s\n" "------ Makefile Commands --------"
 	@printf "%-20s %s\n" "Target" "Description"
@@ -8,9 +11,6 @@ help:
 	| sort \
 	| egrep -v -e '^[^[:alnum:]]' -e '^$@$$' \
 	| xargs -I _ sh -c 'printf "%-20s " _; make _ -nB | (grep -i "^# Help:" || echo "") | tail -1 | sed "s/^# Help: //g"'
-	@printf "%-20s %s\n" "------ ./run Commands -----------"
-	./run help
-	@printf "%-20s %s\n" "---------------------------------"
 
 install:
 	@# Help: Runs setup commands
@@ -19,15 +19,16 @@ install:
 	go get "github.com/scizorman/go-ndjson"
 
 build:
-	@# Help: Builds project 
+	@# Help: Builds project
 	go build -o ${EXEC} src/main.go
 
 url: build
 	./${EXEC} ${URL_FILE}
 
-test:
-	@# Help: Runs test suite 
-	go test -cover
+test: build
+	@# Help: Runs test suite
+	(cd src; go test -v -cover)
+#go test -cover test_main.go
 
 git: clean
 	@# Help: Automates the git push workflow
@@ -44,7 +45,7 @@ pull:
 
 # EXAMPLE @rm -rf ________ || true
 clean:
-	@# Help: Removes unnecessary files 
+	@# Help: Removes unnecessary files
 	rm ${EXEC}
 
 .PHONY: help install build git pull clean
