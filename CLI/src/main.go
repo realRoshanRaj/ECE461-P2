@@ -83,32 +83,40 @@ func main() {
 	// For each URL fetch data
 	for i := 0; i < len(urls); i++ {
 		//if url is npm turn into github url
+
 		convertUrl(&urls[i])
 
 		// Used for Graphql
 		split_url := strings.Split(urls[i], "/")
 		repo_owner := split_url[3]
 		repo_name := split_url[4]
+		
 
 
-		fmt.Printf("SPLIT URL: %s\n", split_url)
-		fmt.Printf("REPO OWNER: %s\n", repo_owner)
-		fmt.Printf("REPO NAME: %s\n", repo_name)
+		// fmt.Printf("SPLIT URL: %s\n", split_url)
+		// fmt.Printf("REPO OWNER: %s\n", repo_owner)
+		// fmt.Printf("REPO NAME: %s\n", repo_name)
 
 		// Gets HTTP response from Rest API
 
 		repo_resp := getRepoResponse(urls[i])          // repository data
+		fmt.Println(repo_resp)
+
+		
 		contri_resp := getContributorResponse(urls[i]) //contributor data
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := graphql_func(repo_owner, repo_name, token)
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
+		
 		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
+		
 		if(log_level >= 2){
 			log.Println(urls[i])
 		}
 	}
+	
 
 	sort.SliceStable((*repos), func(i, j int) bool {
 		return (*repos)[i].NET_SCORE > (*repos)[j].NET_SCORE

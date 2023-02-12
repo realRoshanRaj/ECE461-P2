@@ -102,7 +102,7 @@ func TestGetContributorResponse(t *testing.T) {
 }
 
 func TestGraphqlFunc(t *testing.T) {
-	godotenv.Load(".env")
+	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
 	graphql_func("cloudinary", "cloudinary_npm", token)
@@ -142,15 +142,17 @@ func TestMain(t *testing.T) {
 	defer func() { os.Args = oldArgs }()
 	os.Args = []string{"run", "testdata.txt"}
 
+
 	oldStdout := os.Stdout
 	defer func() { os.Stdout = oldStdout }()
-	os.Stdout = nil
+	// os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
 	if (err != nil) { t.Errorf("Could not create testdata file") }
 	f.WriteString("https://github.com/lodash/lodash\n")
 	f.WriteString("https://github.com/nullivex/nodist")
 	defer f.Close()
+	
 
 	main()
 	os.Remove("testdata.txt")
