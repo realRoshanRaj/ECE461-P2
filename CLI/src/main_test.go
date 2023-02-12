@@ -100,3 +100,74 @@ func TestGetContributorResponse(t *testing.T) {
 		})
 	}
 }
+
+func TestGraphqlFunc(t *testing.T) {
+	godotenv.Load(".env")
+	token = os.Getenv("GITHUB_TOKEN")
+
+	graphql_func("cloudinary", "cloudinary_npm", token)
+}
+
+func TestRespDataql1(t *testing.T) {
+	data := respDataql1{
+		Repository: struct {
+			Issues struct { TotalCount int }
+			PullRequests struct { TotalCount int }
+			Upcase struct { Text string }
+			Downcase struct { Text string }
+			Capcase struct { Text string }
+			Expcase struct { Text string }
+			Commits struct { History struct { TotalCount int } }
+		}{ Issues: struct { TotalCount int } { TotalCount: 10, },
+			PullRequests: struct { TotalCount int }{ TotalCount: 5, },
+			Upcase: struct { Text string } { Text: "README CONTENT", },
+			Downcase: struct { Text string } { Text: "readme content", },
+			Capcase: struct { Text string }{ Text: "This is the content of Readme.md", },
+			Expcase: struct { Text string }{ Text: "This is the content of readme.markdown", },
+			Commits: struct { History struct { TotalCount int } } {
+				History: struct { TotalCount int }{	TotalCount: 20,	}, }, },
+	}
+
+	if data.Repository.Issues.TotalCount != 10 {
+		t.Errorf("Expected Issues TotalCount to be 10, but got %d", data.Repository.Issues.TotalCount)
+	}
+
+	if data.Repository.PullRequests.TotalCount != 5 {
+		t.Errorf("Expected pull requests to be 5, got %d", data.Repository.PullRequests.TotalCount)
+	}
+}
+
+func TestMain(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+	os.Stdout = nil
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/lodash/lodash\n")
+	f.WriteString("https://github.com/nullivex/nodist")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+/* COVERED BY GRAPHQL FUNC TEST
+func TestStoreLog(t *testing.T) {
+	empty := []byte {};
+	//data := []byte("Test data")
+	header := "Test header"
+	filename := "test.log"
+
+	err := storeLog(filename, empty , header, true)
+	if err != nil {
+		t.Errorf("Error storing log data: %v", err)
+	}
+
+	os.Remove(filename)
+}
+*/
