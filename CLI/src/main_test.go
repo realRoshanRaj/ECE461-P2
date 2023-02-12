@@ -483,19 +483,13 @@ func TestCase17(t *testing.T) {
 func TestCase18(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"run", "testdata.txt"}
+	os.Args = []string{"run", "TEST_FILE.txt"}
 
 	oldStdout := os.Stdout
 	defer func() { os.Stdout = oldStdout }()
 	os.Stdout = nil
 
-	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
-	f.WriteString("https://github.com/unrolled/render")
-	defer f.Close()
-
 	main()
-	os.Remove("testdata.txt")
 }
 
 func TestCase19(t *testing.T) {
@@ -509,7 +503,7 @@ func TestCase19(t *testing.T) {
 
 	f, err := os.Create("testdata.txt")
 	if (err != nil) { t.Errorf("Could not create testdata file") }
-	f.WriteString("https://github.com/matcornic/hugo-theme-learn")
+	f.WriteString("https://github.com/unrolled/render")
 	defer f.Close()
 
 	main()
@@ -532,8 +526,9 @@ func TestCase20(t *testing.T) {
 
 	main()
 	os.Remove("testdata.txt")
+	// If this runs, all tests passed
+	os.Stdout = oldStdout
 	fmt.Printf("\n20/20 test cases passed. 100%%\n")
-
 }
 
 /* COVERED BY GRAPHQL FUNC TEST
