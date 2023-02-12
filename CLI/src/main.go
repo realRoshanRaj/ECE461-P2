@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	output_json = "metrics.ndjson"
+	output_json = "output.ndjson"
 )
 
 var token string
