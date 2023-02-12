@@ -21,16 +21,34 @@ import (
 )
 
 const (
-	testJson = "test.ndjson"
+	metricsJson = "metrics.ndjson"
 )
 
 var token string
+var log_file string
+var log_level int
 var repos *dep.Repos
 
 func init() {
 	// Loads token into environment variables along with other things in the .env file
 	godotenv.Load(".env")
+	var err error
 	token = os.Getenv("GITHUB_TOKEN")
+	if err != nil {
+		log.Fatal(err, "couldn't find GITHUB_TOKEN environment variable")
+	}
+	log_file = os.Getenv("LOG_FILE")
+	if err != nil {
+		log.Fatal(err, "couldn't find LOG_FILE environment variable")
+	}
+	// Clears file
+	empty := []byte {};
+	storeLog(log_file, empty , "", true)
+
+	log_level , err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
+	if err != nil {
+		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
+	}
 	repos = &dep.Repos{}
 
 }
@@ -83,7 +101,7 @@ func main() {
 	}
 
 	repos.Print()
-	repos.Store(testJson)
+	repos.Store(metricsJson)
 }
 
 // Converts npm url to github url
@@ -125,13 +143,17 @@ func getRepoResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	// Here the 0666 is the same as chmod parameters in linux
-	os.WriteFile("responseDumpRepo.log", responseDump, 0666)
+	// os.WriteFile("responseDumpRepo.log", responseDump, 0666) // Deprecated
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
 	requestDump, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	os.WriteFile("requestDumpRepo.log", requestDump, 0666)
+	// os.WriteFile("requestDumpRepo.log", requestDump, 0666) // Deprecated
+
+	storeLog(log_file, requestDump, "Repo request dump\n", false)
+	storeLog(log_file, responseDump, "Repo response dump\n", false)
+
 
 	return repo_resp
 }
@@ -162,18 +184,21 @@ func getContributorResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	// Here the 0666 is the same as chmod parameters in linux
-	os.WriteFile("responseDumpContributor.log", responseDump, 0666)
+	// os.WriteFile(log_file, responseDump, 0666) // Deprecated
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
 	requestDump, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	os.WriteFile("requestDumpContributor.log", requestDump, 0666)
+	// os.WriteFile("requestDumpContributor.log", requestDump, 0666) // Deprecate
+
+	storeLog(log_file, requestDump, "Contributor request dump\n", true)
+	storeLog(log_file, responseDump, "Contributor response dump\n", true)
 
 	return repo_resp
 }
 
-type respDataql1 struct { //type that stores data from graphql
+type respDataql1 struct { //type that storeLogs data from graphql
 	Repository struct {
 		Issues struct {
 			TotalCount int
@@ -215,7 +240,7 @@ type respDataql2 struct {
 	} `json:"repository"`
 }
 
-func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is stored in tokens.env
+func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is storeLogd in tokens.env
 	// create a new client
 	client := graphql.NewClient("https://api.github.com/graphql")
 
@@ -364,4 +389,24 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	scores[3] = float64(respData1.Repository.Commits.History.TotalCount)
 
 	return scores[:]
+}
+
+func storeLog(filename string, data []byte, header string, clear bool) error {
+	var f *os.File
+	var err error
+
+	if clear{
+		f, err = os.OpenFile(log_file, os.O_CREATE|os.O_WRONLY, 0644)
+	} else{
+		f, err = os.OpenFile(log_file, os.O_APPEND |os.O_CREATE|os.O_WRONLY, 0644)
+	}
+
+	if err != nil {
+		log.Println(err)
+	}
+	defer f.Close()
+
+	logger := log.New(f, header , log.LstdFlags)
+	logger.Println(string(data))
+	return err
 }

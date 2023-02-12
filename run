@@ -2,7 +2,7 @@
 
 # URL PATTERN GOTTEN FROM CHATGPT
 urlPattern='^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$'
-filePathPattern='.\.txt$'
+filePathPattern='^(.+)\/([^\/]+)$'
 
 help() {
   echo 'Usage: ./run [install|build|URL_FILE|FILEPATH|test]'
@@ -45,13 +45,14 @@ elif [ $1 = 'help' ]; then
   help
   exit 0
 elif [[ $1 =~ $filePathPattern ]]; then
-  echo "FILEPATH_PATTERN $1"
-  ( cd CLI_prac ; go run ./cmd/todo -file $1)
+  echo "FILEPATH_PATTERN"
+  (cd CLI ; ./main $1)
   exit 0
-elif [[ $1 =~ $urlPattern ]]; then
-  echo "URL_PATTERN $1"
-  ( cd CLI_prac ; go run ./cmd/todo -search $1)
-  exit 0
+# Deprecated
+# elif [[ $1 =~ $urlPattern ]]; then
+#   echo "URL_PATTERN $1"
+#   ( cd CLI ; go run ./cmd/todo -search $1)
+#   exit 0
 else
   echo -e "\033[31mINVALID COMMAND: '$1'\033[0m"
   help
