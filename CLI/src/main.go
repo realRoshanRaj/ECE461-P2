@@ -389,7 +389,14 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	//rampup... has readme
 	if respData1.Repository.Upcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Upcase.Text))
+		fmt.Println(rm_len)
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+		
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -405,7 +412,13 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			return scores[:]
 		}
 	} else if respData1.Repository.Downcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Downcase.Text))
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -421,7 +434,14 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			return scores[:]
 		}
 	} else if respData1.Repository.Capcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Capcase.Text))
+		fmt.Println(rm_len)
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -437,7 +457,13 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			return scores[:]
 		}
 	} else if respData1.Repository.Expcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Expcase.Text))
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
