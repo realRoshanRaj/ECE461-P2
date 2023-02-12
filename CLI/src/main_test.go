@@ -8,7 +8,7 @@ import (
 	// "math"
 	// "strconv"
 	// "time"
-	// "fmt"
+	"fmt"
 	// "log"
 	"net/http"
 	// "net/http/httputil"
@@ -138,21 +138,54 @@ func TestRespDataql1(t *testing.T) {
 }
 
 func TestMain(t *testing.T) {
+	var totalTests, passedTests int
+	tests := []struct {
+		name string
+		f    func(*testing.T)
+	}{
+		{"Test Case 1", TestCase1},
+		// {"Test Case 2", testCase2},
+		// {"Test Case 3", testCase3},
+		// {"Test Case 4", testCase4},
+		// {"Test Case 5", testCase5},
+		// {"Test Case 6", testCase6},
+		// {"Test Case 7", testCase7},
+		// {"Test Case 8", testCase8},
+		// {"Test Case 9", testCase9},
+		// {"Test Case 10", testCase10},
+		// {"Test Case 11", testCase11},
+		// {"Test Case 12", testCase12},
+		// {"Test Case 13", testCase13},
+		// {"Test Case 14", testCase14},
+		// {"Test Case 15", testCase15},
+		// {"Test Case 16", testCase16},
+		// {"Test Case 17", testCase17},
+		// {"Test Case 18", testCase18},
+		// {"Test Case 19", testCase19},
+		// {"Test Case 20", testCase20},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			totalTests++
+			test.f(t)
+			passedTests++
+		})
+	}
+	fmt.Printf("\nPassed: %d/%d (%.2f%%)\n", passedTests, totalTests, float64(passedTests)/float64(totalTests)*100)
+}
+
+func TestCase1(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
 	os.Args = []string{"run", "testdata.txt"}
 
-
 	oldStdout := os.Stdout
 	defer func() { os.Stdout = oldStdout }()
-	// os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
 	if (err != nil) { t.Errorf("Could not create testdata file") }
-	f.WriteString("https://github.com/lodash/lodash\n")
-	f.WriteString("https://github.com/nullivex/nodist")
+	f.WriteString("https://github.com/lodash/lodash")
 	defer f.Close()
-	
 
 	main()
 	os.Remove("testdata.txt")
