@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -23,16 +24,34 @@ import (
 )
 
 const (
-	testJson = "test.ndjson"
+	output_json = "output.ndjson"
 )
 
 var token string
+var log_file string
+var log_level int
 var repos *dep.Repos
 
 func init() {
 	// Loads token into environment variables along with other things in the .env file
 	godotenv.Load(".env")
+	var err error
 	token = os.Getenv("GITHUB_TOKEN")
+	if err != nil {
+		log.Fatal(err, "couldn't find GITHUB_TOKEN environment variable")
+	}
+	log_file = os.Getenv("LOG_FILE")
+	if err != nil {
+		log.Fatal(err, "couldn't find LOG_FILE environment variable")
+	}
+	// Clears file
+	empty := []byte {};
+	storeLog(log_file, empty , "", true)
+
+	log_level , err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
+	if err != nil {
+		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
+	}
 	repos = &dep.Repos{}
 }
 func main() {
@@ -86,12 +105,17 @@ func main() {
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
 		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
+		if(log_level >= 2){
+			log.Println(urls[i])
+		}
 	}
+
 	sort.SliceStable((*repos), func(i, j int) bool {
 		return (*repos)[i].NetScore > (*repos)[j].NetScore
 	})
+
 	repos.Print()
-	repos.Store(testJson)
+	repos.Store(output_json)
 }
 
 // Converts npm url to github url
@@ -134,13 +158,16 @@ func getRepoResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	// Here the 0666 is the same as chmod parameters in linux
-	os.WriteFile("responseDumpRepo.log", responseDump, 0666)
+	// os.WriteFile("responseDumpRepo.log", responseDump, 0666) // Deprecated
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
 	requestDump, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	os.WriteFile("requestDumpRepo.log", requestDump, 0666)
+	// os.WriteFile("requestDumpRepo.log", requestDump, 0666) // Deprecated
+
+	storeLog(log_file, requestDump, "Repo request dump\n", false)
+	storeLog(log_file, responseDump, "Repo response dump\n", false)
 
 	return repo_resp
 }
@@ -171,18 +198,21 @@ func getContributorResponse(httpUrl string) *http.Response {
 		log.Fatalln(err)
 	}
 	// Here the 0666 is the same as chmod parameters in linux
-	os.WriteFile("responseDumpContributor.log", responseDump, 0666)
+	// os.WriteFile(log_file, responseDump, 0666) // Deprecated
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
 	requestDump, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	os.WriteFile("requestDumpContributor.log", requestDump, 0666)
+	// os.WriteFile("requestDumpContributor.log", requestDump, 0666) // Deprecate
+
+	storeLog(log_file, requestDump, "Contributor request dump\n", true)
+	storeLog(log_file, responseDump, "Contributor response dump\n", true)
 
 	return repo_resp
 }
 
-type respDataql1 struct { //type that stores data from graphql
+type respDataql1 struct { //type that storeLogs data from graphql
 	Repository struct {
 		Issues struct {
 			TotalCount int
@@ -224,7 +254,7 @@ type respDataql2 struct {
 	} `json:"repository"`
 }
 
-func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is stored in tokens.env
+func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is storeLogd in tokens.env
 	// create a new client
 	client := graphql.NewClient("https://api.github.com/graphql")
 
@@ -363,7 +393,14 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 
 	//rampup... has readme
 	if respData1.Repository.Upcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Upcase.Text))
+		// fmt.Println(rm_len)
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+		
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -379,7 +416,13 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			return scores[:]
 		}
 	} else if respData1.Repository.Downcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Downcase.Text))
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -395,7 +438,14 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			return scores[:]
 		}
 	} else if respData1.Repository.Capcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Capcase.Text))
+		// fmt.Println(rm_len)
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -411,7 +461,13 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 			return scores[:]
 		}
 	} else if respData1.Repository.Expcase.Text != "" {
-		scores[1] = 1
+		rm_len := float64(len(respData1.Repository.Expcase.Text))
+		if(rm_len / float64(1000) > 5){
+			scores[1] = 1
+		} else{
+			scores[1] = rm_len / 5000
+		}
+
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
 License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
@@ -434,4 +490,30 @@ Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repositor
 	scores[3] = float64(respData1.Repository.Commits.History.TotalCount)
 
 	return scores[:]
+}
+
+func storeLog(filename string, data []byte, header string, clear bool) error {
+	var f *os.File
+	var err error
+
+	if clear{
+		f, err = os.OpenFile(log_file, os.O_CREATE|os.O_WRONLY, 0644)
+	} else{
+		f, err = os.OpenFile(log_file, os.O_APPEND |os.O_CREATE|os.O_WRONLY, 0644)
+	}
+
+	if err != nil {
+		log.Println(err)
+	}
+	defer f.Close()
+
+	var logger *log.Logger = log.New(f, header , log.LstdFlags)
+	if log_level >= 1{
+	} else {
+		logger.SetFlags(0);
+		logger.SetOutput(io.Discard)
+	}
+
+	logger.Println(string(data))
+	return err
 }

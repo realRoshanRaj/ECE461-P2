@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+
 	// These are dependencies must be installed with go get
 	// nd "github.com/scizorman/go-ndjson"
 )
@@ -48,6 +49,13 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 	var cont Cont
 	json.NewDecoder(resp1.Body).Decode(&cont) //decodes response and stores info in repo struct
 	//fmt.Println(cont[0].Contributions)
+
+	if (repo == Repo{}){
+		log.Fatal("repo struct empty, check http response")
+	}
+	if (cont == nil){
+		log.Fatal("cont struct empty, check http response")
+	}
 
 	new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
 		URL:                  repo.URL,
@@ -92,13 +100,9 @@ func (r *Repos) Load(filename string) error { //reads the json
 }
 
 func (r *Repos) Store(filename string) error {
-	// data, err := json.Marshal(r)
-	// if err != nil {
-	// 	return err
-	// }
 
 	// This would be needed if we needed to append to file instead
-	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0644)
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -106,6 +110,7 @@ func (r *Repos) Store(filename string) error {
 	if err := os.Truncate(filename, 0); err != nil {
 		log.Printf("Failed to truncate: %v", err)
 	}
+	// This would be used if we needed to overwrite a file instead
 	// if _, err := f.WriteString(string(ndata)); err != nil {
 	// 	log.Fatal(err)
 	// }
@@ -115,7 +120,9 @@ func (r *Repos) Store(filename string) error {
 		if err != nil {
 			return err
 		}
-		f.Write(data)
+		if _,err:= f.Write(data); err != nil{
+			log.Fatal(err);
+		}
 		f.WriteString("\n")
 	}
 
