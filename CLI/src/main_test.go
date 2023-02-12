@@ -144,25 +144,25 @@ func TestMain(t *testing.T) {
 		f    func(*testing.T)
 	}{
 		{"Test Case 1", TestCase1},
-		// {"Test Case 2", testCase2},
-		// {"Test Case 3", testCase3},
-		// {"Test Case 4", testCase4},
-		// {"Test Case 5", testCase5},
-		// {"Test Case 6", testCase6},
-		// {"Test Case 7", testCase7},
-		// {"Test Case 8", testCase8},
-		// {"Test Case 9", testCase9},
-		// {"Test Case 10", testCase10},
-		// {"Test Case 11", testCase11},
-		// {"Test Case 12", testCase12},
-		// {"Test Case 13", testCase13},
-		// {"Test Case 14", testCase14},
-		// {"Test Case 15", testCase15},
-		// {"Test Case 16", testCase16},
-		// {"Test Case 17", testCase17},
-		// {"Test Case 18", testCase18},
-		// {"Test Case 19", testCase19},
-		// {"Test Case 20", testCase20},
+		{"Test Case 2", TestCase2},
+		{"Test Case 3", TestCase3},
+		{"Test Case 4", TestCase4},
+		{"Test Case 5", TestCase5},
+		{"Test Case 6", TestCase6},
+		{"Test Case 7", TestCase7},
+		{"Test Case 8", TestCase8},
+		{"Test Case 9", TestCase9},
+		{"Test Case 10", TestCase10},
+		{"Test Case 11", TestCase11},
+		{"Test Case 12", TestCase12},
+		{"Test Case 13", TestCase13},
+		{"Test Case 14", TestCase14},
+		{"Test Case 15", TestCase15},
+		{"Test Case 16", TestCase16},
+		{"Test Case 17", TestCase17},
+		{"Test Case 18", TestCase18},
+		{"Test Case 19", TestCase19},
+		{"Test Case 20", TestCase20},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -171,7 +171,7 @@ func TestMain(t *testing.T) {
 			passedTests++
 		})
 	}
-	fmt.Printf("\nPassed: %d/%d (%.2f%%)\n", passedTests, totalTests, float64(passedTests)/float64(totalTests)*100)
+	fmt.Printf("\n%d/%d test cases passed. %.2f%%\n", passedTests, totalTests, float64(passedTests)/float64(totalTests)*100)
 }
 
 func TestCase1(t *testing.T) {
@@ -185,6 +185,329 @@ func TestCase1(t *testing.T) {
 	f, err := os.Create("testdata.txt")
 	if (err != nil) { t.Errorf("Could not create testdata file") }
 	f.WriteString("https://github.com/lodash/lodash")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase2(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/lulululbj/wanandroid")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase3(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/diyhue/diyHue")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase4(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/Jounce/Surge")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase5(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/ReactTraining/react-router")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase6(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/mabe02/lanterna")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase7(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/nidem/kerberoast")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase8(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/AssemblyScript/prototype")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase9(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.tx"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/panjf2000/gne")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase10(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/xflux-gui/fluxgui")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase11(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/Cartucho/mAP")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase12(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/dhamaniasad/HeadlessBrowsers")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase13(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/madrobby/keymaster")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase14(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/rougier/matplotlib-cheatsheet")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase15(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/lodash/lodash")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase16(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/cruip/tailwind-landing-page-template")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase17(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/mike4192/spotMicro")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase18(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/unrolled/render")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase19(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/matcornic/hugo-theme-learn")
+	defer f.Close()
+
+	main()
+	os.Remove("testdata.txt")
+}
+
+func TestCase20(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"run", "testdata.txt"}
+
+	oldStdout := os.Stdout
+	defer func() { os.Stdout = oldStdout }()
+
+	f, err := os.Create("testdata.txt")
+	if (err != nil) { t.Errorf("Could not create testdata file") }
+	f.WriteString("https://github.com/gomatcha/matcha")
 	defer f.Close()
 
 	main()
