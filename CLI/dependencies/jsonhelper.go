@@ -39,7 +39,7 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, RU float64, C float64, totalCommits float64, RM float64) {
+func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64, RU float64, C float64, totalCommits float64, RM float64) {
 
 	var repo Repo
 	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
@@ -55,17 +55,18 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, RU float64,
 		Correctness:          C,
 		BusFactor:            RoundFloat(1-(float64(cont[0].Contributions)/totalCommits), 3),
 		ResponsiveMaintainer: RM,
+		LicenseScore:         LS,
 		License:              repo.License,
 	}
 
-	var LicenseComp float64
-	if new_repo.License.Name != "" {
-		LicenseComp = 1
-	} else {
-		LicenseComp = 0
-	}
-	new_repo.NetScore = RoundFloat((LicenseComp*(new_repo.Correctness+3*new_repo.ResponsiveMaintainer+new_repo.BusFactor+2*new_repo.RampUp))/7.0, 3)
-	new_repo.LicenseScore = LicenseComp
+	// var LicenseComp float64
+	// if (new_repo.License.Name != "") {
+	// 	LicenseComp = 1
+	// } else {
+	// 	LicenseComp = 0
+	// }
+	new_repo.NetScore = RoundFloat((new_repo.LicenseScore*(new_repo.Correctness+3*new_repo.ResponsiveMaintainer+new_repo.BusFactor+2*new_repo.RampUp))/7.0, 3)
+	// new_repo.LicenseScore = LS
 	*r = append(*r, new_repo)
 }
 
@@ -121,15 +122,25 @@ func (r *Repos) Store(filename string) error {
 	return err
 }
 
-func (r *Repos) Print() {
+func (r *Repos) Print() error {
 
-	fmt.Printf("Format\n")
-	fmt.Printf("https://host.com/url/to/repository\n")
-	fmt.Printf("NetScore    RampUp    Correctness    BusFactor    ResponsiveMaintainer    license\n")
+	// fmt.Printf("Format\n")
+	// fmt.Printf("https://host.com/url/to/repository\n")
+	// fmt.Printf("NetScore    RampUp    Correctness    BusFactor    ResponsiveMaintainer    license\n")
+	// for _, repo := range *r {
+	// 	fmt.Printf("%s\n", repo.URL)
+	// 	fmt.Printf("%.3f	%.3f	%.3f	%.3f	%.3f	%.3f\n", repo.NetScore, repo.RampUp, repo.Correctness, repo.BusFactor, repo.ResponsiveMaintainer, repo.LicenseScore)
+	// }
 	for _, repo := range *r {
-		fmt.Printf("%s\n", repo.URL)
-		fmt.Printf("%.3f	%.3f	%.3f	%.3f	%.3f	%s\n", repo.NetScore, repo.RampUp, repo.Correctness, repo.BusFactor, repo.ResponsiveMaintainer, repo.License.Name)
+		data, err := json.Marshal(repo)
+		if err != nil {
+			return err
+		}
+		fmt.Printf(string(data))
+		fmt.Printf("\n")
 	}
+
+	return nil
 }
 
 func RoundFloat(val float64, precision uint) float64 {
