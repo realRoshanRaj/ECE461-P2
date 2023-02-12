@@ -11,10 +11,11 @@ import (
 	"net/http/httputil"
 	"os"
 	"os/exec"
+	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
-	"regexp"
 
 	// These are dependencies must be installed with go get make sure in makefile
 	"github.com/joho/godotenv"
@@ -80,9 +81,11 @@ func main() {
 		metrics := graphql_func(repo_owner, repo_name, token)
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
-		repos.Construct(repo_resp, contri_resp, metrics [0], metrics[1], metrics[2], metrics[3], metrics[4])
+		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
 	}
-
+	sort.SliceStable((*repos), func(i, j int) bool {
+		return (*repos)[i].NetScore > (*repos)[j].NetScore
+	})
 	repos.Print()
 	repos.Store(testJson)
 }
@@ -354,7 +357,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	scores[2] = dep.RoundFloat(float64(respData2.Repository.Issues.TotalCount)/(float64(respData1.Repository.Issues.TotalCount)+float64(respData2.Repository.Issues.TotalCount)), 3)
 
 	//rampup... has readme
-	if (respData1.Repository.Upcase.Text != ""){
+	if respData1.Repository.Upcase.Text != "" {
 		scores[1] = 1
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
@@ -362,15 +365,15 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
 		Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
 		Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Upcase.Text)
-		if(res1){
+		if res1 {
 			scores[0] = 1
-		}else{
+		} else {
 			scores[0] = 0
 		}
 		if e != nil {
 			return scores[:]
 		}
-	} else if (respData1.Repository.Downcase.Text != ""){
+	} else if respData1.Repository.Downcase.Text != "" {
 		scores[1] = 1
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
@@ -378,15 +381,15 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
 		Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
 		Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Downcase.Text)
-		if(res1){
+		if res1 {
 			scores[0] = 1
-		}else{
+		} else {
 			scores[0] = 0
 		}
 		if e != nil {
 			return scores[:]
 		}
-	} else if (respData1.Repository.Capcase.Text != ""){
+	} else if respData1.Repository.Capcase.Text != "" {
 		scores[1] = 1
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
@@ -394,15 +397,15 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
 		Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
 		Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Capcase.Text)
-		if(res1){
+		if res1 {
 			scores[0] = 1
-		}else{
+		} else {
 			scores[0] = 0
 		}
 		if e != nil {
 			return scores[:]
 		}
-	} else if (respData1.Repository.Expcase.Text != ""){
+	} else if respData1.Repository.Expcase.Text != "" {
 		scores[1] = 1
 		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
 Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
@@ -410,9 +413,9 @@ License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license
 iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
 Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
 Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Expcase.Text)
-		if(res1){
+		if res1 {
 			scores[0] = 1
-		}else{
+		} else {
 			scores[0] = 0
 		}
 		if e != nil {
