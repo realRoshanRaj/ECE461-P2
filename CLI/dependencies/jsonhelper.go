@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+
 	// These are dependencies must be installed with go get
 	// nd "github.com/scizorman/go-ndjson"
 )
@@ -48,6 +49,13 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 	var cont Cont
 	json.NewDecoder(resp1.Body).Decode(&cont) //decodes response and stores info in repo struct
 	//fmt.Println(cont[0].Contributions)
+
+	if (repo == Repo{}){
+		log.Fatal("repo struct empty, check http response")
+	}
+	if (cont == nil){
+		log.Fatal("cont struct empty, check http response")
+	}
 
 	new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
 		URL:                  repo.URL,

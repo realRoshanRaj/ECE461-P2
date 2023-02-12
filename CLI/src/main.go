@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	metricsJson = "metrics.ndjson"
+	output_json = "metrics.ndjson"
 )
 
 var token string
@@ -111,7 +111,7 @@ func main() {
 	})
 
 	repos.Print()
-	repos.Store(metricsJson)
+	repos.Store(output_json)
 }
 
 // Converts npm url to github url
@@ -163,7 +163,6 @@ func getRepoResponse(httpUrl string) *http.Response {
 
 	storeLog(log_file, requestDump, "Repo request dump\n", false)
 	storeLog(log_file, responseDump, "Repo response dump\n", false)
-
 
 	return repo_resp
 }
@@ -390,7 +389,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	//rampup... has readme
 	if respData1.Repository.Upcase.Text != "" {
 		rm_len := float64(len(respData1.Repository.Upcase.Text))
-		fmt.Println(rm_len)
+		// fmt.Println(rm_len)
 		if(rm_len / float64(1000) > 5){
 			scores[1] = 1
 		} else{
@@ -435,7 +434,7 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		}
 	} else if respData1.Repository.Capcase.Text != "" {
 		rm_len := float64(len(respData1.Repository.Capcase.Text))
-		fmt.Println(rm_len)
+		// fmt.Println(rm_len)
 		if(rm_len / float64(1000) > 5){
 			scores[1] = 1
 		} else{
