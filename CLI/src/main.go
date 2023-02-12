@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -100,10 +101,15 @@ func main() {
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
 		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
+		if(log_level >= 2){
+			log.Println(urls[i])
+		}
 	}
+
 	sort.SliceStable((*repos), func(i, j int) bool {
 		return (*repos)[i].NetScore > (*repos)[j].NetScore
 	})
+
 	repos.Print()
 	repos.Store(metricsJson)
 }
@@ -471,7 +477,13 @@ func storeLog(filename string, data []byte, header string, clear bool) error {
 	}
 	defer f.Close()
 
-	logger := log.New(f, header , log.LstdFlags)
+	var logger *log.Logger = log.New(f, header , log.LstdFlags)
+	if log_level >= 1{
+	} else {
+		logger.SetFlags(0);
+		logger.SetOutput(io.Discard)
+	}
+
 	logger.Println(string(data))
 	return err
 }
