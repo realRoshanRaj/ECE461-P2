@@ -19,7 +19,7 @@ import (
 	"time"
 
 	// These are dependencies must be installed with go get make sure in makefile
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/machinebox/graphql"
 )
 
@@ -34,7 +34,7 @@ var repos *dep.Repos
 
 func init() {
 	// Loads token into environment variables along with other things in the .env file
-	godotenv.Load(".env")
+	// godotenv.Load(".env")
 	var err error
 	token = os.Getenv("GITHUB_TOKEN")
 	if err != nil {
@@ -107,7 +107,7 @@ func main() {
 	}
 
 	sort.SliceStable((*repos), func(i, j int) bool {
-		return (*repos)[i].NetScore > (*repos)[j].NetScore
+		return (*repos)[i].NET_SCORE > (*repos)[j].NET_SCORE
 	})
 
 	repos.Print()
