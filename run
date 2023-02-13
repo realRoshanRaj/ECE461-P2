@@ -45,7 +45,7 @@ elif [ $1 = 'help' ]; then
   exit 0
 elif [[ $1 =~ $filePathPattern ]]; then
   echo "FILEPATH_PATTERN"
-  (cd CLI ; ./main $1)
+  (cd CLI ; ./run $1)
   exit 0
 # Deprecated
 # elif [[ $1 =~ $urlPattern ]]; then
