@@ -1,6 +1,12 @@
-# ece461-project
+# ECE461 Project Part 2
 
-Made by:
+# Contributors
+1. Roshan Raj
+2. Ayush Praharaj
+3. Seungkeun Lee
+4. Rajeev Sashti
+
+Part 1 Made by:
 Alonso Cestti
 Bartosz Stoppel
 Nandini Krishna
