@@ -6,13 +6,14 @@
 3. Seungkeun Lee
 4. Rajeev Sashti
 
-Part 1 Made by:
-5. Alonso Cestti
-6. Bartosz Stoppel
-7. Nandini Krishna
-8. Nahush Walvekar
+## Part 1 Made by:
+- Alonso Cestti
+- Bartosz Stoppel
+- Nandini Krishna
+- Nahush Walvekar
 
 # 
+
 Built a Command line tool that can take in a github or npm url to a repository and rates them on 5 metrics. 
 RampUp time that rates how easy a project is to get up and running.
 Correctness which rates how many issues have been closed in the repo.
