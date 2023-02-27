@@ -1,16 +1,16 @@
 # ECE461 Project Part 2
 
-# Contributors
+# Main Contributors
 1. Roshan Raj
 2. Ayush Praharaj
 3. Seungkeun Lee
 4. Rajeev Sashti
 
 Part 1 Made by:
-Alonso Cestti
-Bartosz Stoppel
-Nandini Krishna
-Nahush Walvekar
+5. Alonso Cestti
+6. Bartosz Stoppel
+7. Nandini Krishna
+8. Nahush Walvekar
 
 # 
 Built a Command line tool that can take in a github or npm url to a repository and rates them on 5 metrics. 
