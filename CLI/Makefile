@@ -1,4 +1,4 @@
-EXEC := run
+EXEC := executable
 URL_TEST := https://github.com/nodejs/node
 URL_FILE := URL_FILE.txt
 
@@ -14,7 +14,6 @@ help:
 
 install:
 	@# Help: Runs setup commands
-	go get "github.com/joho/godotenv"
 	go get "github.com/machinebox/graphql"
 	go get "github.com/scizorman/go-ndjson"
 
@@ -29,23 +28,5 @@ test: build
 	@# Help: Runs test suite
 	(cd src; go test -v -cover)
 #go test -cover test_main.go
-
-git: clean
-	@# Help: Automates the git push workflow
-	$(eval MESSAGE := $(shell bash -c 'read -p "commit -m " message; echo $$message'))
-	@git add .
-	@git status
-	$(if $(strip $(MESSAGE)), git commit -m "$(MESSAGE) -$(shell whoami)", git commit -m "$(shell date +'%m-%d-%Y %H:%M:%S') -$(shell whoami)")
-	@git pull
-	@git push
-
-pull:
-	@# Help: Pulls from github
-	@git pull
-
-# EXAMPLE @rm -rf ________ || true
-clean:
-	@# Help: Removes unnecessary files
-	rm ${EXEC}
 
 .PHONY: help install build git pull clean

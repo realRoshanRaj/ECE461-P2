@@ -47,11 +47,7 @@ elif [[ $1 =~ $filePathPattern ]]; then
   echo "FILEPATH_PATTERN"
   (cd CLI ; ./run $1)
   exit 0
-# Deprecated
-# elif [[ $1 =~ $urlPattern ]]; then
-#   echo "URL_PATTERN $1"
-#   ( cd CLI ; go run ./cmd/todo -search $1)
-#   exit 0
+  
 else
   echo -e "\033[31mINVALID COMMAND: '$1'\033[0m"
   help
