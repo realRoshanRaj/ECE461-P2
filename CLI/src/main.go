@@ -1,6 +1,7 @@
 package main
 
 import (
+	"CLI/api"
 	dep "CLI/dependencies"
 	"bufio"
 	"context"
@@ -11,7 +12,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"os/exec"
 	"regexp"
 	"sort"
 	"strconv"
@@ -48,12 +48,12 @@ var repos *dep.Repos
 // 	empty := []byte {};
 // 	storeLog(log_file, empty , "", true)
 
-// 	log_level , err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
-// 	if err != nil {
-// 		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
-// 	}
-// 	repos = &dep.Repos{}
-// }
+//		log_level , err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
+//		if err != nil {
+//			log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
+//		}
+//		repos = &dep.Repos{}
+//	}
 func main() {
 
 	//init
@@ -65,10 +65,10 @@ func main() {
 	log_file = os.Getenv("LOG_FILE")
 
 	// Clears file
-	empty := []byte {};
-	storeLog(log_file, empty , "", true)
+	empty := []byte{}
+	storeLog(log_file, empty, "", true)
 
-	log_level , err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
+	log_level, err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
 	if err != nil {
 		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
 	}
@@ -111,17 +111,14 @@ func main() {
 		repo_owner := split_url[3]
 		repo_name := split_url[4]
 
-
-
 		// fmt.Printf("SPLIT URL: %s\n", split_url)
 		// fmt.Printf("REPO OWNER: %s\n", repo_owner)
 		// fmt.Printf("REPO NAME: %s\n", repo_name)
 
 		// Gets HTTP response from Rest API
 
-		repo_resp := getRepoResponse(urls[i])          // repository data
+		repo_resp := getRepoResponse(urls[i]) // repository data
 		// fmt.Println(token)
-
 
 		contri_resp := getContributorResponse(urls[i]) //contributor data
 
@@ -132,11 +129,10 @@ func main() {
 
 		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
 
-		if(log_level >= 2){
+		if log_level >= 2 {
 			log.Println(urls[i])
 		}
 	}
-
 
 	sort.SliceStable((*repos), func(i, j int) bool {
 		return (*repos)[i].NET_SCORE > (*repos)[j].NET_SCORE
@@ -149,12 +145,22 @@ func main() {
 // Converts npm url to github url
 func convertUrl(url *string) {
 	if strings.HasPrefix(*url, "https://www.npmjs") {
-		data, err := exec.Command("node", "giturl.js", *url).Output()
-		if err != nil {
-			fmt.Println("Error:", err)
-		} else {
-			*url = strings.TrimSuffix(string(data), "\n")
-		}
+		// data, err := exec.Command("node", "giturl.js", *url).Output()
+		// if err != nil {
+		// 	fmt.Println("Error:", err)
+		// } else {
+		// 	fmt.Println("URL: ", *url)
+		// 	*url = strings.TrimSuffix(string(data), "\n")
+		// 	fmt.Println("URL: ", *url)
+		// }
+		npmLinkMatch := regexp.MustCompile(".*package/(.*)")
+		tmpName := npmLinkMatch.FindStringSubmatch(*url)[1]
+		githubURL := api.GetGithubURL(tmpName)
+
+		gitLinkMatch := regexp.MustCompile(".*github.com/(.*).git")
+		parsed := gitLinkMatch.FindStringSubmatch(githubURL)[1]
+		*url = "https://github.com/" + parsed
+		fmt.Println("URL: ", *url)
 	}
 }
 
@@ -423,9 +429,9 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	if respData1.Repository.Upcase.Text != "" {
 		rm_len := float64(len(respData1.Repository.Upcase.Text))
 		// fmt.Println(rm_len)
-		if(rm_len / float64(1000) > 5){
+		if rm_len/float64(1000) > 5 {
 			scores[1] = 1
-		} else{
+		} else {
 			scores[1] = rm_len / 5000
 		}
 
@@ -445,9 +451,9 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		}
 	} else if respData1.Repository.Downcase.Text != "" {
 		rm_len := float64(len(respData1.Repository.Downcase.Text))
-		if(rm_len / float64(1000) > 5){
+		if rm_len/float64(1000) > 5 {
 			scores[1] = 1
-		} else{
+		} else {
 			scores[1] = rm_len / 5000
 		}
 
@@ -468,9 +474,9 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 	} else if respData1.Repository.Capcase.Text != "" {
 		rm_len := float64(len(respData1.Repository.Capcase.Text))
 		// fmt.Println(rm_len)
-		if(rm_len / float64(1000) > 5){
+		if rm_len/float64(1000) > 5 {
 			scores[1] = 1
-		} else{
+		} else {
 			scores[1] = rm_len / 5000
 		}
 
@@ -490,9 +496,9 @@ func graphql_func(repo_owner string, repo_name string, token string) []float64 {
 		}
 	} else if respData1.Repository.Expcase.Text != "" {
 		rm_len := float64(len(respData1.Repository.Expcase.Text))
-		if(rm_len / float64(1000) > 5){
+		if rm_len/float64(1000) > 5 {
 			scores[1] = 1
-		} else{
+		} else {
 			scores[1] = rm_len / 5000
 		}
 
@@ -524,10 +530,10 @@ func storeLog(filename string, data []byte, header string, clear bool) error {
 	var f *os.File
 	var err error
 
-	if clear{
+	if clear {
 		f, err = os.OpenFile(log_file, os.O_CREATE|os.O_WRONLY, 0644)
-	} else{
-		f, err = os.OpenFile(log_file, os.O_APPEND |os.O_CREATE|os.O_WRONLY, 0644)
+	} else {
+		f, err = os.OpenFile(log_file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	}
 
 	if err != nil {
@@ -535,10 +541,10 @@ func storeLog(filename string, data []byte, header string, clear bool) error {
 	}
 	defer f.Close()
 
-	var logger *log.Logger = log.New(f, header , log.LstdFlags)
-	if log_level >= 1{
+	var logger *log.Logger = log.New(f, header, log.LstdFlags)
+	if log_level >= 1 {
 	} else {
-		logger.SetFlags(0);
+		logger.SetFlags(0)
 		logger.SetOutput(io.Discard)
 	}
 
