@@ -32,8 +32,8 @@ elif [ $1 == 'build' ]; then
   exit 0
 elif [ $1 == 'test' ]; then
   echo 'TESTING'
-  cd CLI
-  make test
+  cd $dir
+  go test ./... -cover
   exit 0
 elif [ $1 == 'URL_FILE' ]; then
   echo 'RUNNING'
@@ -45,7 +45,7 @@ elif [ $1 = 'help' ]; then
   exit 0
 elif [[ $1 =~ $filePathPattern ]]; then
   echo "FILEPATH_PATTERN"
-  (cd CLI ; ./run $1)
+  ./CLI/executable $1
   exit 0
   
 else

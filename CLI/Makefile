@@ -14,8 +14,7 @@ help:
 
 install:
 	@# Help: Runs setup commands
-	go get "github.com/machinebox/graphql"
-	go get "github.com/scizorman/go-ndjson"
+	go mod download
 
 build:
 	@# Help: Builds project
