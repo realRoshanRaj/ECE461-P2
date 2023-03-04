@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 )
 
 type NPMData struct {
@@ -40,8 +41,15 @@ func getNPMData(pkgName string) NPMData {
 	return responseObject
 }
 
-// Takes in an NPM package name as the input and returns the github url of the package
-func GetGithubURL(pkgName string) string {
+// takes in url and returns the package name
+func parseNpmPackage(url string) string {
+	npmLinkMatch := regexp.MustCompile(".*package/(.*)")
+	return npmLinkMatch.FindStringSubmatch(url)[1]
+}
+
+// Takes in an NPM package name as the input and returns the raw https/ssh github url of the package
+func GetGithubURL(pkgUrl string) string {
+	pkgName := parseNpmPackage(pkgUrl)
 	data := getNPMData(pkgName)
 	return data.Repository.URL
 }

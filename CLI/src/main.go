@@ -147,12 +147,10 @@ func convertUrl(url *string) {
 		// 	*url = strings.TrimSuffix(string(data), "\n")
 		// 	fmt.Println("URL: ", *url)
 		// }
-		npmLinkMatch := regexp.MustCompile(".*package/(.*)")
-		tmpName := npmLinkMatch.FindStringSubmatch(*url)[1]
-		githubURL := rest.GetGithubURL(tmpName)
+		rawgithubURL := rest.GetGithubURL(*url)
 
 		gitLinkMatch := regexp.MustCompile(".*github.com/(.*).git")
-		parsed := gitLinkMatch.FindStringSubmatch(githubURL)[1]
+		parsed := gitLinkMatch.FindStringSubmatch(rawgithubURL)[1]
 		*url = "https://github.com/" + parsed
 	}
 }
