@@ -4,6 +4,9 @@ import (
 	"testing"
 	// dep "CLI/node_modules"
 	// dep "CLI/dependencies"
+	"CLI/api/graphql"
+	"CLI/api/rest"
+
 	// "context"
 	// "math"
 	// "strconv"
@@ -15,7 +18,6 @@ import (
 	// "bufio"
 	"os"
 	"strings"
-
 	// "github.com/joho/godotenv"
 	// "github.com/machinebox/graphql"
 )
@@ -58,13 +60,13 @@ func TestGetRepoResponse(t *testing.T) {
 	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
-	resp := getRepoResponse("https://github.com/nullivex/nodist")
+	resp := rest.GetRepoResponse("https://github.com/nullivex/nodist")
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("Unexpected response status: %d", resp.StatusCode)
 	}
 
-	if h := resp.Request.Header.Get("Authorization"); h != "Bearer " + token {
+	if h := resp.Request.Header.Get("Authorization"); h != "Bearer "+token {
 		t.Fatalf("Unexpected Authorization header value: %q", h)
 	}
 
@@ -72,7 +74,6 @@ func TestGetRepoResponse(t *testing.T) {
 		t.Fatalf("Unexpected URL format: %q", resp.Request.URL.String())
 	}
 }
-
 
 func TestGetContributorResponse(t *testing.T) {
 	// godotenv.Load(".env")
@@ -92,7 +93,7 @@ func TestGetContributorResponse(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			res := getContributorResponse(tc.httpUrl)
+			res := rest.GetContributorResponse(tc.httpUrl)
 
 			if res.StatusCode != tc.expectedCode {
 				t.Fatalf("Unexpected response status: %d", res.StatusCode)
@@ -105,27 +106,29 @@ func TestGraphqlFunc(t *testing.T) {
 	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
-	graphql_func("cloudinary", "cloudinary_npm", token)
+	graphql.Graphql_func("cloudinary", "cloudinary_npm", token)
 }
 
+type RespDataql1 = graphql.RespDataql1
+
 func TestRespDataql1(t *testing.T) {
-	data := respDataql1{
+	data := RespDataql1{
 		Repository: struct {
-			Issues struct { TotalCount int }
-			PullRequests struct { TotalCount int }
-			Upcase struct { Text string }
-			Downcase struct { Text string }
-			Capcase struct { Text string }
-			Expcase struct { Text string }
-			Commits struct { History struct { TotalCount int } }
-		}{ Issues: struct { TotalCount int } { TotalCount: 10, },
-			PullRequests: struct { TotalCount int }{ TotalCount: 5, },
-			Upcase: struct { Text string } { Text: "README CONTENT", },
-			Downcase: struct { Text string } { Text: "readme content", },
-			Capcase: struct { Text string }{ Text: "This is the content of Readme.md", },
-			Expcase: struct { Text string }{ Text: "This is the content of readme.markdown", },
-			Commits: struct { History struct { TotalCount int } } {
-				History: struct { TotalCount int }{	TotalCount: 20,	}, }, },
+			Issues       struct{ TotalCount int }
+			PullRequests struct{ TotalCount int }
+			Upcase       struct{ Text string }
+			Downcase     struct{ Text string }
+			Capcase      struct{ Text string }
+			Expcase      struct{ Text string }
+			Commits      struct{ History struct{ TotalCount int } }
+		}{Issues: struct{ TotalCount int }{TotalCount: 10},
+			PullRequests: struct{ TotalCount int }{TotalCount: 5},
+			Upcase:       struct{ Text string }{Text: "README CONTENT"},
+			Downcase:     struct{ Text string }{Text: "readme content"},
+			Capcase:      struct{ Text string }{Text: "This is the content of Readme.md"},
+			Expcase:      struct{ Text string }{Text: "This is the content of readme.markdown"},
+			Commits: struct{ History struct{ TotalCount int } }{
+				History: struct{ TotalCount int }{TotalCount: 20}}},
 	}
 
 	if data.Repository.Issues.TotalCount != 10 {
@@ -184,7 +187,9 @@ func TestCase1(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/lodash/lodash")
 	defer f.Close()
 
@@ -202,7 +207,9 @@ func TestCase2(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/lulululbj/wanandroid")
 	defer f.Close()
 
@@ -220,7 +227,9 @@ func TestCase3(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/diyhue/diyHue")
 	defer f.Close()
 
@@ -238,7 +247,9 @@ func TestCase4(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/Jounce/Surge")
 	defer f.Close()
 
@@ -256,7 +267,9 @@ func TestCase5(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/ReactTraining/react-router")
 	defer f.Close()
 
@@ -274,7 +287,9 @@ func TestCase6(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/mabe02/lanterna")
 	defer f.Close()
 
@@ -292,7 +307,9 @@ func TestCase7(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/nidem/kerberoast")
 	defer f.Close()
 
@@ -310,7 +327,9 @@ func TestCase8(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/nodejs/node")
 	defer f.Close()
 
@@ -328,7 +347,9 @@ func TestCase9(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/socketio/socket.io-deno")
 	defer f.Close()
 
@@ -346,7 +367,9 @@ func TestCase10(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/xflux-gui/fluxgui")
 	defer f.Close()
 
@@ -364,7 +387,9 @@ func TestCase11(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/Cartucho/mAP")
 	defer f.Close()
 
@@ -382,7 +407,9 @@ func TestCase12(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/dhamaniasad/HeadlessBrowsers")
 	defer f.Close()
 
@@ -400,7 +427,9 @@ func TestCase13(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/madrobby/keymaster")
 	defer f.Close()
 
@@ -418,7 +447,9 @@ func TestCase14(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/rougier/matplotlib-cheatsheet")
 	defer f.Close()
 
@@ -436,7 +467,9 @@ func TestCase15(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/lodash/lodash")
 	defer f.Close()
 
@@ -454,7 +487,9 @@ func TestCase16(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/cruip/tailwind-landing-page-template")
 	defer f.Close()
 
@@ -472,7 +507,9 @@ func TestCase17(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/mike4192/spotMicro")
 	defer f.Close()
 
@@ -502,7 +539,9 @@ func TestCase19(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/unrolled/render")
 	defer f.Close()
 
@@ -520,7 +559,9 @@ func TestCase20(t *testing.T) {
 	os.Stdout = nil
 
 	f, err := os.Create("testdata.txt")
-	if (err != nil) { t.Errorf("Could not create testdata file") }
+	if err != nil {
+		t.Errorf("Could not create testdata file")
+	}
 	f.WriteString("https://github.com/gomatcha/matcha")
 	defer f.Close()
 

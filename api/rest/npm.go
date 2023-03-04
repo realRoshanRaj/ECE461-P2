@@ -1,4 +1,4 @@
-package api
+package rest
 
 import (
 	"encoding/json"
@@ -21,6 +21,7 @@ type NPMData struct {
 	License string `json:"license,omitempty"`
 }
 
+// uses the npm registry api to get the data of a packaged
 func getNPMData(pkgName string) NPMData {
 	url := "https://registry.npmjs.org/" + pkgName
 	response, err := http.Get(url)
@@ -39,6 +40,7 @@ func getNPMData(pkgName string) NPMData {
 	return responseObject
 }
 
+// Takes in an NPM package name as the input and returns the github url of the package
 func GetGithubURL(pkgName string) string {
 	data := getNPMData(pkgName)
 	return data.Repository.URL
