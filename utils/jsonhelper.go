@@ -29,6 +29,7 @@ type Repo struct { //Structure that will recieve important information from REST
 	BUS_FACTOR_SCORE            float64
 	RESPONSIVE_MAINTAINER_SCORE float64
 	LICENSE_SCORE               float64
+	CODE_QUALITY_SCORE          float64
 	// License              LName `json:"license"`
 	// Name string
 }
@@ -63,6 +64,7 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 		BUS_FACTOR_SCORE:            RoundFloat(1-(float64(cont[0].Contributions)/totalCommits), 1),
 		RESPONSIVE_MAINTAINER_SCORE: RoundFloat(RM, 1),
 		LICENSE_SCORE:               RoundFloat(LS, 1),
+		CODE_QUALITY_SCORE:          RoundFloat(0, 1),
 		// License:              repo.License,
 	}
 

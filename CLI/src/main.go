@@ -5,6 +5,7 @@ import (
 	"CLI/api/rest"
 	dep "CLI/utils"
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -115,6 +116,52 @@ func main() {
 		// fmt.Println(token)
 
 		contri_resp := rest.GetContributorResponse(urls[i]) //contributor data
+
+		prs_resp := rest.GetPullRequestsResponse(urls[i]) //pull request data
+
+		decoder := json.NewDecoder(prs_resp.Body)
+
+		var prs []struct {
+			Title    string `json:"title"`
+			Url      string `json:"url"`
+			Commit   string `json:"commits_url"`
+			Comments string `json:"comments_url"`
+		}
+
+		if err := decoder.Decode(&prs); err != nil {
+			log.Fatalf("Error decoding pull request response: %v", err)
+		}
+		fmt.Printf("printing PRs..\n")
+		//count := 0
+		total_pr_lines := 0
+		for _, pr := range prs {
+			fmt.Printf("%s: %s\n", pr.Title, pr.Url)
+			fmt.Printf("commits: %s\n", pr.Commit)
+			pr_resp := rest.GetPullRequestResponse(pr.Url)
+			decoder := json.NewDecoder(pr_resp.Body)
+			var pr_data struct {
+				Additions int  `json:"additions"`
+				Deletions int  `json:"deletions"`
+				Merged    bool `json:"merged"`
+				Reviewers []struct {
+					Login string `json:"login"`
+				} `json:"requested_reviewers"`
+			}
+
+			if err := decoder.Decode(&pr_data); err != nil {
+				log.Fatalf("Error decoding pull request response: %v", err)
+			}
+
+			addition := pr_data.Additions
+			deletion := pr_data.Deletions
+			diff := addition - deletion
+			if pr_data.Merged {
+				fmt.Printf("difference: %d\n", diff)
+				total_pr_lines += diff
+			}
+			fmt.Printf("count of merged PRs: %d\n", total_pr_lines)
+
+		}
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := gq.Graphql_func(repo_owner, repo_name, token)

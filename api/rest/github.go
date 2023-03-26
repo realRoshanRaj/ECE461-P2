@@ -15,6 +15,47 @@ func init() {
 }
 
 // TODO: change the log printf functions to new log
+func GetPullRequestsResponse(httpUrl string) *http.Response {
+	client := &http.Client{}
+
+	// Make sure the URL is to the repository main page
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] + "/pulls?state=closed" //converting github repo url to API url
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitHub API
+	pr_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	//defer pr_resp.Body.Close()
+
+	return pr_resp
+}
+
+func GetPullRequestResponse(httpUrl string) *http.Response {
+	client := &http.Client{}
+
+	// Make sure the URL is to the repository main page
+	req, err := http.NewRequest(http.MethodGet, httpUrl, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitHub API
+	pr_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return pr_resp
+}
 
 func GetRepoResponse(httpUrl string) *http.Response {
 	client := &http.Client{}
@@ -28,7 +69,7 @@ func GetRepoResponse(httpUrl string) *http.Response {
 	}
 	req.Header.Add("Authorization", "Bearer "+token)
 
-	// Make the GET request to the GitHub API
+	// Make the GET request to the GitH-ub API
 	repo_resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
