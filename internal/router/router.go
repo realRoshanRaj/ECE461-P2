@@ -8,29 +8,46 @@ import (
 )
 
 func GetRouter() *chi.Mux {
-	r := chi.NewRouter()
+	router := chi.NewRouter()
 
 	// Define endpoints
-	r.Post("/packages", tempRoute)
+	router.Post("/packages", tempRoute)
 
-	r.Delete("/reset", tempRoute)
+	router.Delete("/reset", tempRoute)
 
-	r.Post("/package", tempRoute)
-	r.Get("/package/{id}", tempRoute)
-	r.Put("/package/{id}", tempRoute)
-	r.Delete("/package/{id}", tempRoute)
-	r.Get("/package/{id}/rate", tempRoute)
+	// r.Post("/package", tempRoute)
+	// r.Get("/package/{id}", getPackage)
+	// r.Put("/package/{id}", tempRoute)
+	// r.Delete("/package/{id}", tempRoute)
+	// r.Get("/package/{id}/rate", tempRoute)
+	router.Route("/package", func(r chi.Router) {
+		r.Post("/", postPackage)
+		r.Get("/{id}", getPackage)
+		r.Put("/{id}", tempRoute)
+		r.Delete("/{id}", tempRoute)
+		r.Get("/{id}/rate", tempRoute)
+	})
 
-	r.Put("/authenticate", tempRoute)
+	router.Put("/authenticate", tempRoute)
 
-	r.Get("/package/byName/{name}", tempRoute)
-	r.Delete("/package/byName/{name}", tempRoute)
+	router.Get("/package/byName/{name}", tempRoute)
+	router.Delete("/package/byName/{name}", tempRoute)
 
-	r.Post("/package/byRegEx/{regex}", tempRoute)
+	router.Post("/package/byRegEx/{regex}", tempRoute)
 
-	return r
+	return router
 }
 
 func tempRoute(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Route not implemented yet", w.Header())
+	fmt.Println("Route not implemented yet", r.Body)
+}
+
+func postPackage(w http.ResponseWriter, r *http.Request) {
+}
+
+func getPackage(w http.ResponseWriter, r *http.Request) {
+	packageID := chi.URLParam(r, "id")
+	payload := []byte(packageID)
+	w.WriteHeader(http.StatusCreated)
+	w.Write(payload) // put json here
 }
