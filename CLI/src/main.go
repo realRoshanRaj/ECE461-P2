@@ -1,15 +1,15 @@
 package main
 
 import (
-	gq "CLI/api/graphql"
-	"CLI/api/rest"
-	dep "CLI/utils"
 	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	gq "pkgmanager/internal/metrics/api/graphql"
+	"pkgmanager/internal/metrics/api/rest"
+	dep "pkgmanager/pkg/utils"
 	"regexp"
 	"sort"
 	"strconv"

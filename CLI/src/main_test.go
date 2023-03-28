@@ -4,8 +4,8 @@ import (
 	"testing"
 	// dep "CLI/node_modules"
 	// dep "CLI/dependencies"
-	"CLI/api/graphql"
-	"CLI/api/rest"
+	"pkgmanager/internal/metrics/api/graphql"
+	"pkgmanager/internal/metrics/api/rest"
 
 	// "context"
 	// "math"

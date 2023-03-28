@@ -1,10 +1,10 @@
 package graphql
 
 import (
-	dep "CLI/utils"
 	"context"
 	"log"
 	"math"
+	dep "pkgmanager/pkg/utils"
 	"regexp"
 	"strconv"
 	"time"
