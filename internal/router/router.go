@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 )
 
 func GetRouter() *chi.Mux {
@@ -44,6 +44,8 @@ func tempRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 func postPackage(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Package created"))
 }
 
 func getPackage(w http.ResponseWriter, r *http.Request) {
