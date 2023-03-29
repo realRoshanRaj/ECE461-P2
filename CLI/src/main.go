@@ -1,26 +1,21 @@
 package main
 
 import (
-	"CLI/api"
-	dep "CLI/dependencies"
 	"bufio"
-	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
-	"math"
-	"net/http"
-	"net/http/httputil"
 	"os"
+	gq "pkgmanager/internal/metrics/api/graphql"
+	"pkgmanager/internal/metrics/api/rest"
+	dep "pkgmanager/pkg/utils"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
-	"time"
-
 	// These are dependencies must be installed with go get make sure in makefile
 	// "github.com/joho/godotenv"
-	"github.com/machinebox/graphql"
 )
 
 const (
@@ -117,13 +112,59 @@ func main() {
 
 		// Gets HTTP response from Rest API
 
-		repo_resp := getRepoResponse(urls[i]) // repository data
+		repo_resp := rest.GetRepoResponse(urls[i]) // repository data
 		// fmt.Println(token)
 
-		contri_resp := getContributorResponse(urls[i]) //contributor data
+		contri_resp := rest.GetContributorResponse(urls[i]) //contributor data
+
+		prs_resp := rest.GetPullRequestsResponse(urls[i]) //pull request data
+
+		decoder := json.NewDecoder(prs_resp.Body)
+
+		var prs []struct {
+			Title    string `json:"title"`
+			Url      string `json:"url"`
+			Commit   string `json:"commits_url"`
+			Comments string `json:"comments_url"`
+		}
+
+		if err := decoder.Decode(&prs); err != nil {
+			log.Fatalf("Error decoding pull request response: %v", err)
+		}
+		fmt.Printf("printing PRs..\n")
+		//count := 0
+		total_pr_lines := 0
+		for _, pr := range prs {
+			fmt.Printf("%s: %s\n", pr.Title, pr.Url)
+			fmt.Printf("commits: %s\n", pr.Commit)
+			pr_resp := rest.GetPullRequestResponse(pr.Url)
+			decoder := json.NewDecoder(pr_resp.Body)
+			var pr_data struct {
+				Additions int  `json:"additions"`
+				Deletions int  `json:"deletions"`
+				Merged    bool `json:"merged"`
+				Reviewers []struct {
+					Login string `json:"login"`
+				} `json:"requested_reviewers"`
+			}
+
+			if err := decoder.Decode(&pr_data); err != nil {
+				log.Fatalf("Error decoding pull request response: %v", err)
+			}
+
+			addition := pr_data.Additions
+			deletion := pr_data.Deletions
+			diff := addition - deletion
+			if pr_data.Merged {
+				fmt.Printf("difference: %d\n", diff)
+				total_pr_lines += diff
+			}
+			fmt.Printf("count of merged PRs: %d\n", total_pr_lines)
+
+		}
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
-		metrics := graphql_func(repo_owner, repo_name, token)
+		metrics := gq.Graphql_func(repo_owner, repo_name, token)
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
 
@@ -153,377 +194,12 @@ func convertUrl(url *string) {
 		// 	*url = strings.TrimSuffix(string(data), "\n")
 		// 	fmt.Println("URL: ", *url)
 		// }
-		npmLinkMatch := regexp.MustCompile(".*package/(.*)")
-		tmpName := npmLinkMatch.FindStringSubmatch(*url)[1]
-		githubURL := api.GetGithubURL(tmpName)
+		rawgithubURL := rest.GetGithubURL(*url)
 
 		gitLinkMatch := regexp.MustCompile(".*github.com/(.*).git")
-		parsed := gitLinkMatch.FindStringSubmatch(githubURL)[1]
+		parsed := gitLinkMatch.FindStringSubmatch(rawgithubURL)[1]
 		*url = "https://github.com/" + parsed
-		fmt.Println("URL: ", *url)
 	}
-}
-
-func getRepoResponse(httpUrl string) *http.Response {
-	client := &http.Client{}
-
-	// Make sure the URL is to the repository main page
-	link := strings.Split(httpUrl, "https://github.com/")
-	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] //converting github repo url to API url
-	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	req.Header.Add("Authorization", "Bearer "+token)
-
-	// Make the GET request to the GitHub API
-	repo_resp, err := client.Do(req)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer repo_resp.Body.Close()
-
-	/* Dumps the contents of the body of the request and the response
-	*  into readable formats as in the html
-	 */
-	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
-	responseDump, err := httputil.DumpResponse(repo_resp, true)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// Here the 0666 is the same as chmod parameters in linux
-	// os.WriteFile("responseDumpRepo.log", responseDump, 0666) // Deprecated
-	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
-	requestDump, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// os.WriteFile("requestDumpRepo.log", requestDump, 0666) // Deprecated
-
-	storeLog(log_file, requestDump, "Repo request dump\n", false)
-	storeLog(log_file, responseDump, "Repo response dump\n", false)
-
-	return repo_resp
-}
-
-func getContributorResponse(httpUrl string) *http.Response {
-	client := &http.Client{}
-
-	// Make sure the URL is the contributors page
-	link := strings.Split(httpUrl, "https://github.com/")
-	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] + "/contributors" //converting github repo url to API url
-	// fmt.Println(REST_api_link)
-	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	req.Header.Add("Authorization", "Bearer "+token)
-
-	// Make the GET request to the GitHub API
-	repo_resp, err := client.Do(req)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer repo_resp.Body.Close()
-
-	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
-	responseDump, err := httputil.DumpResponse(repo_resp, true)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// Here the 0666 is the same as chmod parameters in linux
-	// os.WriteFile(log_file, responseDump, 0666) // Deprecated
-	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
-	requestDump, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// os.WriteFile("requestDumpContributor.log", requestDump, 0666) // Deprecate
-
-	storeLog(log_file, requestDump, "Contributor request dump\n", true)
-	storeLog(log_file, responseDump, "Contributor response dump\n", true)
-
-	return repo_resp
-}
-
-type respDataql1 struct { //type that storeLogs data from graphql
-	Repository struct {
-		Issues struct {
-			TotalCount int
-		}
-		PullRequests struct {
-			TotalCount int
-		}
-		Upcase struct { //README.md
-			Text string
-		}
-		Downcase struct { //readme.md
-			Text string
-		}
-		Capcase struct { //Readme.md
-			Text string
-		}
-		Expcase struct { //readme.markdown
-			Text string
-		}
-		Commits struct {
-			History struct {
-				TotalCount int
-			}
-		}
-	}
-}
-
-type respDataql2 struct {
-	Repository struct {
-		Issues struct {
-			TotalCount int `json:"totalCount"`
-		} `json:"issues"`
-		PullRequests struct {
-			Nodes []struct {
-				CreatedAt string `json:"createdAt"`
-				MergedAt  string `json:"mergedAt"`
-			} `json:"nodes"`
-		} `json:"pullRequests"`
-	} `json:"repository"`
-}
-
-func graphql_func(repo_owner string, repo_name string, token string) []float64 { //seems to be working as long as token is storeLogd in tokens.env
-	// create a new client
-	client := graphql.NewClient("https://api.github.com/graphql")
-
-	scores := [5]float64{0, 0, 0, 0, 0} //[license, RampUp, Correctness, Bus Factor(total commits before going into construct()), Responsive Maintainer]
-
-	// make a request
-	req1 := graphql.NewRequest(`
-	query {
-		repository(owner:"` + repo_owner + `", name:"` + repo_name + `") {
-			issues(states: OPEN) {
-				totalCount
-			}
-			pullRequests(states: MERGED){
-				totalCount
-			}
-			upcase: object(expression: "HEAD:README.md") {
-				... on Blob {
-					text
-				}
-			}
-			downcase: object(expression: "HEAD:README.md") {
-				... on Blob {
-					text
-				}
-			}
-			capcase: object(expression: "HEAD:Readme.md") {
-				... on Blob {
-					text
-				}
-			}
-			expcase: object(expression: "HEAD:readme.markdown") {
-				... on Blob {
-					text
-				}
-			}
-			commits: object(expression: "HEAD") {
-				... on Commit {
-				  history {
-					   totalCount
-					}
-				}
-			}
-		}
-	}
-	`)
-
-	req1.Header.Add("Authorization", "Bearer "+token)
-	var respData1 respDataql1
-	if err := client.Run(context.Background(), req1, &respData1); err != nil {
-		log.Fatal(err)
-	}
-
-	//fmt.Println("Number of issues:", respData1.Repository.Downcase.Text)
-	//40% of the last pull requests perhaps arbitrary number
-	perc_PR1 := math.Min(20, float64(respData1.Repository.PullRequests.TotalCount)*float64(0.4))
-	perc_PR := int(perc_PR1)
-	//fmt.Println(perc_PR)
-
-	req2 := graphql.NewRequest(`
-	query {
-		repository(owner:"` + repo_owner + `", name:"` + repo_name + `") {
-			issues(states: CLOSED) {
-				totalCount
-			}
-			pullRequests (last: ` + strconv.Itoa(perc_PR) + `, states: MERGED) {
-				nodes{
-					createdAt
-					mergedAt
-				}
-			}
-		}
-	}
-	`)
-	req2.Header.Add("Authorization", "Bearer "+token)
-
-	var respData2 respDataql2
-	if err := client.Run(context.Background(), req2, &respData2); err != nil {
-		log.Fatal(err)
-	}
-
-	difference_sum := 0.0
-
-	for i := 0; i < perc_PR; i++ {
-		date1 := respData2.Repository.PullRequests.Nodes[i].MergedAt
-
-		y1, err := strconv.Atoi(date1[0:3])
-		if err != nil {
-			return scores[:]
-		}
-		m1, err := strconv.Atoi(date1[5:6])
-		if err != nil {
-			return scores[:]
-		}
-		d1, err := strconv.Atoi(date1[8:9])
-		if err != nil {
-			return scores[:]
-		}
-		h1, err := strconv.Atoi(date1[11:12])
-		if err != nil {
-			return scores[:]
-		}
-		date2 := respData2.Repository.PullRequests.Nodes[i].CreatedAt
-		y2, err := strconv.Atoi(date2[0:3])
-		if err != nil {
-			return scores[:]
-		}
-		m2, err := strconv.Atoi(date2[5:6])
-		if err != nil {
-			return scores[:]
-		}
-		d2, err := strconv.Atoi(date2[8:9])
-		if err != nil {
-			return scores[:]
-		}
-		h2, err := strconv.Atoi(date2[11:12])
-		if err != nil {
-			return scores[:]
-		}
-
-		firstDate := time.Date(y1, time.Month(m1), d1, h1, 0, 0, 0, time.UTC)
-		secondDate := time.Date(y2, time.Month(m2), d2, h2, 0, 0, 0, time.UTC)
-		difference_sum += math.Abs(firstDate.Sub(secondDate).Hours())
-	}
-
-	difference := difference_sum / float64(perc_PR)
-
-	//time it takes to resolve, 7 days is the max, otherwise its a zero
-	if difference > float64(168) {
-		scores[4] = 0
-	} else {
-		scores[4] = dep.RoundFloat(1-(float64(difference)/float64(168)), 3)
-	}
-
-	//closed issues / total issues score of correctness
-	scores[2] = dep.RoundFloat(float64(respData2.Repository.Issues.TotalCount)/(float64(respData1.Repository.Issues.TotalCount)+float64(respData2.Repository.Issues.TotalCount)), 3)
-
-	//rampup... has readme
-	if respData1.Repository.Upcase.Text != "" {
-		rm_len := float64(len(respData1.Repository.Upcase.Text))
-		// fmt.Println(rm_len)
-		if rm_len/float64(1000) > 5 {
-			scores[1] = 1
-		} else {
-			scores[1] = rm_len / 5000
-		}
-
-		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
-		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
-		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
-		iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
-		Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
-		Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Upcase.Text)
-		if res1 {
-			scores[0] = 1
-		} else {
-			scores[0] = 0
-		}
-		if e != nil {
-			return scores[:]
-		}
-	} else if respData1.Repository.Downcase.Text != "" {
-		rm_len := float64(len(respData1.Repository.Downcase.Text))
-		if rm_len/float64(1000) > 5 {
-			scores[1] = 1
-		} else {
-			scores[1] = rm_len / 5000
-		}
-
-		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
-		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
-		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
-		iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
-		Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
-		Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Downcase.Text)
-		if res1 {
-			scores[0] = 1
-		} else {
-			scores[0] = 0
-		}
-		if e != nil {
-			return scores[:]
-		}
-	} else if respData1.Repository.Capcase.Text != "" {
-		rm_len := float64(len(respData1.Repository.Capcase.Text))
-		// fmt.Println(rm_len)
-		if rm_len/float64(1000) > 5 {
-			scores[1] = 1
-		} else {
-			scores[1] = rm_len / 5000
-		}
-
-		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
-		Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
-		License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
-		iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
-		Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
-		Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Capcase.Text)
-		if res1 {
-			scores[0] = 1
-		} else {
-			scores[0] = 0
-		}
-		if e != nil {
-			return scores[:]
-		}
-	} else if respData1.Repository.Expcase.Text != "" {
-		rm_len := float64(len(respData1.Repository.Expcase.Text))
-		if rm_len/float64(1000) > 5 {
-			scores[1] = 1
-		} else {
-			scores[1] = rm_len / 5000
-		}
-
-		res1, e := regexp.MatchString(`MIT [lL]icense|[lL]icense MIT|\[MIT\]\(LICENSE\)|\[MIT\]\(\.\/LICENSE\)|lgpl-2.1|License of zlib| zlib license|Berkeley Database License|Sleepycat|Boost Software License|CeCILL version 2|Clarified Artistic License|
-Cryptix General License|EU DataGrid Software License|Eiffel Forum License, version 2|Expat License|Intel Open Source License|License of Guile|
-License of Netscape Javascript|License of Perl|Python 1.6a2|Python 2.0.1 license|Python 2.1.1 license|Python [2-9].[1-9].[1-9]|Vim version [6-9].[2-9]|
-iMatix Standard Function Library|License of the run-time units of the GNU Ada compiler|Modified BSD license|OpenLDAP License.*version 2.7|Public Domain|
-Standard ML of New Jersey Copyright License|The license of Ruby|W3C Software Notice and License|X11 License|
-Zope Public License, version 2.0|eCos license, version 2.0`, respData1.Repository.Expcase.Text)
-		if res1 {
-			scores[0] = 1
-		} else {
-			scores[0] = 0
-		}
-		if e != nil {
-			return scores[:]
-		}
-	} else {
-		scores[1] = 0
-	}
-
-	//will serve as denominator *NOT FINAL SCORE*
-	scores[3] = float64(respData1.Repository.Commits.History.TotalCount)
-
-	return scores[:]
 }
 
 func storeLog(filename string, data []byte, header string, clear bool) error {

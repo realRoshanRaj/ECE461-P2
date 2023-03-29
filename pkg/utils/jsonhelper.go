@@ -1,4 +1,4 @@
-package dependencies
+package utils
 
 import (
 	"encoding/json"
@@ -8,7 +8,6 @@ import (
 	"math"
 	"net/http"
 	"os"
-
 	// These are dependencies must be installed with go get
 	// nd "github.com/scizorman/go-ndjson"
 )
@@ -23,13 +22,14 @@ type Cont []struct { //best contributor
 // }
 
 type Repo struct { //Structure that will recieve important information from REST API request
-	URL                  string `json:"URL"`
-	NET_SCORE             float64
+	URL                         string `json:"URL"`
+	NET_SCORE                   float64
 	RAMP_UP_SCORE               float64
-	CORRECTNESS_SCORE          float64
+	CORRECTNESS_SCORE           float64
 	BUS_FACTOR_SCORE            float64
 	RESPONSIVE_MAINTAINER_SCORE float64
-	LICENSE_SCORE         float64
+	LICENSE_SCORE               float64
+	CODE_QUALITY_SCORE          float64
 	// License              LName `json:"license"`
 	// Name string
 }
@@ -50,20 +50,21 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 	json.NewDecoder(resp1.Body).Decode(&cont) //decodes response and stores info in repo struct
 	//fmt.Println(cont[0].Contributions)
 
-	if (repo == Repo{}){
+	if (repo == Repo{}) {
 		log.Fatal("repo struct empty, check http response")
 	}
-	if (cont == nil){
+	if cont == nil {
 		log.Fatal("cont struct empty, check http response")
 	}
 
 	new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
-		URL:                  repo.URL,
-		RAMP_UP_SCORE:              RoundFloat(RU, 1),
-		CORRECTNESS_SCORE:          RoundFloat(C, 1),
+		URL:                         repo.URL,
+		RAMP_UP_SCORE:               RoundFloat(RU, 1),
+		CORRECTNESS_SCORE:           RoundFloat(C, 1),
 		BUS_FACTOR_SCORE:            RoundFloat(1-(float64(cont[0].Contributions)/totalCommits), 1),
 		RESPONSIVE_MAINTAINER_SCORE: RoundFloat(RM, 1),
-		LICENSE_SCORE:         RoundFloat(LS, 1),
+		LICENSE_SCORE:               RoundFloat(LS, 1),
+		CODE_QUALITY_SCORE:          RoundFloat(0, 1),
 		// License:              repo.License,
 	}
 
@@ -120,8 +121,8 @@ func (r *Repos) Store(filename string) error {
 		if err != nil {
 			return err
 		}
-		if _,err:= f.Write(data); err != nil{
-			log.Fatal(err);
+		if _, err := f.Write(data); err != nil {
+			log.Fatal(err)
 		}
 		f.WriteString("\n")
 	}
