@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -49,5 +50,8 @@ func getPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
 	payload := []byte(packageID)
 	w.WriteHeader(http.StatusCreated)
-	w.Write(payload) // put json here
+	_, err := w.Write(payload) // put json here
+	if err != nil {
+		log.Println(err)
+	}
 }
