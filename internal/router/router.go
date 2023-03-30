@@ -35,7 +35,7 @@ func GetRouter() *chi.Mux {
 	router.Get("/package/byName/{name}", tempRoute)
 	router.Delete("/package/byName/{name}", tempRoute)
 
-	router.Post("/package/byRegEx/{regex}", tempRoute)
+	router.Post("/package/byRegEx", tempRoute)
 
 	return router
 }

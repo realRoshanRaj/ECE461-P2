@@ -29,6 +29,9 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	// Create package in database
 	db.CreatePackageDB(packageInfo)
 
+	// TODO: http.StatusConflict (409) if package already exists
+	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
+
 	// w.Write([]byte("Package created"))
 	responseJSON(w, http.StatusCreated, packageInfo)
 }

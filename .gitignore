@@ -21,3 +21,5 @@ CLI/executable
 .env
 
 *.log
+
+.vscode/
