@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/db"
+	"pkgmanager/pkg/utils"
 
 	"github.com/go-chi/chi"
 )
@@ -18,8 +19,18 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO: find actual metadata
-	metadata := models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
-
+	// metadata := models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
+	var metadata models.Metadata
+	if(packageData.Content == "" && packageData.URL != "") {
+		// URL method
+		metadata = utils.ExtractMetadataFromURL(packageData.URL)
+	} else if (packageData.Content != "" && packageData.URL == "") {
+		// Content method (zip file)
+		metadata = utils.ExtractMetadataFromZip(packageData.Content)
+	} else {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
 	// Initialize package info struct that uses packagedata struct
 	packageInfo := models.PackageInfo{
 		Data:     packageData,
