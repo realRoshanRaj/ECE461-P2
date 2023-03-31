@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	gq "pkgmanager/internal/metrics/api/graphql"
 	"pkgmanager/internal/metrics/api/rest"
@@ -26,6 +27,15 @@ var token string
 var log_file string
 var log_level int
 var repos *dep.Repos
+
+type locResponse struct {
+	Language    string `json:"language"`
+	Files       int    `json:"files"`
+	Lines       int    `json:"lines"`
+	Blanks      int    `json:"blanks"`
+	Comments    int    `json:"comments"`
+	LinesOfCode int    `json:"linesOfCode"`
+}
 
 // func init() {
 // 	// Loads token into environment variables along with other things in the .env file
@@ -117,51 +127,31 @@ func main() {
 
 		contri_resp := rest.GetContributorResponse(urls[i]) //contributor data
 
-		prs_resp := rest.GetPullRequestsResponse(urls[i]) //pull request data
+		url := rest.GetCodeTabResponse(urls[i]) //code tab data
 
-		decoder := json.NewDecoder(prs_resp.Body)
+		resp, err := http.Get(url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
 
-		var prs []struct {
-			Title    string `json:"title"`
-			Url      string `json:"url"`
-			Commit   string `json:"commits_url"`
-			Comments string `json:"comments_url"`
+		var response []locResponse
+		err = json.NewDecoder(resp.Body).Decode(&response)
+		if err != nil {
+			log.Fatal(err)
 		}
 
-		if err := decoder.Decode(&prs); err != nil {
-			log.Fatalf("Error decoding pull request response: %v", err)
-		}
-		fmt.Printf("printing PRs..\n")
-		//count := 0
-		total_pr_lines := 0
-		for _, pr := range prs {
-			fmt.Printf("%s: %s\n", pr.Title, pr.Url)
-			fmt.Printf("commits: %s\n", pr.Commit)
-			pr_resp := rest.GetPullRequestResponse(pr.Url)
-			decoder := json.NewDecoder(pr_resp.Body)
-			var pr_data struct {
-				Additions int  `json:"additions"`
-				Deletions int  `json:"deletions"`
-				Merged    bool `json:"merged"`
-				Reviewers []struct {
-					Login string `json:"login"`
-				} `json:"requested_reviewers"`
-			}
+		totalLines := response[len(response)-1].Lines
+		fmt.Printf("Total Lines: %d\n", totalLines)
 
-			if err := decoder.Decode(&pr_data); err != nil {
-				log.Fatalf("Error decoding pull request response: %v", err)
-			}
+		totalChanges, _ := rest.GetTotalChanges(urls[i], "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")
 
-			addition := pr_data.Additions
-			deletion := pr_data.Deletions
-			diff := addition - deletion
-			if pr_data.Merged {
-				fmt.Printf("difference: %d\n", diff)
-				total_pr_lines += diff
-			}
-			fmt.Printf("count of merged PRs: %d\n", total_pr_lines)
+		fmt.Printf("Total Changes: %d\n", totalChanges)
 
-		}
+		// get totalChanges/totalLines below. round it to 2 decimal places
+		fraction := float64(totalChanges) / float64(totalLines)
+
+		fmt.Printf("Fraction: %f\n", fraction)
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := gq.Graphql_func(repo_owner, repo_name, token)

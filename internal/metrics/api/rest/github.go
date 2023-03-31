@@ -1,17 +1,85 @@
 package rest
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"strings"
+
+	"github.com/shurcooL/githubv4"
+	"golang.org/x/oauth2"
 )
 
 var token string
 
 func init() {
 	token = os.Getenv("GITHUB_TOKEN")
+}
+
+type Repository struct {
+	PullRequests struct {
+		PageInfo struct {
+			EndCursor   githubv4.String
+			HasNextPage bool
+		}
+		Edges []struct {
+			Node struct {
+				Additions githubv4.Int
+				Deletions githubv4.Int
+			}
+		}
+	} `graphql:"pullRequests(states: MERGED, first: 100, after: $pullRequestCursor)"`
+}
+
+type Response struct {
+	Repository Repository `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
+}
+
+func GetTotalChanges(url, token string) (int, error) {
+	//given github url, split it to get owner and name
+	link := strings.Split(url, "/")
+	owner := link[len(link)-2]
+	name := link[len(link)-1]
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	client := githubv4.NewClient(httpClient)
+
+	variables := map[string]interface{}{
+		"repositoryOwner":   githubv4.String(owner),
+		"repositoryName":    githubv4.String(name),
+		"pullRequestCursor": (*githubv4.String)(nil),
+	}
+
+	var totalAdditions int
+	var totalDeletions int
+	for {
+		var query Response
+		err := client.Query(context.Background(), &query, variables)
+		if err != nil {
+			return 0, err
+		}
+
+		for _, pr := range query.Repository.PullRequests.Edges {
+			totalAdditions += int(pr.Node.Additions)
+			totalDeletions += int(pr.Node.Deletions)
+		}
+
+		if !query.Repository.PullRequests.PageInfo.HasNextPage {
+			break
+		}
+
+		variables["pullRequestCursor"] = githubv4.NewString(query.Repository.PullRequests.PageInfo.EndCursor)
+	}
+
+	totalChanges := totalAdditions - totalDeletions
+
+	return totalChanges, nil
 }
 
 // TODO: change the log printf functions to new log
@@ -55,6 +123,15 @@ func GetPullRequestResponse(httpUrl string) *http.Response {
 	}
 
 	return pr_resp
+}
+
+func GetCodeTabResponse(httpurl string) string {
+	//client := &http.Client{}
+
+	link := strings.Split(httpurl, "https://github.com/")
+	Code_tab_link := "https://api.codetabs.com/v1/loc?github=" + link[len(link)-1] //converting github repo url to API url
+
+	return Code_tab_link
 }
 
 func GetRepoResponse(httpUrl string) *http.Response {
