@@ -17,6 +17,10 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type Repository struct {
+	defaultBranch string `json:"default_branch"`
+}
+
 var token string
 
 func init() {
@@ -275,4 +279,58 @@ func GetContributorResponse(httpUrl string) *http.Response {
 	// storeLog(log_file, responseDump, "Contributor response dump\n", true)
 
 	return repo_resp
+}
+
+func GetDefaultBranchName(httpUrl string) string {
+	client := &http.Client{}
+
+	// Make sure the URL is to the repository main page
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] //converting github repo url to API url
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitH-ub API
+	repo_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer repo_resp.Body.Close()
+
+	var repo Repository
+	err = json.NewDecoder(repo_resp.Body).Decode(&repo)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return repo.defaultBranch
+
+}
+
+func GetVersionPinningResponse(httpUrl string) string {
+
+	defaultBranch := GetDefaultBranchName(httpUrl)
+
+	client := &http.Client{}
+
+	// Make sure the URL is to the repository main page
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://raw.githubusercontent.com/repos/" + link[len(link)-1] + "/master/package.json"
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitHub API
+	repo_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer repo_resp.Body.Close()
+
 }
