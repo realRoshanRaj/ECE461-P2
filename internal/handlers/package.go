@@ -27,11 +27,17 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		metadata = utils.ExtractMetadataFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
-		metadata = utils.ExtractMetadataFromZip(packageData.Content)
+		var foundPackageJson bool
+		metadata, foundPackageJson = utils.ExtractMetadataFromZip(packageData.Content)
+		if !foundPackageJson {
+			w.WriteHeader(http.StatusBadRequest) // 400
+			return
+		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
+
 	// Initialize package info struct that uses packagedata struct
 	packageInfo := models.PackageInfo{
 		Data:     packageData,

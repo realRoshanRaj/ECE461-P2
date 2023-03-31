@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"os"
 	"pkgmanager/internal/models"
@@ -17,17 +16,17 @@ type PackageJson struct {
 	Repository string `json:"repository"`
 }
 
-func extractPackageJsonFromZip(encodedZip string) (*PackageJson, error) {
+func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
 	// Decode the base64-encoded string
 	decoded, err := base64.StdEncoding.DecodeString(encodedZip)
 	if err != nil {
-		return nil, err
+		return nil, false
 	}
 
 	// Create a temporary file for the zip contents
 	tempFile, err := ioutil.TempFile("", "tempzip-*.zip")
 	if err != nil {
-		return nil, err
+		return nil, false
 	}
 	defer os.Remove(tempFile.Name())
 	defer tempFile.Close()
@@ -35,13 +34,13 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, error) {
 	// Write the decoded zip contents to the temporary file
 	_, err = tempFile.Write(decoded)
 	if err != nil {
-		return nil, err
+		return nil, false
 	}
 
 	// Open the zip file for reading
 	reader, err := zip.OpenReader(tempFile.Name())
 	if err != nil {
-		return nil, err
+		return nil, false
 	}
 	defer reader.Close()
 
@@ -53,20 +52,20 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, error) {
 			// Open the file from the zip archive
 			zippedFile, err := file.Open()
 			if err != nil {
-				return nil, err
+				return nil, false
 			}
 			defer zippedFile.Close()
 
 			// Read the contents of the file into memory
 			packageJsonBytes, err := ioutil.ReadAll(zippedFile)
 			if err != nil {
-				return nil, err
+				return nil, false
 			}
 
 			// Unmarshal the JSON into a struct
 			err = json.Unmarshal(packageJsonBytes, &packageJson)
 			if err != nil {
-				return nil, err
+				return nil, false
 			}
 
 			found = true
@@ -74,21 +73,21 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, error) {
 		}
 	}
 
-	// If the package.json file was not found, return an error
-	if !found {
-		return nil, errors.New("package.json not found in zip archive")
-	}
+	// If the package.json file was not found, return an error (boolean false)
+	// if !found {
+	// 	return nil, errors.New("package.json not found in zip archive")
+	// }
 
-	return &packageJson, nil
+	return &packageJson, found
 }
 
-func ExtractMetadataFromZip(zipfile string) models.Metadata {
-	pkgJson, _ := extractPackageJsonFromZip(zipfile)
+func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
+	pkgJson, found := extractPackageJsonFromZip(zipfile)
 	// fmt.Println(pkgJson.Name)
 	// fmt.Println(pkgJson.Version)
 	// fmt.Println(pkgJson.Repository)
 
-	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: pkgJson.Repository}
+	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: pkgJson.Repository}, found
 }
 
 func ExtractMetadataFromURL(url string) models.Metadata {
