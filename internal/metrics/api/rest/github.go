@@ -1,12 +1,17 @@
 package rest
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"strings"
+
+	"fmt"
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
@@ -26,8 +31,9 @@ type Repository struct {
 		}
 		Edges []struct {
 			Node struct {
-				Additions githubv4.Int
-				Deletions githubv4.Int
+				Commits struct {
+					TotalCount githubv4.Int
+				} `graphql:"commits(last: 1)"`
 			}
 		}
 	} `graphql:"pullRequests(states: MERGED, first: 100, after: $pullRequestCursor)"`
@@ -37,12 +43,66 @@ type Response struct {
 	Repository Repository `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
 }
 
-func GetTotalChanges(url, token string) (int, error) {
-	//given github url, split it to get owner and name
-	link := strings.Split(url, "/")
-	owner := link[len(link)-2]
-	name := link[len(link)-1]
+type Query struct {
+	Query string `json:"query"`
+}
 
+type Response2 struct {
+	Data struct {
+		Repository struct {
+			Ref struct {
+				Target struct {
+					History struct {
+						TotalCount int `json:"totalCount"`
+					} `json:"history"`
+				} `json:"target"`
+			} `json:"ref"`
+		} `json:"repository"`
+	} `json:"data"`
+}
+
+func GetNumCommits(owner string, repo string, token string) (int, error) {
+	query := fmt.Sprintf(`
+	{
+	  repository(owner: "%s", name: "%s") {
+	    ref(qualifiedName: "master") {
+	      target {
+	        ... on Commit {
+	          history {
+	            totalCount
+	          }
+	        }
+	      }
+	    }
+	  }
+	}
+	`, owner, repo)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", "https://api.github.com/graphql", bytes.NewBufferString(fmt.Sprintf(`{"query": %q}`, query)))
+	if err != nil {
+		return 0, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
+	var data Response2
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return 0, fmt.Errorf("failed to decode response body: %s", string(body))
+	}
+
+	numCommits := data.Data.Repository.Ref.Target.History.TotalCount
+	return numCommits, nil
+}
+
+func GetTotalCommitsInMergedPRs(owner, name, token string) (int, error) {
 	src := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
@@ -56,8 +116,7 @@ func GetTotalChanges(url, token string) (int, error) {
 		"pullRequestCursor": (*githubv4.String)(nil),
 	}
 
-	var totalAdditions int
-	var totalDeletions int
+	var totalCommits int
 	for {
 		var query Response
 		err := client.Query(context.Background(), &query, variables)
@@ -66,8 +125,7 @@ func GetTotalChanges(url, token string) (int, error) {
 		}
 
 		for _, pr := range query.Repository.PullRequests.Edges {
-			totalAdditions += int(pr.Node.Additions)
-			totalDeletions += int(pr.Node.Deletions)
+			totalCommits += int(pr.Node.Commits.TotalCount)
 		}
 
 		if !query.Repository.PullRequests.PageInfo.HasNextPage {
@@ -77,9 +135,7 @@ func GetTotalChanges(url, token string) (int, error) {
 		variables["pullRequestCursor"] = githubv4.NewString(query.Repository.PullRequests.PageInfo.EndCursor)
 	}
 
-	totalChanges := totalAdditions - totalDeletions
-
-	return totalChanges, nil
+	return totalCommits, nil
 }
 
 // TODO: change the log printf functions to new log
