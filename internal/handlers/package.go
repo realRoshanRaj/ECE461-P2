@@ -16,15 +16,16 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&packageData)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
+		return
 	}
 
 	// TODO: find actual metadata
 	// metadata := models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
 	var metadata models.Metadata
-	if(packageData.Content == "" && packageData.URL != "") {
+	if packageData.Content == "" && packageData.URL != "" {
 		// URL method
 		metadata = utils.ExtractMetadataFromURL(packageData.URL)
-	} else if (packageData.Content != "" && packageData.URL == "") {
+	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
 		metadata = utils.ExtractMetadataFromZip(packageData.Content)
 	} else {
