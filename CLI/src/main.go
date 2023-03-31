@@ -116,12 +116,12 @@ func main() {
 
 		contri_resp := rest.GetContributorResponse(urls[i]) //contributor data
 
-		totalCommits, err := rest.GetTotalCommitsInMergedPRs(repo_owner, repo_name, token)
+		totalPRs, err := rest.GetNumberOfMergedPRs(repo_owner, repo_name, token)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Total Commits with PR: ", totalCommits)
+		fmt.Println("Total Commits with PR: ", totalPRs)
 
 		numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token)
 		if err != nil {
@@ -130,8 +130,9 @@ func main() {
 
 		fmt.Println("Num Commits: ", numCommits)
 
-		fraction := float64(totalCommits) / float64(numCommits)
-		fmt.Println("Fraction: ", fraction)
+		fraction := float64(totalPRs) / float64(numCommits) * 100
+
+		fmt.Println("Fraction: ", fraction, "%")
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := gq.Graphql_func(repo_owner, repo_name, token)
