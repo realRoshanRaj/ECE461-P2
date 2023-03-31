@@ -2,11 +2,9 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	gq "pkgmanager/internal/metrics/api/graphql"
 	"pkgmanager/internal/metrics/api/rest"
@@ -27,15 +25,6 @@ var token string
 var log_file string
 var log_level int
 var repos *dep.Repos
-
-type locResponse struct {
-	Language    string `json:"language"`
-	Files       int    `json:"files"`
-	Lines       int    `json:"lines"`
-	Blanks      int    `json:"blanks"`
-	Comments    int    `json:"comments"`
-	LinesOfCode int    `json:"linesOfCode"`
-}
 
 // func init() {
 // 	// Loads token into environment variables along with other things in the .env file
@@ -127,31 +116,22 @@ func main() {
 
 		contri_resp := rest.GetContributorResponse(urls[i]) //contributor data
 
-		url := rest.GetCodeTabResponse(urls[i]) //code tab data
-
-		resp, err := http.Get(url)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer resp.Body.Close()
-
-		var response []locResponse
-		err = json.NewDecoder(resp.Body).Decode(&response)
+		totalCommits, err := rest.GetTotalCommitsInMergedPRs(repo_owner, repo_name, token)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		totalLines := response[len(response)-1].Lines
-		fmt.Printf("Total Lines: %d\n", totalLines)
+		fmt.Println("Total Commits with PR: ", totalCommits)
 
-		totalChanges, _ := rest.GetTotalChanges(urls[i], "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")
+		numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-		fmt.Printf("Total Changes: %d\n", totalChanges)
+		fmt.Println("Num Commits: ", numCommits)
 
-		// get totalChanges/totalLines below. round it to 2 decimal places
-		fraction := float64(totalChanges) / float64(totalLines)
-
-		fmt.Printf("Fraction: %f\n", fraction)
+		fraction := float64(totalCommits) / float64(numCommits)
+		fmt.Println("Fraction: ", fraction)
 
 		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := gq.Graphql_func(repo_owner, repo_name, token)
