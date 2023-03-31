@@ -23,20 +23,24 @@ func init() {
 	token = os.Getenv("GITHUB_TOKEN")
 }
 
+type PullRequest struct {
+	Number githubv4.Int
+}
+
+type PageInfo struct {
+	EndCursor   githubv4.String
+	HasNextPage bool
+}
+
+type PullRequestConnection struct {
+	PageInfo PageInfo
+	Edges    []struct {
+		Node PullRequest
+	}
+}
+
 type Repository struct {
-	PullRequests struct {
-		PageInfo struct {
-			EndCursor   githubv4.String
-			HasNextPage bool
-		}
-		Edges []struct {
-			Node struct {
-				Commits struct {
-					TotalCount githubv4.Int
-				} `graphql:"commits(last: 1)"`
-			}
-		}
-	} `graphql:"pullRequests(states: MERGED, first: 100, after: $pullRequestCursor)"`
+	PullRequests PullRequestConnection `graphql:"pullRequests(states: MERGED, first: 100, after: $pullRequestCursor)"`
 }
 
 type Response struct {
@@ -102,21 +106,21 @@ func GetNumCommits(owner string, repo string, token string) (int, error) {
 	return numCommits, nil
 }
 
-func GetTotalCommitsInMergedPRs(owner, name, token string) (int, error) {
+func GetNumberOfMergedPRs(repositoryOwner, repositoryName, accessToken string) (int, error) {
 	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token},
+		&oauth2.Token{AccessToken: accessToken},
 	)
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	client := githubv4.NewClient(httpClient)
 
 	variables := map[string]interface{}{
-		"repositoryOwner":   githubv4.String(owner),
-		"repositoryName":    githubv4.String(name),
+		"repositoryOwner":   githubv4.String(repositoryOwner),
+		"repositoryName":    githubv4.String(repositoryName),
 		"pullRequestCursor": (*githubv4.String)(nil),
 	}
 
-	var totalCommits int
+	var totalPRs int
 	for {
 		var query Response
 		err := client.Query(context.Background(), &query, variables)
@@ -124,9 +128,7 @@ func GetTotalCommitsInMergedPRs(owner, name, token string) (int, error) {
 			return 0, err
 		}
 
-		for _, pr := range query.Repository.PullRequests.Edges {
-			totalCommits += int(pr.Node.Commits.TotalCount)
-		}
+		totalPRs += len(query.Repository.PullRequests.Edges)
 
 		if !query.Repository.PullRequests.PageInfo.HasNextPage {
 			break
@@ -135,7 +137,7 @@ func GetTotalCommitsInMergedPRs(owner, name, token string) (int, error) {
 		variables["pullRequestCursor"] = githubv4.NewString(query.Repository.PullRequests.PageInfo.EndCursor)
 	}
 
-	return totalCommits, nil
+	return totalPRs, nil
 }
 
 // TODO: change the log printf functions to new log
