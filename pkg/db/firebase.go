@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"pkgmanager/internal/models"
+	"strings"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
@@ -15,6 +17,7 @@ import (
 const (
 	PROJECT_ID      string = "ece461-project-381318"
 	COLLECTION_NAME string = "packages"
+	HISTORY_NAME    string = "history"
 )
 
 func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
@@ -50,6 +53,11 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 	_, err = client.Collection("packages").Doc(documentID).Set(ctx, pkg)
 	if err != nil {
 		log.Fatalf("Failed to add package to Firestore: %v", err)
+		return nil, http.StatusInternalServerError
+	}
+
+	success := recordActionEntry(client, ctx, "CREATE", pkg.Metadata)
+	if !success {
 		return nil, http.StatusInternalServerError
 	}
 
@@ -90,6 +98,11 @@ func GetPackageByID(id string) (*models.PackageInfo, int) {
 		return nil, http.StatusInternalServerError
 	}
 
+	success := recordActionEntry(client, ctx, "DOWNLOAD", pkg.Metadata)
+	if !success {
+		return nil, http.StatusInternalServerError
+	}
+
 	return &pkg, http.StatusOK
 
 }
@@ -121,6 +134,53 @@ func DeletePackageByID(id string) int {
 	}
 
 	return http.StatusOK
+}
+
+func UpdatePackageByID(id string, newPkg models.PackageInfo) int {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	docRef := client.Collection(COLLECTION_NAME).Doc(id)
+	docSnap, err := docRef.Get(ctx)
+	if err != nil {
+		if !docSnap.Exists() || status.Code(err) == codes.NotFound {
+			log.Printf("package with document ID %s not found to delete", id)
+			return http.StatusNotFound
+		}
+		log.Println(err)
+		return http.StatusInternalServerError
+	}
+
+	// Unmarshal the document data into a PackageInfo struct
+	var existingPackageInfo models.PackageInfo
+	if err := docSnap.DataTo(&existingPackageInfo); err != nil {
+		log.Printf("Failed to unmarshal package data: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	if existingPackageInfo.Metadata.Name != newPkg.Metadata.Name || existingPackageInfo.Metadata.Version != newPkg.Metadata.Version {
+		log.Println("package not found with matching creteria")
+		return http.StatusNotFound
+	}
+
+	// Update the package document in Firestore
+	_, err = docRef.Set(ctx, newPkg)
+	if err != nil {
+		log.Println(err)
+		return http.StatusInternalServerError
+	}
+	success := recordActionEntry(client, ctx, "UPDATE", newPkg.Metadata)
+	if !success {
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
+
 }
 
 func GetAllPackages() ([]models.PackageInfo, error) {
@@ -165,4 +225,19 @@ func GetAllPackages() ([]models.PackageInfo, error) {
 	}
 
 	return pkgs, nil
+}
+
+func recordActionEntry(client *firestore.Client, ctx context.Context, action string, metadata models.Metadata) bool {
+	historyCollection := client.Collection(HISTORY_NAME)
+	newEntry, _, err := historyCollection.Add(ctx, models.ActionEntry{
+		Action:   strings.ToUpper(action),
+		Metadata: metadata,
+		Date:     time.Now().Format(time.RFC3339),
+	})
+	if err != nil {
+		log.Printf("Failed to add new entry to history collection: %v", err)
+		return false
+	}
+
+	return newEntry != nil
 }

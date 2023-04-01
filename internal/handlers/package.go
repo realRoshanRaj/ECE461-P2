@@ -73,7 +73,19 @@ func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 
 func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-	responseJSON(w, http.StatusCreated, packageID)
+	// initialize a packagedata struct based on the request body
+	packageInfo := models.PackageInfo{}
+	err := json.NewDecoder(r.Body).Decode(&packageInfo)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+
+	// TODO: find actual metadata
+
+	statusCode := db.UpdatePackageByID(packageID, packageInfo)
+	w.WriteHeader(statusCode)
+	// responseJSON(w, http.StatusCreated, packageID)
 }
 
 func DeletePackage(w http.ResponseWriter, r *http.Request) {
