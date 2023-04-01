@@ -10,6 +10,10 @@ import (
 	"github.com/go-chi/chi"
 )
 
+var (
+	dataBase db.PkgDb = db.NewPkgDb()
+)
+
 func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	// initialize a packagedata struct based on the request body
 	packageData := models.PackageData{}
@@ -45,7 +49,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create package in database
-	db.CreatePackageDB(packageInfo)
+	dataBase.CreatePackage(&packageInfo)
 
 	// TODO: http.StatusConflict (409) if package already exists
 	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
