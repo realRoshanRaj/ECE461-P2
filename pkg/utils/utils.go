@@ -93,8 +93,3 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 func ExtractMetadataFromURL(url string) models.Metadata {
 	return models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
 }
-
-func IsRatingQualified(metrics models.Metric) bool {
-	// TODO: Check metric values against requirements
-	return true
-}

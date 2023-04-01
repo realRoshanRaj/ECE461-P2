@@ -8,6 +8,8 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -41,7 +43,7 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 	}
 	if len(docs) > 0 {
 		log.Printf("Package with name %q and version %q already exists", pkg.Metadata.Name, pkg.Metadata.Version)
-		return nil, http.StatusConflict
+		return nil, http.StatusConflict // if package exist, return error 409 otherwise store package in database
 	}
 
 	// Add the new package document to Firestore
@@ -53,7 +55,72 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 
 	return pkg, http.StatusCreated
 
-	// if it does, return error 409 otherwise store package in database
+}
+
+func GetPackageByID(id string) (*models.PackageInfo, int) {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return nil, http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	// Get the package document by ID
+	docRef := client.Collection(COLLECTION_NAME).Doc(id)
+	docSnap, err := docRef.Get(ctx)
+	if err != nil {
+		if !docSnap.Exists() {
+			log.Printf("package with document ID %s not found", id)
+			return nil, http.StatusNotFound
+		}
+
+		return nil, http.StatusInternalServerError
+	}
+
+	if !docSnap.Exists() {
+		log.Printf("package with document ID %s not found", id)
+		return nil, http.StatusNotFound
+	}
+
+	// Deserialize the package data into a PackageInfo struct
+	var pkg models.PackageInfo
+	err = docSnap.DataTo(&pkg)
+	if err != nil {
+		return nil, http.StatusInternalServerError
+	}
+
+	return &pkg, http.StatusOK
+
+}
+
+func DeletePackageByID(id string) int {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	docRef := client.Collection(COLLECTION_NAME).Doc(id)
+	docSnap, err := docRef.Get(ctx)
+	if err != nil {
+		if !docSnap.Exists() || status.Code(err) == codes.NotFound {
+			log.Printf("package with document ID %s not found to delete", id)
+			return http.StatusNotFound
+		}
+
+		return http.StatusInternalServerError
+	}
+
+	_, err = docRef.Delete(ctx)
+	if err != nil {
+		log.Printf("Failed to delete package with document ID %s", id)
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
 }
 
 func GetAllPackages() ([]models.PackageInfo, error) {

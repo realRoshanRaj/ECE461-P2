@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"pkgmanager/internal/metrics"
 	"pkgmanager/internal/models"
-	database "pkgmanager/pkg/db"
+	"pkgmanager/pkg/db"
 	"pkgmanager/pkg/utils"
 
 	"github.com/go-chi/chi"
@@ -46,12 +46,12 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	}
 	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
 	rating := metrics.GenerateMetrics(packageInfo.Metadata.Repository)
-	if !utils.IsRatingQualified(rating) {
+	if !metrics.IsRatingQualified(rating) {
 		w.WriteHeader(http.StatusFailedDependency) // 424
 		return
 	}
 	// Create package in database
-	_, statusCode := database.CreatePackage(&packageInfo)
+	_, statusCode := db.CreatePackage(&packageInfo)
 
 	if statusCode == http.StatusCreated {
 		responseJSON(w, http.StatusCreated, packageInfo)
@@ -62,35 +62,24 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-	// payload := []byte(packageID)
-	// w.WriteHeader(http.StatusCreated)
-	// _, err := w.Write(payload) // put json here
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	responseJSON(w, http.StatusCreated, packageID)
+
+	pkgInfo, statusCode := db.GetPackageByID(packageID)
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, pkgInfo)
+	} else {
+		w.WriteHeader(statusCode) // handles the 404 error
+	}
 }
 
 func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-	// payload := []byte(packageID)
-	// w.WriteHeader(http.StatusCreated)
-	// _, err := w.Write(payload) // put json here
-	// if err != nil {
-	// 	log.Println(err)
-	// }
 	responseJSON(w, http.StatusCreated, packageID)
 }
 
 func DeletePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-	// payload := []byte(packageID)
-	// w.WriteHeader(http.StatusCreated)
-	// _, err := w.Write(payload) // put json here
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	responseJSON(w, http.StatusCreated, packageID)
+	statusCode := db.DeletePackageByID(packageID)
+	w.WriteHeader(statusCode) // handles error/status codes
 }
 
 func RatePackage(w http.ResponseWriter, r *http.Request) {

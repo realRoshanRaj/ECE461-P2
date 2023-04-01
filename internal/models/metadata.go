@@ -4,5 +4,5 @@ type Metadata struct {
 	Name       string
 	Version    string
 	ID         string
-	Repository string `firestore:"-" json:"-"`
+	Repository string `json:"-"`
 }
