@@ -3,15 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"pkgmanager/internal/metrics"
 	"pkgmanager/internal/models"
-	"pkgmanager/pkg/db"
+	database "pkgmanager/pkg/db"
 	"pkgmanager/pkg/utils"
 
 	"github.com/go-chi/chi"
-)
-
-var (
-	dataBase db.PkgDb = db.NewPkgDb()
 )
 
 func CreatePackage(w http.ResponseWriter, r *http.Request) {
@@ -47,15 +44,20 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		Data:     packageData,
 		Metadata: metadata,
 	}
-
-	// Create package in database
-	dataBase.CreatePackage(&packageInfo)
-
-	// TODO: http.StatusConflict (409) if package already exists
 	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
+	rating := metrics.GenerateMetrics(packageInfo.Metadata.Repository)
+	if !utils.IsRatingQualified(rating) {
+		w.WriteHeader(http.StatusFailedDependency) // 424
+		return
+	}
+	// Create package in database
+	_, statusCode := database.CreatePackage(&packageInfo)
 
-	// w.Write([]byte("Package created"))
-	responseJSON(w, http.StatusCreated, packageInfo)
+	if statusCode == http.StatusCreated {
+		responseJSON(w, http.StatusCreated, packageInfo)
+	} else {
+		w.WriteHeader(statusCode) // handles the 409 conflict error
+	}
 }
 
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {

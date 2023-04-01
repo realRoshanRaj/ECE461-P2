@@ -3,55 +3,62 @@ package db
 import (
 	"context"
 	"log"
+	"net/http"
 	"pkgmanager/internal/models"
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
 )
 
-type PkgDb interface {
-	CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, error)
-	GetAllPackages() ([]models.PackageInfo, error)
-}
-
-type Db struct{}
-
 const (
-	projectID      string = "ece461-project-381318"
-	collectionName string = "packages"
+	PROJECT_ID      string = "ece461-project-381318"
+	COLLECTION_NAME string = "packages"
 )
 
-func NewPkgDb() PkgDb {
-	return &Db{}
-}
-
-func (*Db) CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, error) {
+func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 	ctx := context.Background()
-	client, err := firestore.NewClient(ctx, projectID)
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
-		log.Fatalf("Failed to create FireStore Client: %v", err)
-		return nil, err
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return nil, http.StatusInternalServerError
 	}
 
 	defer client.Close()
-	_, _, err = client.Collection(collectionName).Add(ctx, map[string]interface{}{
-		"data":     pkg.Data,
-		"metadata": pkg.Metadata,
-	})
+
+	documentID := client.Collection(COLLECTION_NAME).NewDoc().ID
+	pkg.Metadata.ID = documentID
+
+	// Check if a package with the same name and version already exists
+	query := client.Collection(COLLECTION_NAME).
+		Where("metadata.Name", "==", pkg.Metadata.Name).
+		Where("metadata.Version", "==", pkg.Metadata.Version).
+		Limit(1)
+
+	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {
-		log.Fatalf("Failed to add a new package: %v", err)
-		return nil, err
+		log.Printf("Failed to retrieve documents: %v", err)
 	}
-	return pkg, nil
-	// TODO:
-	// check if package already exists in database
+	if len(docs) > 0 {
+		log.Printf("Package with name %q and version %q already exists", pkg.Metadata.Name, pkg.Metadata.Version)
+		return nil, http.StatusConflict
+	}
+
+	// Add the new package document to Firestore
+	_, err = client.Collection("packages").Doc(documentID).Set(ctx, pkg)
+	if err != nil {
+		log.Fatalf("Failed to add package to Firestore: %v", err)
+		return nil, http.StatusInternalServerError
+	}
+
+	return pkg, http.StatusCreated
+
 	// if it does, return error 409 otherwise store package in database
 }
 
-func (*Db) GetAllPackages() ([]models.PackageInfo, error) {
+func GetAllPackages() ([]models.PackageInfo, error) {
 	ctx := context.Background()
-	client, err := firestore.NewClient(ctx, projectID)
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
 		log.Fatalf("Failed to create FireStore Client: %v", err)
 		return nil, err
@@ -60,7 +67,7 @@ func (*Db) GetAllPackages() ([]models.PackageInfo, error) {
 	defer client.Close()
 	var pkgs []models.PackageInfo
 
-	itr := client.Collection(collectionName).Documents(ctx)
+	itr := client.Collection(COLLECTION_NAME).Documents(ctx)
 	for {
 		doc, err := itr.Next()
 		if err == iterator.Done {
