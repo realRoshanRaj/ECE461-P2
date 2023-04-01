@@ -183,6 +183,39 @@ func UpdatePackageByID(id string, newPkg models.PackageInfo) int {
 
 }
 
+func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		// return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	query := client.Collection(HISTORY_NAME).Where("PackageMetadata.Name", "==", package_name)
+
+	var actionEntries []models.ActionEntry
+	docs, err := query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return nil, http.StatusNotFound
+	}
+
+	for _, doc := range docs {
+		var actionEntry models.ActionEntry
+		err = doc.DataTo(&actionEntry)
+		if err != nil {
+			log.Println(err)
+			return nil, http.StatusInternalServerError
+		}
+
+		actionEntries = append(actionEntries, actionEntry)
+	}
+	return actionEntries, http.StatusOK
+
+}
+
 func GetAllPackages() ([]models.PackageInfo, error) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)

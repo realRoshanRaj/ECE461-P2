@@ -32,7 +32,7 @@ func GetRouter() *chi.Mux {
 
 	router.Put("/authenticate", tempRoute)
 
-	router.Get("/package/byName/{name}", tempRoute)
+	router.Get("/package/byName/{name}", handler.GetPackageHistoryByName)
 	router.Delete("/package/byName/{name}", tempRoute)
 
 	router.Post("/package/byRegEx", tempRoute)

@@ -105,6 +105,16 @@ func RatePackage(w http.ResponseWriter, r *http.Request) {
 	responseJSON(w, http.StatusCreated, packageID)
 }
 
+func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
+	packageName := chi.URLParam(r, "name")
+	pkgHistory, statusCode := db.GetPackageHistoryByName(packageName)
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, pkgHistory)
+	} else {
+		w.WriteHeader(statusCode) // handles the 404 error
+	}
+}
+
 // respondJSON makes the response with payload as json format
 func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 	response, err := json.Marshal(payload)
