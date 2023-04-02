@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"regexp"
 	"strings"
 
 	"fmt"
@@ -17,8 +19,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type Repository struct {
-	defaultBranch string `json:"default_branch"`
+type PackageJSON struct {
+	Dependencies map[string]string `json:"dependencies"`
 }
 
 var token string
@@ -219,20 +221,18 @@ func GetRepoResponse(httpUrl string) *http.Response {
 	*  into readable formats as in the html
 	 */
 	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
-	responseDump, err := httputil.DumpResponse(repo_resp, true)
+	_, err = httputil.DumpResponse(repo_resp, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Printf("Response: %s", responseDump)
+	// log.Printf("Response: %s", responseDump)
 	// Here the 0666 is the same as chmod parameters in linux
-	// os.WriteFile("responseDumpRepo.log", responseDump, 0666) // Deprecated
+	// os.WriteFile(log_file, responseDump, 0666) // Deprecated
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
-	_requestDump, err := httputil.DumpRequest(req, true)
+	_, err = httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	// os.WriteFile("requestDumpRepo.log", requestDump, 0666) // Deprecated
-	log.Printf("Request: %s", _requestDump)
 	// storeLog(log_file, requestDump, "Repo request dump\n", false)
 	// storeLog(log_file, responseDump, "Repo response dump\n", false)
 
@@ -260,19 +260,19 @@ func GetContributorResponse(httpUrl string) *http.Response {
 	defer repo_resp.Body.Close()
 
 	// LOGGING STUFF FOR DEBUGGING HTTP REQUESTS AND RESPONSES
-	responseDump, err := httputil.DumpResponse(repo_resp, true)
+	_, err = httputil.DumpResponse(repo_resp, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Printf("Response: %s", responseDump)
+	// log.Printf("Response: %s", responseDump)
 	// Here the 0666 is the same as chmod parameters in linux
 	// os.WriteFile(log_file, responseDump, 0666) // Deprecated
 	// This will DUMP your AUTHORIZATION token be careful! add to .gitignore if you haven't already
-	_requestDump, err := httputil.DumpRequest(req, true)
+	_, err = httputil.DumpRequest(req, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Printf("Request: %s", _requestDump)
+	// log.Printf("Request: %s", _requestDump)
 	// os.WriteFile("requestDumpContributor.log", requestDump, 0666) // Deprecate
 
 	// storeLog(log_file, requestDump, "Contributor request dump\n", true)
@@ -300,18 +300,24 @@ func GetDefaultBranchName(httpUrl string) string {
 	}
 	defer repo_resp.Body.Close()
 
-	var repo Repository
-	err = json.NewDecoder(repo_resp.Body).Decode(&repo)
-
+	body, err := ioutil.ReadAll(repo_resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	contents := string(body)
 
-	return repo.defaultBranch
+	start_index := strings.Index(contents, `"default_branch"`) + len(`"default_branch"`)
+	end_index := strings.Index(contents[start_index:], ",") + start_index
+	defaultBranch := strings.TrimSpace(contents[start_index:end_index])
+	defaultBranch = strings.Trim(defaultBranch, `"`)
+	defaultBranch = strings.Trim(defaultBranch, `:`)
+	defaultBranch = strings.Trim(defaultBranch, `"`)
+
+	return defaultBranch
 
 }
 
-func GetVersionPinningResponse(httpUrl string) string {
+func GetVersionPinningResponse(httpUrl string) float64 {
 
 	defaultBranch := GetDefaultBranchName(httpUrl)
 
@@ -319,7 +325,7 @@ func GetVersionPinningResponse(httpUrl string) string {
 
 	// Make sure the URL is to the repository main page
 	link := strings.Split(httpUrl, "https://github.com/")
-	REST_api_link := "https://raw.githubusercontent.com/repos/" + link[len(link)-1] + "/master/package.json"
+	REST_api_link := "https://raw.githubusercontent.com/" + link[len(link)-1] + "/" + defaultBranch + "/" + "/package.json"
 	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
 	if err != nil {
 		log.Fatalln(err)
@@ -331,6 +337,45 @@ func GetVersionPinningResponse(httpUrl string) string {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	contents, err := io.ReadAll(repo_resp.Body)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	defer repo_resp.Body.Close()
+
+	var package_data PackageJSON
+
+	err = json.Unmarshal(contents, &package_data)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	if len(package_data.Dependencies) == 0 {
+		return float64(1)
+	}
+
+	var total_counter float64
+	var valid_counter float64
+
+	total_counter = 0
+	valid_counter = 0
+	r := regexp.MustCompile(`^([0-9]+)(\.([0-9]+))*$`)
+	for _, version := range package_data.Dependencies {
+
+		if !(r.MatchString(string(version))) {
+			total_counter += 1
+			continue
+		}
+
+		valid_counter += 1
+		total_counter += 1
+
+	}
+
+	return (valid_counter / total_counter)
 
 }
