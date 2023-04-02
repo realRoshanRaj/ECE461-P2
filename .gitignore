@@ -22,4 +22,6 @@ CLI/executable
 
 *.log
 
+key
+
 .vscode/
