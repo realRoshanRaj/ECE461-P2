@@ -43,7 +43,7 @@ type Repository struct {
 	PullRequests PullRequestConnection `graphql:"pullRequests(states: MERGED, first: 100, after: $pullRequestCursor)"`
 }
 
-type Response struct {
+type PRResponse struct {
 	Repository Repository `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
 }
 
@@ -51,7 +51,7 @@ type Query struct {
 	Query string `json:"query"`
 }
 
-type Response2 struct {
+type CommitResponse struct {
 	Data struct {
 		Repository struct {
 			Ref struct {
@@ -96,7 +96,7 @@ func GetNumCommits(owner string, repo string, token string) (int, error) {
 	}
 	defer resp.Body.Close()
 
-	var data Response2
+	var data CommitResponse
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		body, _ := ioutil.ReadAll(resp.Body)
 		return 0, fmt.Errorf("failed to decode response body: %s", string(body))
@@ -122,7 +122,7 @@ func GetNumberOfMergedPRs(repositoryOwner, repositoryName, accessToken string) (
 
 	var totalPRs int
 	for {
-		var query Response
+		var query PRResponse
 		err := client.Query(context.Background(), &query, variables)
 		if err != nil {
 			return 0, err
