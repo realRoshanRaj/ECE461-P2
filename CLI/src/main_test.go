@@ -550,9 +550,7 @@ func TestCase19(t *testing.T) {
 }
 
 func TestFractionOfCode(t *testing.T) {
-	//token = os.Getenv("GITHUB_TOKEN")
-	//fmt.Printf("Token: %s", token)
-	token := "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"
+	token = os.Getenv("GITHUB_TOKEN")
 	owner := "cloudinary"
 	name := "cloudinary_npm"
 	numCommits, err := rest.GetNumCommits(owner, name, token)
