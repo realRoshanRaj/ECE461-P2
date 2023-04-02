@@ -26,6 +26,17 @@ var log_file string
 var log_level int
 var repos *dep.Repos
 
+type Metric struct {
+	RepoURL              string
+	NetScore             float64
+	BusFactor            float64
+	Correctness          float64
+	RampUp               float64
+	ResponsiveMaintainer float64
+	LicenseScore         float64
+	PullRequest          float64
+}
+
 // func init() {
 // 	// Loads token into environment variables along with other things in the .env file
 // 	// godotenv.Load(".env")
@@ -182,7 +193,11 @@ func main() {
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
 
-		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction)
+		url_test, _, _, _, _, _, _, _ := repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction)
+		fmt.Printf("URL: %s", url_test)
+		// make a new Metric struct named url[i]
+		_, _, _, _, _, _, _, prr := GetMetrics("https://github.com/lodash/lodash")
+		fmt.Printf("PRR: %f", prr)
 
 		if log_level >= 2 {
 			log.Println(urls[i])
@@ -240,4 +255,55 @@ func storeLog(filename string, data []byte, header string, clear bool) error {
 
 	logger.Println(string(data))
 	return err
+}
+
+func GetMetrics(url string) (string, float64, float64, float64, float64, float64, float64, float64) {
+	var err error
+	token = os.Getenv("GITHUB_TOKEN")
+
+	log_file = os.Getenv("LOG_FILE")
+
+	empty := []byte{}
+	storeLog(log_file, empty, "", true)
+
+	log_level, err = strconv.Atoi(os.Getenv("LOG_LEVEL"))
+	if err != nil {
+		log.Fatal(err, "couldn't find LOG_LEVEL environment variable")
+	}
+	repos = &dep.Repos{}
+
+	args := os.Args[1:]
+	if len(args) == 0 {
+		fmt.Printf("Please enter ./run help for help\n")
+		os.Exit(0)
+	}
+
+	split_url := strings.Split(url, "/")
+	repo_owner := split_url[3]
+	repo_name := split_url[4]
+
+	repo_resp := rest.GetRepoResponse(url) // repository data
+	// fmt.Println(token)
+
+	contri_resp := rest.GetContributorResponse(url) //contributor data
+
+	// prs_resp := rest.GetPullRequestsResponse(url) //pull request data
+	totalPRs, err := rest.GetNumberOfMergedPRs(repo_owner, repo_name, token)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fraction := float64(totalPRs) / float64(numCommits) * 100
+
+	metrics := gq.Graphql_func(repo_owner, repo_name, token)
+
+	url, net, bus_factor, correctness, rampup, responsiveness, license, pr := repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction)
+
+	return url, net, bus_factor, correctness, rampup, responsiveness, license, pr
+
 }
