@@ -182,7 +182,7 @@ func main() {
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
 
-		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
+		repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction)
 
 		if log_level >= 2 {
 			log.Println(urls[i])

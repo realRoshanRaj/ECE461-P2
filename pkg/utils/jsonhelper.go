@@ -40,7 +40,7 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64, RU float64, C float64, totalCommits float64, RM float64) {
+func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64, RU float64, C float64, totalCommits float64, RM float64, CQ float64) {
 
 	var repo Repo
 	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
@@ -75,6 +75,7 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 	// 	LicenseComp = 0
 	// }
 	new_repo.NET_SCORE = RoundFloat((new_repo.LICENSE_SCORE*(new_repo.CORRECTNESS_SCORE+3*new_repo.RESPONSIVE_MAINTAINER_SCORE+new_repo.BUS_FACTOR_SCORE+2*new_repo.RAMP_UP_SCORE))/7.0, 1)
+	new_repo.CODE_QUALITY_SCORE = CQ
 	// new_repo.LicenseScore = LS
 	*r = append(*r, new_repo)
 }
