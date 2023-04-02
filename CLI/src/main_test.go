@@ -549,6 +549,27 @@ func TestCase19(t *testing.T) {
 	os.Remove("testdata.txt")
 }
 
+func TestFractionOfCode(t *testing.T) {
+	//token = os.Getenv("GITHUB_TOKEN")
+	//fmt.Printf("Token: %s", token)
+	token := "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"
+	owner := "cloudinary"
+	name := "cloudinary_npm"
+	numCommits, err := rest.GetNumCommits(owner, name, token)
+	if err != nil {
+		t.Fatal(err)
+	}
+	totalPRs, _ := rest.GetNumberOfMergedPRs(owner, name, token)
+
+	if numCommits < 0 || totalPRs < 0 {
+		t.Fatal("Test Fraction of Code Failed. numCOmmits or totalPRs is less than 0")
+	}
+
+	if numCommits < totalPRs {
+		t.Fatal("Test Fraction of Code Failed. numCommits is less than totalPRs")
+	}
+}
+
 func TestCase20(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
