@@ -17,11 +17,6 @@ func GetRouter() *chi.Mux {
 
 	router.Delete("/reset", tempRoute)
 
-	// r.Post("/package", tempRoute)
-	// r.Get("/package/{id}", getPackage)
-	// r.Put("/package/{id}", tempRoute)
-	// r.Delete("/package/{id}", tempRoute)
-	// r.Get("/package/{id}/rate", tempRoute)
 	router.Route("/package", func(r chi.Router) {
 		r.Post("/", handler.CreatePackage)
 		r.Get("/{id}", handler.DownloadPackage)
