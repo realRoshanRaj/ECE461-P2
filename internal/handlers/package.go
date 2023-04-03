@@ -46,7 +46,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	}
 	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
 	rating := metrics.GenerateMetrics(packageInfo.Metadata.Repository)
-	if !metrics.IsRatingQualified(rating) {
+	if !metrics.MeasureIngestibility(rating) {
 		w.WriteHeader(http.StatusFailedDependency) // 424
 		return
 	}
