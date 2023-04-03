@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"pkgmanager/internal/metrics"
 	"pkgmanager/internal/models"
@@ -45,7 +46,8 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		Metadata: metadata,
 	}
 	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
-	rating := metrics.GenerateMetrics(packageInfo.Metadata.Repository)
+	rating := metrics.GenerateMetrics("https://github.com/" + packageInfo.Metadata.Repository)
+	fmt.Printf("%+v\n", rating)
 	if !metrics.MeasureIngestibility(rating) {
 		w.WriteHeader(http.StatusFailedDependency) // 424
 		return
