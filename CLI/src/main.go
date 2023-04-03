@@ -118,7 +118,7 @@ func main() {
 
 		// fmt.Println(rest.GetDefaultBranchName(urls[i]))
 		version_score := rest.GetVersionPinningResponse(urls[i])
-		fmt.Println("version pinning net score for", repo_name, ":", version_score)
+		// fmt.Println("version pinning net score for", repo_name, ":", version_score)
 		// fmt.Printf("SPLIT URL: %s\n", split_url)
 		// fmt.Printf("REPO OWNER: %s\n", repo_owner)
 		// fmt.Printf("REPO NAME: %s\n", repo_name)
@@ -193,11 +193,12 @@ func main() {
 
 		// Inserts the metrics into final function to do math on them and make a new struct out of them
 
-		url_test, _, _, _, _, _, _, _ := repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction)
-		fmt.Printf("URL: %s", url_test)
+		_, _, _, _, _, _, _, _, _ = repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction, version_score)
+		// fmt.Printf("URL: %s", url_test)
 		// make a new Metric struct named url[i]
-		_, _, _, _, _, _, _, prr := GetMetrics("https://github.com/lodash/lodash")
-		fmt.Printf("PRR: %f", prr)
+		_, _, _, _, _, _, _, _, _ = GetMetrics("https://github.com/lodash/lodash")
+		// fmt.Printf("PRR: %f", prr)
+		// fmt.Printf("Version score: %f", version)
 
 		if log_level >= 2 {
 			log.Println(urls[i])
@@ -257,7 +258,7 @@ func storeLog(filename string, data []byte, header string, clear bool) error {
 	return err
 }
 
-func GetMetrics(url string) (string, float64, float64, float64, float64, float64, float64, float64) {
+func GetMetrics(url string) (string, float64, float64, float64, float64, float64, float64, float64, float64) {
 	var err error
 	token = os.Getenv("GITHUB_TOKEN")
 
@@ -300,10 +301,12 @@ func GetMetrics(url string) (string, float64, float64, float64, float64, float64
 
 	fraction := float64(totalPRs) / float64(numCommits) * 100
 
+	version_score := rest.GetVersionPinningResponse(url)
+
 	metrics := gq.Graphql_func(repo_owner, repo_name, token)
 
-	url, net, bus_factor, correctness, rampup, responsiveness, license, pr := repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction)
+	url, net, bus_factor, correctness, rampup, responsiveness, license, pr, version := repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction, version_score)
 
-	return url, net, bus_factor, correctness, rampup, responsiveness, license, pr
+	return url, net, bus_factor, correctness, rampup, responsiveness, license, pr, version
 
 }

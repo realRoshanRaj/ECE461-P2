@@ -568,6 +568,21 @@ func TestFractionOfCode(t *testing.T) {
 	}
 }
 
+func TestDependencyVersionPinning(t *testing.T) {
+
+	link := "https://github.com/expressjs/express"
+	default_branch := rest.GetDefaultBranchName(link)
+	version_score := rest.GetVersionPinningResponse(link)
+
+	if default_branch != "master" {
+		t.Fatal("Test Dependency Version Pinning Failed. Default branch name is incorrect.")
+	}
+
+	if version_score != float64(20.0/31.0) {
+		t.Fatal("Test Dependency Version Pinning Failed. Version score value is incorrect.")
+	}
+}
+
 func TestCase20(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
