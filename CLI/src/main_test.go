@@ -34,6 +34,7 @@ import (
 // }
 
 func TestConvertUrl(t *testing.T) {
+
 	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
@@ -54,9 +55,11 @@ func TestConvertUrl(t *testing.T) {
 			t.Errorf("convert(%q); Expected %s, but got %s", test.input, expected, input)
 		}
 	}
+
 }
 
 func TestGetRepoResponse(t *testing.T) {
+
 	// godotenv.Load(".env")
 	token = os.Getenv("GITHUB_TOKEN")
 
