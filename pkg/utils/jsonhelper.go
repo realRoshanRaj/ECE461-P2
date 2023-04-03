@@ -30,6 +30,7 @@ type Repo struct { //Structure that will recieve important information from REST
 	RESPONSIVE_MAINTAINER_SCORE float64
 	LICENSE_SCORE               float64
 	CODE_QUALITY_SCORE          float64
+	VERSION_PINNING_SCORE       float64
 	// License              LName `json:"license"`
 	// Name string
 }
@@ -40,7 +41,7 @@ type LName struct { //substructure to hold nested json fields
 
 type Repos []Repo
 
-func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64, RU float64, C float64, totalCommits float64, RM float64) {
+func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64, RU float64, C float64, totalCommits float64, RM float64, CQ float64, VP float64) (string, float64, float64, float64, float64, float64, float64, float64, float64) {
 
 	var repo Repo
 	json.NewDecoder(resp.Body).Decode(&repo) //decodes response and stores info in repo struct
@@ -64,19 +65,22 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 		BUS_FACTOR_SCORE:            RoundFloat(1-(float64(cont[0].Contributions)/totalCommits), 1),
 		RESPONSIVE_MAINTAINER_SCORE: RoundFloat(RM, 1),
 		LICENSE_SCORE:               RoundFloat(LS, 1),
-		CODE_QUALITY_SCORE:          RoundFloat(0, 1),
+		CODE_QUALITY_SCORE:          RoundFloat(CQ, 1),
+		VERSION_PINNING_SCORE:       RoundFloat(VP, 1),
 		// License:              repo.License,
 	}
 
 	// var LicenseComp float64
 	// if (new_repo.License.Name != "") {
-	// 	LicenseComp = 1
+	// 	LicenseComp = 1image.png
 	// } else {
 	// 	LicenseComp = 0
 	// }
 	new_repo.NET_SCORE = RoundFloat((new_repo.LICENSE_SCORE*(new_repo.CORRECTNESS_SCORE+3*new_repo.RESPONSIVE_MAINTAINER_SCORE+new_repo.BUS_FACTOR_SCORE+2*new_repo.RAMP_UP_SCORE))/7.0, 1)
+	new_repo.CODE_QUALITY_SCORE = CQ
 	// new_repo.LicenseScore = LS
 	*r = append(*r, new_repo)
+	return new_repo.URL, new_repo.NET_SCORE, new_repo.BUS_FACTOR_SCORE, new_repo.CORRECTNESS_SCORE, new_repo.RAMP_UP_SCORE, new_repo.RESPONSIVE_MAINTAINER_SCORE, new_repo.LICENSE_SCORE, new_repo.CODE_QUALITY_SCORE, new_repo.VERSION_PINNING_SCORE
 }
 
 func (r *Repos) Load(filename string) error { //reads the json
