@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"pkgmanager/internal/models"
+	"pkgmanager/pkg/utils"
+	"regexp"
 	"strings"
 	"time"
 
@@ -104,7 +106,6 @@ func GetPackageByID(id string) (*models.PackageInfo, int) {
 	}
 
 	return &pkg, http.StatusOK
-
 }
 
 func DeletePackageByID(id string) int {
@@ -213,15 +214,59 @@ func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
 		actionEntries = append(actionEntries, actionEntry)
 	}
 	return actionEntries, http.StatusOK
-
 }
 
-func GetAllPackages() ([]models.PackageInfo, error) {
+func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
+	packages, statusCode := GetAllPackages()
+	var pkgs []models.PackageQuery
+	for _, pkg := range packages {
+		matched, err := regexp.MatchString(regex, pkg.Metadata.Name)
+		if err != nil {
+			return nil, http.StatusInternalServerError
+		}
+
+		if matched {
+			tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+			pkgs = append(pkgs, tmp)
+		} else {
+			readme := utils.GetReadMe(pkg.Data.Content)
+			matched, err := regexp.MatchString(regex, readme)
+			if err != nil {
+				return nil, http.StatusInternalServerError
+			}
+			if matched {
+				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				pkgs = append(pkgs, tmp)
+			}
+		}
+	}
+	return pkgs, statusCode
+}
+
+func getReadMe(pkg models.PackageInfo) string {
+	// client := &http.Client{}
+	// packageData := pkg.Data
+	// if packageData.URL != "" {
+	// 	// URL method
+	// 	metadata = utils.ExtractMetadataFromURL(packageData.URL)
+	// } else if packageData.Content != "" && packageData.URL == "" {
+	// 	// Content method (zip file)
+	// 	var foundPackageJson bool
+	// 	metadata, foundPackageJson = utils.ExtractMetadataFromZip(packageData.Content)
+	// 	if !foundPackageJson {
+	// 		w.WriteHeader(http.StatusBadRequest) // 400
+	// 		return
+	// 	}
+	// }
+	return "Test"
+}
+
+func GetAllPackages() ([]models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
 		log.Fatalf("Failed to create FireStore Client: %v", err)
-		return nil, err
+		return nil, http.StatusInternalServerError
 	}
 
 	defer client.Close()
@@ -235,7 +280,7 @@ func GetAllPackages() ([]models.PackageInfo, error) {
 		}
 		if err != nil {
 			log.Fatalf("Failed to get all packages: %v", err)
-			return nil, err
+			return nil, http.StatusInternalServerError
 		}
 
 		tmp_data := models.PackageData{
@@ -257,7 +302,7 @@ func GetAllPackages() ([]models.PackageInfo, error) {
 		pkgs = append(pkgs, pkg)
 	}
 
-	return pkgs, nil
+	return pkgs, http.StatusOK
 }
 
 func recordActionEntry(client *firestore.Client, ctx context.Context, action string, metadata models.Metadata) bool {

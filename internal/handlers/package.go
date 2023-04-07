@@ -129,6 +129,41 @@ func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
+	var regex string
+	err := json.NewDecoder(r.Body).Decode(&regex)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	packages, statusCode := db.GetPackageByRegex(regex)
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, packages)
+	} else {
+		w.WriteHeader(statusCode) // handles the 404 error
+	}
+}
+
+// 	var pkgs []models.PackagesWithVersion
+// 	for _, pkg := range packages {
+// 		matched, err := regexp.MatchString(regex, pkg.Metadata.Name)
+// 		if err != nil {
+// 			w.WriteHeader(http.StatusInternalServerError) // 400
+// 			return
+// 		}
+// 		if matched {
+// 			tmp := models.PackagesWithVersion{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+// 			pkgs := append(pkgs, tmp)
+// 		}
+// 	}
+// 	if statusCode == http.StatusOK {
+// 		responseJSON(w, http.StatusOK, pkgs)
+// 	} else {
+// 		w.WriteHeader(statusCode) // handles the 404 error
+// 	}
+// }
+
 // respondJSON makes the response with payload as json format
 func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 	response, err := json.Marshal(payload)
