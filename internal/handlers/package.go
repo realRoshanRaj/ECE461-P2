@@ -26,6 +26,13 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	var metadata models.Metadata
 	if packageData.Content == "" && packageData.URL != "" {
 		// URL method
+		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
+		rating := metrics.GenerateMetrics(packageData.URL)
+		fmt.Printf("%+v\n", rating)
+		if !metrics.MeasureIngestibility(rating) {
+			w.WriteHeader(http.StatusFailedDependency) // 424
+			return
+		}
 		metadata = utils.ExtractMetadataFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
@@ -35,6 +42,17 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest) // 400
 			return
 		}
+	} else if packageData.Content != "" && packageData.URL != "" {
+		// Both zip file and url provided
+
+		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
+		rating := metrics.GenerateMetrics(packageData.URL)
+		fmt.Printf("%+v\n", rating)
+		if !metrics.MeasureIngestibility(rating) {
+			w.WriteHeader(http.StatusFailedDependency) // 424
+			return
+		}
+		metadata = utils.ExtractMetadataFromURL(packageData.URL)
 	} else {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
@@ -45,13 +63,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		Data:     packageData,
 		Metadata: metadata,
 	}
-	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
-	rating := metrics.GenerateMetrics("https://github.com/" + packageInfo.Metadata.Repository)
-	fmt.Printf("%+v\n", rating)
-	if !metrics.MeasureIngestibility(rating) {
-		w.WriteHeader(http.StatusFailedDependency) // 424
-		return
-	}
+
 	// Create package in database
 	_, statusCode := db.CreatePackage(&packageInfo)
 

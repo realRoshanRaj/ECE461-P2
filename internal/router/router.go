@@ -37,4 +37,5 @@ func GetRouter() *chi.Mux {
 
 func tempRoute(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Route not implemented yet", r.Body)
+	w.WriteHeader(http.StatusNotImplemented)
 }
