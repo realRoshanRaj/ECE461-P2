@@ -229,7 +229,18 @@ func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
 			tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
 			pkgs = append(pkgs, tmp)
 		} else {
-			readme := utils.GetReadMe(pkg.Data.Content)
+			var readme string
+			if pkg.Data.URL == "" {
+				readme, err = utils.GetReadmeFromZip(pkg.Data.Content)
+				if err != nil {
+					return nil, http.StatusInternalServerError
+				}
+			} else {
+				readme, err = utils.GetReadmeTextFromGitHubURL(pkg.Data.URL)
+				if err != nil {
+					return nil, http.StatusInternalServerError
+				}
+			}
 			matched, err := regexp.MatchString(regex, readme)
 			if err != nil {
 				return nil, http.StatusInternalServerError
@@ -241,24 +252,6 @@ func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
 		}
 	}
 	return pkgs, statusCode
-}
-
-func getReadMe(pkg models.PackageInfo) string {
-	// client := &http.Client{}
-	// packageData := pkg.Data
-	// if packageData.URL != "" {
-	// 	// URL method
-	// 	metadata = utils.ExtractMetadataFromURL(packageData.URL)
-	// } else if packageData.Content != "" && packageData.URL == "" {
-	// 	// Content method (zip file)
-	// 	var foundPackageJson bool
-	// 	metadata, foundPackageJson = utils.ExtractMetadataFromZip(packageData.Content)
-	// 	if !foundPackageJson {
-	// 		w.WriteHeader(http.StatusBadRequest) // 400
-	// 		return
-	// 	}
-	// }
-	return "Test"
 }
 
 func GetAllPackages() ([]models.PackageInfo, int) {
@@ -273,6 +266,7 @@ func GetAllPackages() ([]models.PackageInfo, int) {
 	var pkgs []models.PackageInfo
 
 	itr := client.Collection(COLLECTION_NAME).Documents(ctx)
+	defer itr.Stop()
 	for {
 		doc, err := itr.Next()
 		if err == iterator.Done {
@@ -283,21 +277,9 @@ func GetAllPackages() ([]models.PackageInfo, int) {
 			return nil, http.StatusInternalServerError
 		}
 
-		tmp_data := models.PackageData{
-			Content:   doc.Data()["data"].(map[string]interface{})["Content"].(string),
-			URL:       doc.Data()["data"].(map[string]interface{})["URL"].(string),
-			JSProgram: doc.Data()["data"].(map[string]interface{})["JSProgram"].(string),
-		}
-
-		tmp_meta := models.Metadata{
-			Name:    doc.Data()["metadata"].(map[string]interface{})["Name"].(string),
-			Version: doc.Data()["metadata"].(map[string]interface{})["Version"].(string),
-			ID:      doc.Data()["metadata"].(map[string]interface{})["ID"].(string),
-		}
-
-		pkg := models.PackageInfo{
-			Data:     tmp_data,
-			Metadata: tmp_meta,
+		var pkg models.PackageInfo
+		if err := doc.DataTo(&pkg); err != nil {
+			log.Fatalf("Failed to convert document data: %v", err)
 		}
 		pkgs = append(pkgs, pkg)
 	}

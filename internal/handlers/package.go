@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"pkgmanager/internal/metrics"
 	"pkgmanager/internal/models"
@@ -130,13 +131,13 @@ func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
-	var regex string
-	err := json.NewDecoder(r.Body).Decode(&regex)
+	regex, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
-	packages, statusCode := db.GetPackageByRegex(regex)
+
+	packages, statusCode := db.GetPackageByRegex(string(regex))
 
 	if statusCode == http.StatusOK {
 		responseJSON(w, http.StatusOK, packages)
