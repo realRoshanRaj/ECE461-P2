@@ -14,9 +14,9 @@ import (
 )
 
 type PackageJson struct {
-	Name       string `json:"name"`
-	Version    string `json:"version"`
-	Repository string `json:"repository"`
+	Name       string      `json:"name"`
+	Version    string      `json:"version"`
+	Repository interface{} `json:"repository"`
 }
 
 func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
@@ -84,14 +84,37 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
 	return &packageJson, found
 }
 
+type RepoPackageJson struct {
+	Type string `json:"type"`
+	URL  string `json:"url"`
+}
+
 func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 	pkgJson, found := extractPackageJsonFromZip(zipfile)
 	// fmt.Println(pkgJson.Name)
 	// fmt.Println(pkgJson.Version)
 	// fmt.Println(pkgJson.Repository)
 
+	// TODO: parse different string variants of repository
+
+	var repourl string
+	if str, ok := pkgJson.Repository.(string); ok {
+		repourl = str
+		// fmt.Println(str)
+	} else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
+		repourl = repo.URL
+		// fmt.Println(repo.URL)
+	} else if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
+		if url, ok := m["url"].(string); ok {
+			repourl = url
+			// fmt.Println(url)
+		}
+	} else {
+		return models.Metadata{}, false // GITHUB URL NOT FOUND
+	}
+
 	if found {
-		return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: pkgJson.Repository}, found
+		return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found
 	} else {
 		return models.Metadata{}, found
 	}
