@@ -97,17 +97,17 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 	}
 }
 
-func GetReadmeFromZip(zipBase64 string) (string, error) {
+func GetReadmeFromZip(zipBase64 string) (string, int) {
 	// Decode the base64-encoded zip file
 	zipBytes, err := base64.StdEncoding.DecodeString(zipBase64)
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError
 	}
 
 	// Create a reader from the zipBytes
 	zipReader, err := zip.NewReader(strings.NewReader(string(zipBytes)), int64(len(zipBytes)))
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError
 	}
 
 	// Define regular expression pattern for README file names
@@ -121,26 +121,26 @@ func GetReadmeFromZip(zipBase64 string) (string, error) {
 			// Open the file
 			zipFile, err := file.Open()
 			if err != nil {
-				return "", err
+				return "", http.StatusInternalServerError
 			}
 			defer zipFile.Close()
 
 			// Read the contents of the file
 			readmeBytes, err := ioutil.ReadAll(zipFile)
 			if err != nil {
-				return "", err
+				return "", http.StatusInternalServerError
 			}
 
 			// Convert the contents to string
 			readmeText := string(readmeBytes)
-			return readmeText, nil
+			return readmeText, http.StatusOK
 		}
 	}
 
-	return "", fmt.Errorf("README file not found in the zip archive")
+	return "", http.StatusBadRequest
 }
 
-func GetReadmeTextFromGitHubURL(url string) (string, error) {
+func GetReadmeTextFromGitHubURL(url string) (string, int) {
 
 	// Define the regex pattern to match GitHub repository URL
 	regexPattern := `https?://github.com/([\w-]+)/([\w-]+)`
@@ -152,7 +152,7 @@ func GetReadmeTextFromGitHubURL(url string) (string, error) {
 	matches := regex.FindStringSubmatch(url)
 
 	if len(matches) != 3 {
-		return "", fmt.Errorf("failed to extract repository owner and name from URL: %s", url)
+		return "", http.StatusInternalServerError
 	}
 
 	owner := matches[1]
@@ -163,17 +163,17 @@ func GetReadmeTextFromGitHubURL(url string) (string, error) {
 	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/readme", repoURL)
 	resp, err := http.Get(apiURL)
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("failed to fetch README download URL. API returned status code: %d", resp.StatusCode)
+		return "", http.StatusInternalServerError
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError
 	}
 
 	// Define the regex pattern to match the download URL in the API response
@@ -186,24 +186,24 @@ func GetReadmeTextFromGitHubURL(url string) (string, error) {
 	match := regex2.FindStringSubmatch(string(body))
 
 	if len(match) != 2 {
-		return "", fmt.Errorf("failed to extract README download URL from API response")
+		return "", http.StatusInternalServerError
 	}
 
 	downloadURL := match[1]
 	resp, err = http.Get(downloadURL)
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError
 	}
 	defer resp.Body.Close()
 
 	// Read response body
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError
 	}
 
 	// Return README text as string
-	return string(body), nil
+	return string(body), http.StatusOK
 }
 
 func ExtractMetadataFromURL(url string) models.Metadata {

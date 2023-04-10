@@ -231,14 +231,14 @@ func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
 		} else {
 			var readme string
 			if pkg.Data.URL == "" {
-				readme, err = utils.GetReadmeFromZip(pkg.Data.Content)
-				if err != nil {
-					return nil, http.StatusInternalServerError
+				readme, statusCode = utils.GetReadmeFromZip(pkg.Data.Content)
+				if statusCode != http.StatusOK {
+					return nil, statusCode
 				}
 			} else {
-				readme, err = utils.GetReadmeTextFromGitHubURL(pkg.Data.URL)
-				if err != nil {
-					return nil, http.StatusInternalServerError
+				readme, statusCode = utils.GetReadmeTextFromGitHubURL(pkg.Data.URL)
+				if statusCode != http.StatusOK {
+					return nil, statusCode
 				}
 			}
 			matched, err := regexp.MatchString(regex, readme)
@@ -251,7 +251,12 @@ func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
 			}
 		}
 	}
-	return pkgs, statusCode
+
+	if len(pkgs) != 0 {
+		return pkgs, statusCode
+	} else {
+		return nil, http.StatusNotFound
+	}
 }
 
 func GetAllPackages() ([]models.PackageInfo, int) {
@@ -300,4 +305,10 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	}
 
 	return newEntry != nil
+}
+
+func GetPackages(pkg_query models.PackageQuery) ([]models.PackageQuery, int) {
+	var result []models.PackageQuery
+
+	return result, http.StatusOK
 }
