@@ -307,8 +307,9 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	return newEntry != nil
 }
 
+/*
 func GetPackages(pkg_query models.PackageQuery) ([]models.PackageQuery, int) {
-	var result []models.PackageQuery
+	packages, statusCode := GetAllPackages()
 
 	return result, http.StatusOK
-}
+}*/

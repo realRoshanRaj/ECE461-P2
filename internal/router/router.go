@@ -13,7 +13,7 @@ func GetRouter() *chi.Mux {
 	router := chi.NewRouter()
 
 	// Define endpoints
-	router.Post("/packages", tempRoute)
+	router.Post("/packages", handler.GetPackages)
 
 	router.Delete("/reset", tempRoute)
 

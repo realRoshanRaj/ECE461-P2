@@ -10,6 +10,8 @@ import (
 	"pkgmanager/pkg/db"
 	"pkgmanager/pkg/utils"
 
+	"strings"
+
 	"github.com/go-chi/chi"
 )
 
@@ -160,19 +162,32 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 }
 
 func GetPackages(w http.ResponseWriter, r *http.Request) {
-	// initialize a packagedata struct based on the request body
-	packageQuery := models.PackageQuery{}
-	err := json.NewDecoder(r.Body).Decode(&packageQuery)
+	var pkgs []models.PackageQuery
+	err := json.NewDecoder(r.Body).Decode(&pkgs)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
-
-	packages, statusCode := db.GetPackages(packageQuery)
-	if statusCode == http.StatusOK {
-		responseJSON(w, http.StatusOK, packages)
-	} else {
-		w.WriteHeader(statusCode) // handles the 404 error
+	var Version string
+	var name string
+	for _, pkg := range pkgs {
+		//print a type of pkg.Version
+		Version = pkg.Version
+		name = pkg.Name
+		fmt.Println(pkg.Version)
 	}
+	trimmedVersion := strings.TrimSpace(Version)
+	parts := strings.Split(trimmedVersion, " ")
+	mode := parts[0]
+	version := parts[1]
+
+	fmt.Println(mode)
+	fmt.Println(version)
+	fmt.Println(name)
+	//separate version by space
+
+	//separate name by space
+
+	w.Write([]byte("hello world"))
 
 }
