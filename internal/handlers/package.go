@@ -178,16 +178,21 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 	}
 	trimmedVersion := strings.TrimSpace(Version)
 	parts := strings.Split(trimmedVersion, " ")
-	mode := parts[0]
+	//mode := parts[0]
 	version := parts[1]
+	cleanedVersion := strings.ReplaceAll(version, "(", "")
+	cleanedVersion = strings.ReplaceAll(cleanedVersion, ")", "")
+	packages, statusCode := db.GetPackages(cleanedVersion, name)
 
-	fmt.Println(mode)
-	fmt.Println(version)
-	fmt.Println(name)
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, packages)
+	} else {
+		w.WriteHeader(statusCode)
+	}
 	//separate version by space
 
 	//separate name by space
 
-	w.Write([]byte("hello world"))
+	//w.Write([]byte("hello world"))
 
 }

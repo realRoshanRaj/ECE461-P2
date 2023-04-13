@@ -307,9 +307,17 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	return newEntry != nil
 }
 
-/*
-func GetPackages(pkg_query models.PackageQuery) ([]models.PackageQuery, int) {
+func GetPackages(version string, name string) ([]models.PackageQuery, int) {
 	packages, statusCode := GetAllPackages()
+	var pkgs []models.PackageQuery
 
-	return result, http.StatusOK
-}*/
+	for _, pkg := range packages {
+		if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
+			tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+			pkgs = append(pkgs, tmp)
+		}
+	}
+
+	return pkgs, statusCode
+
+}
