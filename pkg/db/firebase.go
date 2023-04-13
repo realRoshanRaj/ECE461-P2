@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"pkgmanager/internal/models"
@@ -14,6 +15,10 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	//import semver
+
+	"github.com/Masterminds/semver/v3"
 )
 
 const (
@@ -307,17 +312,47 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	return newEntry != nil
 }
 
-func GetPackages(version string, name string) ([]models.PackageQuery, int) {
+func GetPackages(version string, name string, mode string) ([]models.PackageQuery, int) {
 	packages, statusCode := GetAllPackages()
 	var pkgs []models.PackageQuery
 
 	for _, pkg := range packages {
-		if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
-			tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
-			pkgs = append(pkgs, tmp)
+		if mode == "Exact" {
+			if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
+				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				pkgs = append(pkgs, tmp)
+			}
+		} else if mode == "Bounded range" {
+			parts := strings.Split(version, "-")
+			lower := parts[0]
+			upper := parts[1]
+			lowerVersion, _ := semver.NewVersion(lower)
+			upperVersion, _ := semver.NewVersion(upper)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
+				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				pkgs = append(pkgs, tmp)
+			}
+		} else if mode == "Carat" {
+			carat, _ := semver.NewConstraint(version)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && carat.Check(pkgVersion) {
+				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				pkgs = append(pkgs, tmp)
+			}
+		} else if mode == "Tilde" {
+			fmt.Println(version)
+			tilde, _ := semver.NewConstraint(version)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && tilde.Check(pkgVersion) {
+				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				pkgs = append(pkgs, tmp)
+			}
 		}
 	}
 
 	return pkgs, statusCode
-
 }

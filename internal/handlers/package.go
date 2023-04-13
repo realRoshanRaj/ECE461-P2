@@ -170,19 +170,38 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 	}
 	var Version string
 	var name string
+	var cleanedVersion string
+	var mode string
+	//var version string
 	for _, pkg := range pkgs {
 		//print a type of pkg.Version
 		Version = pkg.Version
 		name = pkg.Name
 		fmt.Println(pkg.Version)
 	}
-	trimmedVersion := strings.TrimSpace(Version)
-	parts := strings.Split(trimmedVersion, " ")
-	//mode := parts[0]
-	version := parts[1]
-	cleanedVersion := strings.ReplaceAll(version, "(", "")
-	cleanedVersion = strings.ReplaceAll(cleanedVersion, ")", "")
-	packages, statusCode := db.GetPackages(cleanedVersion, name)
+
+	//if "Version contains "Bounded range"",
+	if strings.Contains(Version, "Exact") || strings.Contains(Version, "Carat") || strings.Contains(Version, "Tilde") {
+		fmt.Println("Exact")
+		trimmedVersion := strings.TrimSpace(Version)
+		parts := strings.Split(trimmedVersion, " ")
+		mode = parts[0]
+		version := parts[1]
+		cleanedVersion = strings.ReplaceAll(version, "(", "")
+		cleanedVersion = strings.ReplaceAll(cleanedVersion, ")", "")
+	} else if strings.Contains(Version, "Bounded range") {
+		trimmedVersion := strings.TrimSpace(Version)
+		parts := strings.Split(trimmedVersion, " ")
+		mode = parts[0] + " " + parts[1]
+		version := parts[2]
+		cleanedVersion = strings.ReplaceAll(version, "(", "")
+		cleanedVersion = strings.ReplaceAll(cleanedVersion, ")", "")
+	}
+	//fmt.Println(mode)
+	//fmt.Println(cleanedVersion)
+	packages, statusCode := db.GetPackages(cleanedVersion, name, mode)
+
+	//fmt.Println(version)
 
 	if statusCode == http.StatusOK {
 		responseJSON(w, http.StatusOK, packages)
