@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"pkgmanager/internal/models"
@@ -343,7 +342,6 @@ func GetPackages(version string, name string, mode string) ([]models.PackageQuer
 				pkgs = append(pkgs, tmp)
 			}
 		} else if mode == "Tilde" {
-			fmt.Println(version)
 			tilde, _ := semver.NewConstraint(version)
 			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
 
