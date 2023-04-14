@@ -232,3 +232,7 @@ func GetReadmeTextFromGitHubURL(url string) (string, int) {
 func ExtractMetadataFromURL(url string) models.Metadata {
 	return models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
 }
+
+func ExtractZipFromURL(url string) string {
+	return "zipBase64"
+}

@@ -37,6 +37,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		metadata = utils.ExtractMetadataFromURL(packageData.URL)
+		packageData.Content = utils.ExtractZipFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
 		var foundPackageJson bool
@@ -45,18 +46,8 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest) // 400
 			return
 		}
-	} else if packageData.Content != "" && packageData.URL != "" {
-		// Both zip file and url provided
-
-		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
-		rating := metrics.GenerateMetrics(packageData.URL)
-		fmt.Printf("%+v\n", rating)
-		if !metrics.MeasureIngestibility(rating) {
-			w.WriteHeader(http.StatusFailedDependency) // 424
-			return
-		}
-		metadata = utils.ExtractMetadataFromURL(packageData.URL)
 	} else {
+		// Both zip file and url provided
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
@@ -79,7 +70,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-
+	// TODO: also need to return the content if URL only exists
 	pkgInfo, statusCode := db.GetPackageByID(packageID)
 	if statusCode == http.StatusOK {
 		responseJSON(w, http.StatusOK, pkgInfo)
@@ -113,13 +104,27 @@ func DeletePackage(w http.ResponseWriter, r *http.Request) {
 
 func RatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
+
+	pkgInfo, statusCode := db.GetPackageByID(packageID)
+	if statusCode != http.StatusOK {
+		w.WriteHeader(statusCode) // handles the 404 error
+		return
+	}
+
+	metrics := metrics.GenerateMetrics(pkgInfo.Metadata.Repository)
+	// if metrics != nil {
+	responseJSON(w, http.StatusOK, metrics)
+	// } else {
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// }
+
 	// payload := []byte(packageID)
 	// w.WriteHeader(http.StatusCreated)
 	// _, err := w.Write(payload) // put json here
 	// if err != nil {
 	// 	log.Println(err)
 	// }
-	responseJSON(w, http.StatusCreated, packageID)
+
 }
 
 func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
