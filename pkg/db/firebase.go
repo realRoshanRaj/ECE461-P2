@@ -347,14 +347,14 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	return newEntry != nil
 }
 
-func GetPackages(version string, name string, mode string) ([]models.PackageQuery, int) {
+func GetPackages(version string, name string, mode string) ([]models.Metadata, int) {
 	packages, statusCode := GetAllPackages()
-	var pkgs []models.PackageQuery
+	var pkgs []models.Metadata
 
 	for _, pkg := range packages {
 		if mode == "Exact" {
 			if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
-				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
 				pkgs = append(pkgs, tmp)
 			}
 		} else if mode == "Bounded range" {
@@ -366,7 +366,7 @@ func GetPackages(version string, name string, mode string) ([]models.PackageQuer
 			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
 
 			if pkg.Metadata.Name == name && pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
-				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
 				pkgs = append(pkgs, tmp)
 			}
 		} else if mode == "Carat" {
@@ -374,15 +374,14 @@ func GetPackages(version string, name string, mode string) ([]models.PackageQuer
 			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
 
 			if pkg.Metadata.Name == name && carat.Check(pkgVersion) {
-				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
 				pkgs = append(pkgs, tmp)
 			}
 		} else if mode == "Tilde" {
 			tilde, _ := semver.NewConstraint(version)
 			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
-
 			if pkg.Metadata.Name == name && tilde.Check(pkgVersion) {
-				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
 				pkgs = append(pkgs, tmp)
 			}
 		}
