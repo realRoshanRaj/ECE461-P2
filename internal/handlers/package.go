@@ -36,7 +36,12 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusFailedDependency) // 424
 			return
 		}
-		metadata = utils.ExtractMetadataFromURL(packageData.URL)
+		var found bool
+		metadata, found = utils.ExtractMetadataFromURL(packageData.URL)
+		if !found {
+			w.WriteHeader(http.StatusBadRequest) // 400
+			return
+		}
 		packageData.Content = utils.ExtractZipFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
@@ -71,7 +76,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
 	// TODO: also need to return the content if URL only exists
-	pkgInfo, statusCode := db.GetPackageByID(packageID)
+	pkgInfo, statusCode := db.GetPackageByID(packageID, 1)
 	if statusCode == http.StatusOK {
 		responseJSON(w, http.StatusOK, pkgInfo)
 	} else {
@@ -105,7 +110,7 @@ func DeletePackage(w http.ResponseWriter, r *http.Request) {
 func RatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
 
-	pkgInfo, statusCode := db.GetPackageByID(packageID)
+	pkgInfo, statusCode := db.GetPackageByID(packageID, 0)
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode) // handles the 404 error
 		return
@@ -153,19 +158,6 @@ func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// respondJSON makes the response with payload as json format
-func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
-	response, err := json.Marshal(payload)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	w.Write([]byte(response))
-}
-
 func GetPackages(w http.ResponseWriter, r *http.Request) {
 	var pkgs []models.PackageQuery
 	err := json.NewDecoder(r.Body).Decode(&pkgs)
@@ -204,4 +196,17 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(statusCode)
 	}
+}
+
+// respondJSON makes the response with payload as json format
+func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
+	response, err := json.Marshal(payload)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	w.Write([]byte(response))
 }

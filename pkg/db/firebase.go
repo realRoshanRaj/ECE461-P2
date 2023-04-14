@@ -70,7 +70,8 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 
 }
 
-func GetPackageByID(id string) (*models.PackageInfo, int) {
+// reason is 1 if it is for download, 0 for rate
+func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
@@ -102,8 +103,11 @@ func GetPackageByID(id string) (*models.PackageInfo, int) {
 	if err != nil {
 		return nil, http.StatusInternalServerError
 	}
-
-	success := recordActionEntry(client, ctx, "DOWNLOAD", pkg.Metadata)
+	method := "DOWNLOAD"
+	if reason == 0 {
+		method = "RATE"
+	}
+	success := recordActionEntry(client, ctx, method, pkg.Metadata)
 	if !success {
 		return nil, http.StatusInternalServerError
 	}

@@ -229,10 +229,75 @@ func GetReadmeTextFromGitHubURL(url string) (string, int) {
 	return string(body), http.StatusOK
 }
 
-func ExtractMetadataFromURL(url string) models.Metadata {
-	return models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
+func ExtractMetadataFromURL(url string) (models.Metadata, bool) {
+	// Extract the repository owner and name from the URL
+	parts := strings.Split(strings.TrimPrefix(url, "https://github.com/"), "/")
+	if len(parts) < 2 {
+		// fmt.Errorf("invalid Github URL: %s", url)
+		return models.Metadata{}, false
+	}
+	owner, name := parts[0], parts[1]
+
+	// Fetch the contents of the package.json file using Github's REST API
+	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/package.json", owner, name))
+	if err != nil {
+		// return PackageJSON{}, fmt.Errorf("error fetching package.json file: %v", err)
+		return models.Metadata{}, false
+	}
+	defer resp.Body.Close()
+
+	// Decode the base64-encoded content field
+	var result struct {
+		Content string `json:"content"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		// panic(err)
+		return models.Metadata{}, false
+	}
+
+	content, err := base64.StdEncoding.DecodeString(result.Content)
+	if err != nil {
+		// panic(err)
+		return models.Metadata{}, false
+	}
+	var packageJson PackageJson
+	err = json.Unmarshal(content, &packageJson)
+	if err != nil {
+		// panic(err)
+		return models.Metadata{}, false
+	}
+	// fmt.Println(packageJson.Name)
+	// fmt.Println(packageJson.Version)
+	// fmt.Println(packageJson.Repository)
+
+	return models.Metadata{Name: packageJson.Name, Version: packageJson.Version, Repository: url, ID: "packageData_ID"}, true
 }
 
 func ExtractZipFromURL(url string) string {
-	return "zipBase64"
+	// Extract the repository owner and name from the URL
+	parts := strings.Split(strings.TrimPrefix(url, "https://github.com/"), "/")
+	if len(parts) < 2 {
+		// fmt.Errorf("invalid Github URL: %s", url)
+		// return "", false
+	}
+	owner, repo := parts[0], parts[1]
+
+	// Send a GET request to the GitHub API endpoint
+	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/zipball", owner, repo))
+	if err != nil {
+		// panic(err)
+	}
+	defer resp.Body.Close()
+
+	// Read the contents of the downloaded zip file
+	contents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// panic(err)
+	}
+
+	// Encode the contents of the zip file using base64
+	encoded := base64.StdEncoding.EncodeToString(contents)
+
+	return encoded
 }
