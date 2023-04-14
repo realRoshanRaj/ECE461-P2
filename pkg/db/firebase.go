@@ -223,6 +223,38 @@ func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
 	return actionEntries, http.StatusOK
 }
 
+func DeletePackageByName(package_name string) int {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		// return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	query := client.Collection(HISTORY_NAME).Where("PackageMetadata.Name", "==", package_name)
+
+	docs, err := query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return http.StatusNotFound
+	}
+
+	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	_, err = batch.Commit(ctx)
+	if err != nil {
+		log.Printf("Failed to delete documents: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
+}
+
 func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
 	packages, statusCode := GetAllPackages()
 	var pkgs []models.PackageQuery

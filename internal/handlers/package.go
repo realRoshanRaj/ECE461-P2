@@ -142,6 +142,12 @@ func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DeletePackageByName(w http.ResponseWriter, r *http.Request) {
+	packageName := chi.URLParam(r, "name")
+	statusCode := db.DeletePackageByName(packageName)
+	w.WriteHeader(statusCode) // handles error/status codes
+}
+
 func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
 	regex, err := io.ReadAll(r.Body)
 	if err != nil {
