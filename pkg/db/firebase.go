@@ -334,6 +334,7 @@ func GetAllPackages() ([]models.PackageInfo, int) {
 func recordActionEntry(client *firestore.Client, ctx context.Context, action string, metadata models.Metadata) bool {
 	historyCollection := client.Collection(HISTORY_NAME)
 	newEntry, _, err := historyCollection.Add(ctx, models.ActionEntry{
+		User:     "{\"name\": \"default user\", \"isAdmin\": false}",
 		Action:   strings.ToUpper(action),
 		Metadata: metadata,
 		Date:     time.Now().Format(time.RFC3339),
