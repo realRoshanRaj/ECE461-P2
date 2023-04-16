@@ -46,3 +46,29 @@ jobs:
         env:
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
         run: ./run test
+  end-to-end-tests:
+    needs: unit-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Start Server
+        run: |
+          go run main.go &> /dev/null &
+          sleep 5
+
+      - name: Run API tests
+        run: |
+          postman collection run "12526796-1455da38-eef8-4f88-8bd4-f25b437df635"
+
+      - name: Stop Server
+        run: |
+          kill $(lsof -t -i:8000)
