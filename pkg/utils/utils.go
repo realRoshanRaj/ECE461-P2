@@ -101,7 +101,7 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 	}
 	var repourl string
 	if str, ok := pkgJson.Repository.(string); ok {
-		repourl = str
+		repourl = "https://github.com/" + str
 		fmt.Println("Option 1", repourl)
 		// fmt.Println(str)
 	} else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
@@ -114,6 +114,7 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 			repourl = url
 			// fmt.Println("Option 3", repourl) This is the one that works
 			repourl = strings.Replace(repourl, "http://", "https://", 1)
+			repourl = strings.Replace(repourl, "git://", "https://", 1)
 			// fmt.Println(url)
 		}
 	} else {
