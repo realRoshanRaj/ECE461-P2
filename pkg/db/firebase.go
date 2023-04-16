@@ -332,9 +332,45 @@ func GetAllPackages() ([]models.PackageInfo, int) {
 	return pkgs, http.StatusOK
 }
 
+func GetPackages(version string, name string, mode string) ([]models.Metadata, int) {
+	packages, statusCode := GetAllPackages()
+	var pkgs []models.Metadata
+
+	for _, pkg := range packages {
+		if mode == "Exact" {
+			if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
+				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+				pkgs = append(pkgs, pkg.Metadata)
+			}
+		} else if mode == "Bounded range" {
+			parts := strings.Split(version, "-")
+			lower := parts[0]
+			upper := parts[1]
+			lowerVersion, _ := semver.NewVersion(lower)
+			upperVersion, _ := semver.NewVersion(upper)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
+				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+				pkgs = append(pkgs, pkg.Metadata)
+			}
+		} else if mode == "Carat" || mode == "Tilde" {
+			carat, _ := semver.NewConstraint(version)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && carat.Check(pkgVersion) {
+				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+				pkgs = append(pkgs, pkg.Metadata)
+			}
+		}
+	}
+
+	return pkgs, statusCode
+}
+
 func recordActionEntry(client *firestore.Client, ctx context.Context, action string, metadata models.Metadata) bool {
 	historyCollection := client.Collection(HISTORY_NAME)
-	defaultUser := map[string]string{}
+	defaultUser := make(map[string]interface{})
 	json.Unmarshal([]byte("{\"name\": \"default user\", \"isAdmin\": false}"), &defaultUser)
 	newEntry, _, err := historyCollection.Add(ctx, models.ActionEntry{
 		User:     defaultUser,
@@ -348,47 +384,4 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	}
 
 	return newEntry != nil
-}
-
-func GetPackages(version string, name string, mode string) ([]models.Metadata, int) {
-	packages, statusCode := GetAllPackages()
-	var pkgs []models.Metadata
-
-	for _, pkg := range packages {
-		if mode == "Exact" {
-			if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
-				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
-				pkgs = append(pkgs, tmp)
-			}
-		} else if mode == "Bounded range" {
-			parts := strings.Split(version, "-")
-			lower := parts[0]
-			upper := parts[1]
-			lowerVersion, _ := semver.NewVersion(lower)
-			upperVersion, _ := semver.NewVersion(upper)
-			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
-
-			if pkg.Metadata.Name == name && pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
-				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
-				pkgs = append(pkgs, tmp)
-			}
-		} else if mode == "Carat" {
-			carat, _ := semver.NewConstraint(version)
-			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
-
-			if pkg.Metadata.Name == name && carat.Check(pkgVersion) {
-				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
-				pkgs = append(pkgs, tmp)
-			}
-		} else if mode == "Tilde" {
-			tilde, _ := semver.NewConstraint(version)
-			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
-			if pkg.Metadata.Name == name && tilde.Check(pkgVersion) {
-				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
-				pkgs = append(pkgs, tmp)
-			}
-		}
-	}
-
-	return pkgs, statusCode
 }
