@@ -9,6 +9,7 @@ import (
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/db"
 	"pkgmanager/pkg/utils"
+	"strconv"
 
 	"strings"
 
@@ -164,6 +165,8 @@ func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+const MAX_PER_PAGE = 8
+
 func GetPackages(w http.ResponseWriter, r *http.Request) {
 	var pkgs []models.PackageQuery
 	err := json.NewDecoder(r.Body).Decode(&pkgs)
@@ -173,7 +176,6 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 	}
 	var Version string
 	var name string
-	//var cleanedVersion string
 	mode := "Exact"
 	for _, pkg := range pkgs {
 		Version = pkg.Version
@@ -182,20 +184,38 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 
 	if strings.Contains(Version, "-") {
 		mode = "Bounded range"
-
 	} else if strings.Contains(Version, "^") {
 		mode = "Carat"
 	} else if strings.Contains(Version, "~") {
 		mode = "Tilde"
 	}
 
+	pageNumStr := r.URL.Query().Get("query")
+	pageNum, err := strconv.Atoi(pageNumStr)
+	if err != nil {
+		pageNum = 1
+	}
+
+	startIndex := (pageNum - 1) * MAX_PER_PAGE
+	endIndex := startIndex + MAX_PER_PAGE
+
 	packages, statusCode := db.GetPackages(Version, name, mode)
 
-	if statusCode == http.StatusOK {
-		responseJSON(w, http.StatusOK, packages)
-	} else {
+	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)
+		return
 	}
+
+	if pageNum <= 0 || startIndex >= len(packages) {
+		responseJSON(w, http.StatusOK, []models.PackageQuery{})
+		return
+	}
+
+	if endIndex > len(packages) {
+		endIndex = len(packages)
+	}
+
+	responseJSON(w, http.StatusOK, packages[startIndex:endIndex])
 }
 
 // respondJSON makes the response with payload as json format
