@@ -1,13 +1,13 @@
 package models
 
 type Metric struct {
-	RepoURL              string  `json:"-"`
-	NetScore             float64 `json:",omitempty"`
-	BusFactor            float64 `json:",omitempty"`
-	Correctness          float64 `json:",omitempty"`
-	RampUp               float64 `json:",omitempty"`
-	ResponsiveMaintainer float64 `json:",omitempty"`
-	LicenseScore         float64 `json:",omitempty"`
-	GoodPinningPractice  float64 `json:",omitempty"`
-	PullRequest          float64 `json:",omitempty"`
+	RepoURL              string `json:"-"`
+	NetScore             float64
+	BusFactor            float64
+	Correctness          float64
+	RampUp               float64
+	ResponsiveMaintainer float64
+	LicenseScore         float64
+	GoodPinningPractice  float64
+	PullRequest          float64
 }

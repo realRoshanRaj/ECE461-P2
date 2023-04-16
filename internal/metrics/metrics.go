@@ -43,8 +43,9 @@ func GenerateMetrics(url string) models.Metric {
 		LicenseScore:         utils.RoundFloat(metrics[0], 1),
 		PullRequest:          utils.RoundFloat(fraction, 2),
 		GoodPinningPractice:  utils.RoundFloat(version_score, 2)}
-	packageRating.NetScore = utils.RoundFloat((packageRating.LicenseScore*(packageRating.Correctness+3*packageRating.ResponsiveMaintainer+packageRating.BusFactor+2*packageRating.RampUp))/7.0, 1)
 
+	packageRating.NetScore = utils.RoundFloat((packageRating.LicenseScore*(packageRating.Correctness+3*packageRating.ResponsiveMaintainer+packageRating.BusFactor+2*packageRating.RampUp))/7.0, 1)
+	log.Printf("%+v\n", packageRating)
 	return packageRating
 	// return models.Metric{}
 }

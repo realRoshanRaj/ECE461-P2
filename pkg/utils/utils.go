@@ -96,28 +96,32 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 	// fmt.Println(pkgJson.Repository)
 
 	// TODO: parse different string variants of repository
-
+	if !found {
+		return models.Metadata{}, found
+	}
 	var repourl string
 	if str, ok := pkgJson.Repository.(string); ok {
 		repourl = str
+		fmt.Println("Option 1", repourl)
 		// fmt.Println(str)
 	} else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
 		repourl = repo.URL
+		fmt.Println("Option 2", repourl)
+
 		// fmt.Println(repo.URL)
 	} else if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
 		if url, ok := m["url"].(string); ok {
 			repourl = url
+			// fmt.Println("Option 3", repourl) This is the one that works
+			repourl = strings.Replace(repourl, "http://", "https://", 1)
 			// fmt.Println(url)
 		}
 	} else {
 		return models.Metadata{}, false // GITHUB URL NOT FOUND
 	}
 
-	if found {
-		return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found
-	} else {
-		return models.Metadata{}, found
-	}
+	repourl = strings.TrimSuffix(repourl, ".git")
+	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found
 }
 
 func GetReadmeFromZip(zipBase64 string) (string, int) {
