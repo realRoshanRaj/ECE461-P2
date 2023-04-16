@@ -2,7 +2,7 @@
 openapi: 3.0.2
 info:
   title: ECE 461 - Spring 2023 - Project 2
-  version: 2.3.0
+  version: 2.3.1
   description: "API for ECE 461/Spring 2023/Project 2: A Trustworthy Module Registry"
   termsOfService: http://swagger.io/terms/
   contact:
@@ -51,10 +51,13 @@ paths:
                   value:
                   - Version: 1.2.3
                     Name: Underscore
+                    ID: underscore
                   - Version: 1.2.3-2.1.0
                     Name: Lodash
+                    ID: lodash
                   - Version: ^1.2.3
                     Name: React
+                    ID: react
           description: List of packages
         "400":
           description: "There is missing field(s) in the PackageQuery/AuthenticationToken\
