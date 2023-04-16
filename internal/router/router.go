@@ -13,15 +13,10 @@ func GetRouter() *chi.Mux {
 	router := chi.NewRouter()
 
 	// Define endpoints
-	router.Post("/packages", tempRoute)
+	router.Post("/packages", handler.GetPackages)
 
 	router.Delete("/reset", tempRoute)
 
-	// r.Post("/package", tempRoute)
-	// r.Get("/package/{id}", getPackage)
-	// r.Put("/package/{id}", tempRoute)
-	// r.Delete("/package/{id}", tempRoute)
-	// r.Get("/package/{id}/rate", tempRoute)
 	router.Route("/package", func(r chi.Router) {
 		r.Post("/", handler.CreatePackage)
 		r.Get("/{id}", handler.DownloadPackage)
@@ -33,13 +28,14 @@ func GetRouter() *chi.Mux {
 	router.Put("/authenticate", tempRoute)
 
 	router.Get("/package/byName/{name}", handler.GetPackageHistoryByName)
-	router.Delete("/package/byName/{name}", tempRoute)
+	router.Delete("/package/byName/{name}", handler.DeletePackageByName)
 
-	router.Post("/package/byRegEx", tempRoute)
+	router.Post("/package/byRegEx", handler.GetPackageByRegex)
 
 	return router
 }
 
 func tempRoute(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Route not implemented yet", r.Body)
+	w.WriteHeader(http.StatusNotImplemented)
 }

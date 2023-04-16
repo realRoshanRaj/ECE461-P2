@@ -2,16 +2,22 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"pkgmanager/internal/models"
+	"pkgmanager/pkg/utils"
+	"regexp"
 	"strings"
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"github.com/Masterminds/semver"
+
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	//import semver
 )
 
 const (
@@ -65,7 +71,8 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 
 }
 
-func GetPackageByID(id string) (*models.PackageInfo, int) {
+// reason is 1 if it is for download, 0 for rate
+func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
@@ -97,14 +104,16 @@ func GetPackageByID(id string) (*models.PackageInfo, int) {
 	if err != nil {
 		return nil, http.StatusInternalServerError
 	}
-
-	success := recordActionEntry(client, ctx, "DOWNLOAD", pkg.Metadata)
+	method := "DOWNLOAD"
+	if reason == 0 {
+		method = "RATE"
+	}
+	success := recordActionEntry(client, ctx, method, pkg.Metadata)
 	if !success {
 		return nil, http.StatusInternalServerError
 	}
 
 	return &pkg, http.StatusOK
-
 }
 
 func DeletePackageByID(id string) int {
@@ -213,21 +222,96 @@ func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
 		actionEntries = append(actionEntries, actionEntry)
 	}
 	return actionEntries, http.StatusOK
-
 }
 
-func GetAllPackages() ([]models.PackageInfo, error) {
+func DeletePackageByName(package_name string) int {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		// return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	query := client.Collection(HISTORY_NAME).Where("PackageMetadata.Name", "==", package_name)
+
+	docs, err := query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return http.StatusNotFound
+	}
+
+	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	_, err = batch.Commit(ctx)
+	if err != nil {
+		log.Printf("Failed to delete documents: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
+}
+
+func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
+	packages, statusCode := GetAllPackages()
+	var pkgs []models.PackageQuery
+	for _, pkg := range packages {
+		matched, err := regexp.MatchString(regex, pkg.Metadata.Name)
+		if err != nil {
+			return nil, http.StatusInternalServerError
+		}
+
+		if matched {
+			tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+			pkgs = append(pkgs, tmp)
+		} else {
+			var readme string
+			if pkg.Data.URL == "" {
+				readme, statusCode = utils.GetReadmeFromZip(pkg.Data.Content)
+				if statusCode != http.StatusOK {
+					return nil, statusCode
+				}
+			} else {
+				readme, statusCode = utils.GetReadmeTextFromGitHubURL(pkg.Data.URL)
+				if statusCode != http.StatusOK {
+					return nil, statusCode
+				}
+			}
+			matched, err := regexp.MatchString(regex, readme)
+			if err != nil {
+				return nil, http.StatusInternalServerError
+			}
+			if matched {
+				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				pkgs = append(pkgs, tmp)
+			}
+		}
+	}
+
+	if len(pkgs) != 0 {
+		return pkgs, statusCode
+	} else {
+		return nil, http.StatusNotFound
+	}
+}
+
+func GetAllPackages() ([]models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
 		log.Fatalf("Failed to create FireStore Client: %v", err)
-		return nil, err
+		return nil, http.StatusInternalServerError
 	}
 
 	defer client.Close()
 	var pkgs []models.PackageInfo
 
 	itr := client.Collection(COLLECTION_NAME).Documents(ctx)
+	defer itr.Stop()
 	for {
 		doc, err := itr.Next()
 		if err == iterator.Done {
@@ -235,34 +319,61 @@ func GetAllPackages() ([]models.PackageInfo, error) {
 		}
 		if err != nil {
 			log.Fatalf("Failed to get all packages: %v", err)
-			return nil, err
+			return nil, http.StatusInternalServerError
 		}
 
-		tmp_data := models.PackageData{
-			Content:   doc.Data()["data"].(map[string]interface{})["Content"].(string),
-			URL:       doc.Data()["data"].(map[string]interface{})["URL"].(string),
-			JSProgram: doc.Data()["data"].(map[string]interface{})["JSProgram"].(string),
-		}
-
-		tmp_meta := models.Metadata{
-			Name:    doc.Data()["metadata"].(map[string]interface{})["Name"].(string),
-			Version: doc.Data()["metadata"].(map[string]interface{})["Version"].(string),
-			ID:      doc.Data()["metadata"].(map[string]interface{})["ID"].(string),
-		}
-
-		pkg := models.PackageInfo{
-			Data:     tmp_data,
-			Metadata: tmp_meta,
+		var pkg models.PackageInfo
+		if err := doc.DataTo(&pkg); err != nil {
+			log.Fatalf("Failed to convert document data: %v", err)
 		}
 		pkgs = append(pkgs, pkg)
 	}
 
-	return pkgs, nil
+	return pkgs, http.StatusOK
+}
+
+func GetPackages(version string, name string, mode string) ([]models.Metadata, int) {
+	packages, statusCode := GetAllPackages()
+	var pkgs []models.Metadata
+
+	for _, pkg := range packages {
+		if mode == "Exact" {
+			if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
+				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+				pkgs = append(pkgs, pkg.Metadata)
+			}
+		} else if mode == "Bounded range" {
+			parts := strings.Split(version, "-")
+			lower := parts[0]
+			upper := parts[1]
+			lowerVersion, _ := semver.NewVersion(lower)
+			upperVersion, _ := semver.NewVersion(upper)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
+				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+				pkgs = append(pkgs, pkg.Metadata)
+			}
+		} else if mode == "Carat" || mode == "Tilde" {
+			carat, _ := semver.NewConstraint(version)
+			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+			if pkg.Metadata.Name == name && carat.Check(pkgVersion) {
+				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+				pkgs = append(pkgs, pkg.Metadata)
+			}
+		}
+	}
+
+	return pkgs, statusCode
 }
 
 func recordActionEntry(client *firestore.Client, ctx context.Context, action string, metadata models.Metadata) bool {
 	historyCollection := client.Collection(HISTORY_NAME)
+	defaultUser := make(map[string]interface{})
+	json.Unmarshal([]byte("{\"name\": \"default user\", \"isAdmin\": false}"), &defaultUser)
 	newEntry, _, err := historyCollection.Add(ctx, models.ActionEntry{
+		User:     defaultUser,
 		Action:   strings.ToUpper(action),
 		Metadata: metadata,
 		Date:     time.Now().Format(time.RFC3339),

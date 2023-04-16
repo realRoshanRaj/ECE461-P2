@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	cloud.google.com/go/firestore v1.9.0
+	github.com/Masterminds/semver v1.5.0
 	github.com/go-chi/chi v1.5.4
 	github.com/machinebox/graphql v0.2.2
 	github.com/shurcooL/githubv4 v0.0.0-20230305132112-efb623903184

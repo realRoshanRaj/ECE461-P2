@@ -4,16 +4,19 @@ import (
 	"archive/zip"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"pkgmanager/internal/models"
+	"regexp"
 	"strings"
 )
 
 type PackageJson struct {
-	Name       string `json:"name"`
-	Version    string `json:"version"`
-	Repository string `json:"repository"`
+	Name       string      `json:"name"`
+	Version    string      `json:"version"`
+	Repository interface{} `json:"repository"`
 }
 
 func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
@@ -81,15 +84,225 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
 	return &packageJson, found
 }
 
+type RepoPackageJson struct {
+	Type string `json:"type"`
+	URL  string `json:"url"`
+}
+
 func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 	pkgJson, found := extractPackageJsonFromZip(zipfile)
 	// fmt.Println(pkgJson.Name)
 	// fmt.Println(pkgJson.Version)
 	// fmt.Println(pkgJson.Repository)
 
-	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: pkgJson.Repository}, found
+	// TODO: parse different string variants of repository
+	if !found {
+		return models.Metadata{}, found
+	}
+	var repourl string
+	if str, ok := pkgJson.Repository.(string); ok {
+		repourl = "https://github.com/" + str
+		fmt.Println("Option 1", repourl)
+		// fmt.Println(str)
+	} else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
+		repourl = repo.URL
+		fmt.Println("Option 2", repourl)
+
+		// fmt.Println(repo.URL)
+	} else if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
+		if url, ok := m["url"].(string); ok {
+			repourl = url
+			// fmt.Println("Option 3", repourl) This is the one that works
+			repourl = strings.Replace(repourl, "http://", "https://", 1)
+			repourl = strings.Replace(repourl, "git://", "https://", 1)
+			// fmt.Println(url)
+		}
+	} else {
+		return models.Metadata{}, false // GITHUB URL NOT FOUND
+	}
+
+	repourl = strings.TrimSuffix(repourl, ".git")
+	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found
 }
 
-func ExtractMetadataFromURL(url string) models.Metadata {
-	return models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
+func GetReadmeFromZip(zipBase64 string) (string, int) {
+	// Decode the base64-encoded zip file
+	zipBytes, err := base64.StdEncoding.DecodeString(zipBase64)
+	if err != nil {
+		return "", http.StatusInternalServerError
+	}
+
+	// Create a reader from the zipBytes
+	zipReader, err := zip.NewReader(strings.NewReader(string(zipBytes)), int64(len(zipBytes)))
+	if err != nil {
+		return "", http.StatusInternalServerError
+	}
+
+	// Define regular expression pattern for README file names
+	pattern := "(R|r)(E|e)(A|a)(D|d)(M|m)(E|e)"
+	regex := regexp.MustCompile(pattern)
+
+	// Loop through each file in the zip archive
+	for _, file := range zipReader.File {
+		// Check if the file name matches the regular expression
+		if regex.MatchString(strings.ToLower(file.Name)) {
+			// Open the file
+			zipFile, err := file.Open()
+			if err != nil {
+				return "", http.StatusInternalServerError
+			}
+			defer zipFile.Close()
+
+			// Read the contents of the file
+			readmeBytes, err := ioutil.ReadAll(zipFile)
+			if err != nil {
+				return "", http.StatusInternalServerError
+			}
+
+			// Convert the contents to string
+			readmeText := string(readmeBytes)
+			return readmeText, http.StatusOK
+		}
+	}
+
+	return "", http.StatusBadRequest
+}
+
+func GetReadmeTextFromGitHubURL(url string) (string, int) {
+
+	// Define the regex pattern to match GitHub repository URL
+	regexPattern := `https?://github.com/([\w-]+)/([\w-]+)`
+
+	// Compile the regex pattern
+	regex := regexp.MustCompile(regexPattern)
+
+	// Find the matches in the URL
+	matches := regex.FindStringSubmatch(url)
+
+	if len(matches) != 3 {
+		return "", http.StatusInternalServerError
+	}
+
+	owner := matches[1]
+	name := matches[2]
+
+	repoURL := fmt.Sprintf("%s/%s", owner, name)
+
+	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/readme", repoURL)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		return "", http.StatusInternalServerError
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", http.StatusInternalServerError
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", http.StatusInternalServerError
+	}
+
+	// Define the regex pattern to match the download URL in the API response
+	regexPattern2 := `"download_url"\s*:\s*"([^"]+)"`
+
+	// Compile the regex pattern
+	regex2 := regexp.MustCompile(regexPattern2)
+
+	// Find the matches in the API response
+	match := regex2.FindStringSubmatch(string(body))
+
+	if len(match) != 2 {
+		return "", http.StatusInternalServerError
+	}
+
+	downloadURL := match[1]
+	resp, err = http.Get(downloadURL)
+	if err != nil {
+		return "", http.StatusInternalServerError
+	}
+	defer resp.Body.Close()
+
+	// Read response body
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", http.StatusInternalServerError
+	}
+
+	// Return README text as string
+	return string(body), http.StatusOK
+}
+
+func ExtractMetadataFromURL(url string) (models.Metadata, bool) {
+	// Extract the repository owner and name from the URL
+	parts := strings.Split(strings.TrimPrefix(url, "https://github.com/"), "/")
+	if len(parts) < 2 {
+		// fmt.Errorf("invalid Github URL: %s", url)
+		return models.Metadata{}, false
+	}
+	owner, name := parts[0], parts[1]
+
+	// Fetch the contents of the package.json file using Github's REST API
+	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/package.json", owner, name))
+	if err != nil {
+		// return PackageJSON{}, fmt.Errorf("error fetching package.json file: %v", err)
+		return models.Metadata{}, false
+	}
+	defer resp.Body.Close()
+
+	// Decode the base64-encoded content field
+	var result struct {
+		Content string `json:"content"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		// panic(err)
+		return models.Metadata{}, false
+	}
+
+	content, err := base64.StdEncoding.DecodeString(result.Content)
+	if err != nil {
+		// panic(err)
+		return models.Metadata{}, false
+	}
+	var packageJson PackageJson
+	err = json.Unmarshal(content, &packageJson)
+	if err != nil {
+		// panic(err)
+		return models.Metadata{}, false
+	}
+	// fmt.Println(packageJson.Name)
+	// fmt.Println(packageJson.Version)
+	// fmt.Println(packageJson.Repository)
+
+	return models.Metadata{Name: packageJson.Name, Version: packageJson.Version, Repository: url, ID: "packageData_ID"}, true
+}
+
+func ExtractZipFromURL(url string) string {
+	// Extract the repository owner and name from the URL
+	parts := strings.Split(strings.TrimPrefix(url, "https://github.com/"), "/")
+	if len(parts) < 2 {
+		// fmt.Errorf("invalid Github URL: %s", url)
+		// return "", false
+	}
+	owner, repo := parts[0], parts[1]
+
+	// Send a GET request to the GitHub API endpoint
+	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/zipball", owner, repo))
+	if err != nil {
+		// panic(err)
+	}
+	defer resp.Body.Close()
+
+	// Read the contents of the downloaded zip file
+	contents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// panic(err)
+	}
+
+	// Encode the contents of the zip file using base64
+	encoded := base64.StdEncoding.EncodeToString(contents)
+
+	return encoded
 }

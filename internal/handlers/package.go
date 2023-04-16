@@ -2,11 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"pkgmanager/internal/metrics"
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/db"
 	"pkgmanager/pkg/utils"
+
+	"strings"
 
 	"github.com/go-chi/chi"
 )
@@ -25,7 +29,20 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	var metadata models.Metadata
 	if packageData.Content == "" && packageData.URL != "" {
 		// URL method
-		metadata = utils.ExtractMetadataFromURL(packageData.URL)
+		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
+		rating := metrics.GenerateMetrics(packageData.URL)
+		fmt.Printf("%+v\n", rating)
+		if !metrics.MeasureIngestibility(rating) {
+			w.WriteHeader(http.StatusFailedDependency) // 424
+			return
+		}
+		var found bool
+		metadata, found = utils.ExtractMetadataFromURL(packageData.URL)
+		if !found {
+			w.WriteHeader(http.StatusBadRequest) // 400
+			return
+		}
+		packageData.Content = utils.ExtractZipFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
 		var foundPackageJson bool
@@ -35,6 +52,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
+		// Both zip file and url provided
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
@@ -44,12 +62,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		Data:     packageData,
 		Metadata: metadata,
 	}
-	// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
-	rating := metrics.GenerateMetrics(packageInfo.Metadata.Repository)
-	if !metrics.MeasureIngestibility(rating) {
-		w.WriteHeader(http.StatusFailedDependency) // 424
-		return
-	}
+
 	// Create package in database
 	_, statusCode := db.CreatePackage(&packageInfo)
 
@@ -62,8 +75,8 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-
-	pkgInfo, statusCode := db.GetPackageByID(packageID)
+	// TODO: also need to return the content if URL only exists
+	pkgInfo, statusCode := db.GetPackageByID(packageID, 1)
 	if statusCode == http.StatusOK {
 		responseJSON(w, http.StatusOK, pkgInfo)
 	} else {
@@ -96,13 +109,27 @@ func DeletePackage(w http.ResponseWriter, r *http.Request) {
 
 func RatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
+
+	pkgInfo, statusCode := db.GetPackageByID(packageID, 0)
+	if statusCode != http.StatusOK {
+		w.WriteHeader(statusCode) // handles the 404 error
+		return
+	}
+
+	metrics := metrics.GenerateMetrics(pkgInfo.Metadata.Repository)
+	// if metrics != nil {
+	responseJSON(w, http.StatusOK, metrics)
+	// } else {
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// }
+
 	// payload := []byte(packageID)
 	// w.WriteHeader(http.StatusCreated)
 	// _, err := w.Write(payload) // put json here
 	// if err != nil {
 	// 	log.Println(err)
 	// }
-	responseJSON(w, http.StatusCreated, packageID)
+
 }
 
 func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
@@ -112,6 +139,62 @@ func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
 		responseJSON(w, http.StatusOK, pkgHistory)
 	} else {
 		w.WriteHeader(statusCode) // handles the 404 error
+	}
+}
+
+func DeletePackageByName(w http.ResponseWriter, r *http.Request) {
+	packageName := chi.URLParam(r, "name")
+	statusCode := db.DeletePackageByName(packageName)
+	w.WriteHeader(statusCode) // handles error/status codes
+}
+
+func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
+	regex, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+
+	packages, statusCode := db.GetPackageByRegex(string(regex))
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, packages)
+	} else {
+		w.WriteHeader(statusCode)
+	}
+}
+
+func GetPackages(w http.ResponseWriter, r *http.Request) {
+	var pkgs []models.PackageQuery
+	err := json.NewDecoder(r.Body).Decode(&pkgs)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	var Version string
+	var name string
+	//var cleanedVersion string
+	mode := "Exact"
+	for _, pkg := range pkgs {
+		Version = pkg.Version
+		name = pkg.Name
+	}
+
+	if strings.Contains(Version, "-") {
+		mode = "Bounded range"
+
+	} else if strings.Contains(Version, "^") {
+		mode = "Carat"
+	} else if strings.Contains(Version, "~") {
+		mode = "Tilde"
+	}
+
+	packages, statusCode := db.GetPackages(Version, name, mode)
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, packages)
+	} else {
+		w.WriteHeader(statusCode)
 	}
 }
 
