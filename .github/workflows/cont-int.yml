@@ -2,10 +2,13 @@ name: CI
 
 on:
   push:
+    tags:
+      - v*
+    branches: ['*']
   pull_request:
 
 jobs:
-  lint-go:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,9 +26,9 @@ jobs:
           args: --config=.golangci-config.yml
 
   unit-test:
-    needs: lint-go
+    needs: lint
     runs-on: ubuntu-latest
-    if: ${{ needs.lint-go.result == 'success' }}
+    if: ${{ needs.lint.result == 'success' }}
     steps:
       - uses: actions/checkout@v2
 
