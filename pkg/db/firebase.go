@@ -385,3 +385,93 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 
 	return newEntry != nil
 }
+
+func DeletePackages() error {
+
+	// Instantiate a client
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		return err
+	}
+
+	col := client.Collection(COLLECTION_NAME)
+	bulkwriter := client.BulkWriter(ctx)
+
+	for {
+		// Get a batch of documents
+		iter := col.Limit(1).Documents(ctx)
+		numDeleted := 0
+
+		// Iterate through the documents, adding
+		// a delete operation for each one to the BulkWriter.
+		for {
+			doc, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			bulkwriter.Delete(doc.Ref)
+			numDeleted++
+		}
+
+		// If there are no documents to delete,
+		// the process is over.
+		if numDeleted == 0 {
+			bulkwriter.End()
+			break
+		}
+
+		bulkwriter.Flush()
+	}
+
+	return nil
+}
+
+func DeleteHistory() error {
+
+	// Instantiate a client
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		return err
+	}
+
+	col := client.Collection(HISTORY_NAME)
+	bulkwriter := client.BulkWriter(ctx)
+
+	for {
+		// Get a batch of documents
+		iter := col.Limit(1).Documents(ctx)
+		numDeleted := 0
+
+		// Iterate through the documents, adding
+		// a delete operation for each one to the BulkWriter.
+		for {
+			doc, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			bulkwriter.Delete(doc.Ref)
+			numDeleted++
+		}
+
+		// If there are no documents to delete,
+		// the process is over.
+		if numDeleted == 0 {
+			bulkwriter.End()
+			break
+		}
+
+		bulkwriter.Flush()
+	}
+
+	return nil
+}

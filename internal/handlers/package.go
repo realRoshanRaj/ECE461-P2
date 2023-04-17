@@ -230,3 +230,25 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 	w.WriteHeader(status)
 	w.Write([]byte(response))
 }
+
+func ResetRegistry(w http.ResponseWriter, r *http.Request) {
+
+	err := db.DeletePackages()
+
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = db.DeleteHistory()
+
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+}

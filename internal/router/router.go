@@ -15,7 +15,7 @@ func GetRouter() *chi.Mux {
 	// Define endpoints
 	router.Post("/packages", handler.GetPackages)
 
-	router.Delete("/reset", tempRoute)
+	router.Delete("/reset", handler.ResetRegistry)
 
 	router.Route("/package", func(r chi.Router) {
 		r.Post("/", handler.CreatePackage)

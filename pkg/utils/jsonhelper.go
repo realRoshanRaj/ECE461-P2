@@ -60,13 +60,13 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 
 	new_repo := Repo{ //setting values in repo struct, mostly hard coded for now.
 		URL:                         repo.URL,
-		RAMP_UP_SCORE:               RoundFloat(RU, 1),
-		CORRECTNESS_SCORE:           RoundFloat(C, 1),
-		BUS_FACTOR_SCORE:            RoundFloat(1-(float64(cont[0].Contributions)/totalCommits), 1),
-		RESPONSIVE_MAINTAINER_SCORE: RoundFloat(RM, 1),
-		LICENSE_SCORE:               RoundFloat(LS, 1),
-		CODE_QUALITY_SCORE:          RoundFloat(CQ, 1),
-		VERSION_PINNING_SCORE:       RoundFloat(VP, 1),
+		RAMP_UP_SCORE:               RoundFloat(RU, 2),
+		CORRECTNESS_SCORE:           RoundFloat(C, 2),
+		BUS_FACTOR_SCORE:            RoundFloat(1-(float64(cont[0].Contributions)/totalCommits), 2),
+		RESPONSIVE_MAINTAINER_SCORE: RoundFloat(RM, 2),
+		LICENSE_SCORE:               RoundFloat(LS, 2),
+		CODE_QUALITY_SCORE:          RoundFloat(CQ, 2),
+		VERSION_PINNING_SCORE:       RoundFloat(VP, 2),
 		// License:              repo.License,
 	}
 
@@ -76,7 +76,8 @@ func (r *Repos) Construct(resp *http.Response, resp1 *http.Response, LS float64,
 	// } else {
 	// 	LicenseComp = 0
 	// }
-	new_repo.NET_SCORE = RoundFloat((new_repo.LICENSE_SCORE*(new_repo.CORRECTNESS_SCORE+3*new_repo.RESPONSIVE_MAINTAINER_SCORE+new_repo.BUS_FACTOR_SCORE+2*new_repo.RAMP_UP_SCORE))/7.0, 1)
+	new_repo.NET_SCORE = new_repo.LICENSE_SCORE * (new_repo.CORRECTNESS_SCORE + 3*new_repo.RESPONSIVE_MAINTAINER_SCORE + new_repo.BUS_FACTOR_SCORE + 2*new_repo.RAMP_UP_SCORE + 2*new_repo.CODE_QUALITY_SCORE + new_repo.VERSION_PINNING_SCORE) / 10.0
+	new_repo.NET_SCORE = RoundFloat(new_repo.NET_SCORE, 2)
 	new_repo.CODE_QUALITY_SCORE = CQ
 	// new_repo.LicenseScore = LS
 	*r = append(*r, new_repo)
