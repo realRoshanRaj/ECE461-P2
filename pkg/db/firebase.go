@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/utils"
@@ -14,6 +13,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/Masterminds/semver"
 
+	"github.com/apsystole/log"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

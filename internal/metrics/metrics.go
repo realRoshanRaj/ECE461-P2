@@ -2,7 +2,6 @@ package metrics
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"pkgmanager/internal/metrics/api/graphql"
@@ -10,6 +9,8 @@ import (
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/utils"
 	"strings"
+
+	"github.com/apsystole/log"
 )
 
 func GenerateMetrics(url string) models.Metric {

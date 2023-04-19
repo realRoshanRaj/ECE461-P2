@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"net/http"
 	"os"
+
+	"github.com/apsystole/log"
 	// These are dependencies must be installed with go get
 	// nd "github.com/scizorman/go-ndjson"
 )
