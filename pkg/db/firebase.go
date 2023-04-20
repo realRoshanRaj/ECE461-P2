@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"pkgmanager/internal/models"
@@ -11,6 +12,8 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/storage"
+
 	"github.com/Masterminds/semver"
 
 	"github.com/apsystole/log"
@@ -21,12 +24,15 @@ import (
 )
 
 const (
-	PROJECT_ID      string = "ece461-project-381318"
-	COLLECTION_NAME string = "packages"
-	HISTORY_NAME    string = "history"
+	PROJECT_ID        string = "ece461-project-381318"
+	STORAGE_BUCKET_ID string = "ece461-project-381318.appspot.com"
+	COLLECTION_NAME   string = "packages"
+	HISTORY_NAME      string = "history"
 )
 
-func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
+// GetPackageByNameAndVersion returns a package with the given name and version
+// package Type is 1 if it is a zip file, 0 if it is a url
+func CreatePackage(pkg *models.PackageInfo, contentTooBig bool) (*models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
@@ -56,9 +62,50 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 	}
 
 	// Add the new package document to Firestore
-	_, err = client.Collection("packages").Doc(documentID).Set(ctx, pkg)
+	_, err = client.Collection(COLLECTION_NAME).Doc(documentID).Set(ctx, pkg)
 	if err != nil {
-		log.Fatalf("Failed to add package to Firestore: %v", err)
+		// fmt.Println(err)
+		log.Critical("Failed to add package to Firestore: %v", err)
+		if packageType == 2 {
+			// Decode the base64-encoded zip file into a byte array.
+			zipData, err := base64.StdEncoding.DecodeString(pkg.Data.Content)
+			if err != nil {
+				log.Printf("Failed to decode base64 data: %v", err)
+				return nil, http.StatusBadRequest
+			}
+
+			// log.Println(zipData)
+
+			// Create a new bucket in Firebase Storage to store the zip file.
+			storageClient, err := storage.NewClient(ctx)
+			if err != nil {
+				log.Printf("Failed to create Storage Client: %v", err)
+				return nil, http.StatusInternalServerError
+			}
+
+			defer storageClient.Close()
+
+			bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+			obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+			w := obj.NewWriter(ctx)
+			if _, err := w.Write(zipData); err != nil {
+				log.Printf("Failed to write data to Firebase Storage: %v", err)
+				return nil, http.StatusInternalServerError
+			}
+			if err := w.Close(); err != nil {
+				log.Printf("Failed to close Firebase Storage writer: %v", err)
+				return nil, http.StatusInternalServerError
+			}
+
+			success := recordActionEntry(client, ctx, "CREATE", pkg.Metadata)
+			if !success {
+				return nil, http.StatusInternalServerError
+			}
+
+			pkg.Data.Content = "" // remove the content of the zip file from the response
+			return pkg, http.StatusCreated
+		}
 		return nil, http.StatusInternalServerError
 	}
 
@@ -68,7 +115,6 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 	}
 
 	return pkg, http.StatusCreated
-
 }
 
 // reason is 1 if it is for download, 0 for rate
