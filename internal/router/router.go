@@ -1,11 +1,11 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
 
 	handler "pkgmanager/internal/handlers"
 
+	"github.com/apsystole/log"
 	"github.com/go-chi/chi"
 )
 
@@ -15,7 +15,7 @@ func GetRouter() *chi.Mux {
 	// Define endpoints
 	router.Post("/packages", handler.GetPackages)
 
-	router.Delete("/reset", tempRoute)
+	router.Delete("/reset", handler.ResetRegistry)
 
 	router.Route("/package", func(r chi.Router) {
 		r.Post("/", handler.CreatePackage)
@@ -36,6 +36,6 @@ func GetRouter() *chi.Mux {
 }
 
 func tempRoute(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Route not implemented yet", r.Body)
+	log.Println("Route not implemented yet", r.Body)
 	w.WriteHeader(http.StatusNotImplemented)
 }

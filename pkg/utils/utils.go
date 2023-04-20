@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"pkgmanager/internal/models"
@@ -13,37 +14,50 @@ import (
 	"strings"
 )
 
+const MAX_FILE_SIZE = 1000000
+
 type PackageJson struct {
 	Name       string      `json:"name"`
 	Version    string      `json:"version"`
 	Repository interface{} `json:"repository"`
 }
 
-func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
+// returns a metadata struct and a boolean indicating whether the package.json file was found. The last bool indicates whether the size of the package is too large
+func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) {
 	// Decode the base64-encoded string
 	decoded, err := base64.StdEncoding.DecodeString(encodedZip)
 	if err != nil {
-		return nil, false
+		return nil, false, false
 	}
 
 	// Create a temporary file for the zip contents
 	tempFile, err := ioutil.TempFile("", "tempzip-*.zip")
 	if err != nil {
-		return nil, false
+		return nil, false, false
 	}
+
 	defer os.Remove(tempFile.Name())
 	defer tempFile.Close()
 
 	// Write the decoded zip contents to the temporary file
 	_, err = tempFile.Write(decoded)
 	if err != nil {
-		return nil, false
+		return nil, false, false
 	}
+	// Get file information
+	fileInfo, err := tempFile.Stat()
+	if err != nil {
+		return nil, false, false
+	}
+
+	// Get file size
+	fileSize := fileInfo.Size()
+	log.Println("File size: ", fileSize)
 
 	// Open the zip file for reading
 	reader, err := zip.OpenReader(tempFile.Name())
 	if err != nil {
-		return nil, false
+		return nil, false, false
 	}
 	defer reader.Close()
 
@@ -55,20 +69,20 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
 			// Open the file from the zip archive
 			zippedFile, err := file.Open()
 			if err != nil {
-				return nil, false
+				return nil, false, false
 			}
 			defer zippedFile.Close()
 
 			// Read the contents of the file into memory
 			packageJsonBytes, err := ioutil.ReadAll(zippedFile)
 			if err != nil {
-				return nil, false
+				return nil, false, false
 			}
 
 			// Unmarshal the JSON into a struct
 			err = json.Unmarshal(packageJsonBytes, &packageJson)
 			if err != nil {
-				return nil, false
+				return nil, false, false
 			}
 
 			found = true
@@ -81,7 +95,7 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool) {
 	// 	return nil, errors.New("package.json not found in zip archive")
 	// }
 
-	return &packageJson, found
+	return &packageJson, found, fileSize > MAX_FILE_SIZE
 }
 
 type RepoPackageJson struct {
@@ -89,15 +103,16 @@ type RepoPackageJson struct {
 	URL  string `json:"url"`
 }
 
-func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
-	pkgJson, found := extractPackageJsonFromZip(zipfile)
+// returns metadata, ifFound and if the package is too big
+func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) {
+	pkgJson, found, tooBig := extractPackageJsonFromZip(zipfile)
 	// fmt.Println(pkgJson.Name)
 	// fmt.Println(pkgJson.Version)
 	// fmt.Println(pkgJson.Repository)
 
 	// TODO: parse different string variants of repository
 	if !found {
-		return models.Metadata{}, found
+		return models.Metadata{}, found, tooBig
 	}
 	var repourl string
 	if str, ok := pkgJson.Repository.(string); ok {
@@ -118,11 +133,11 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool) {
 			// fmt.Println(url)
 		}
 	} else {
-		return models.Metadata{}, false // GITHUB URL NOT FOUND
+		return models.Metadata{}, false, false // GITHUB URL NOT FOUND
 	}
 
 	repourl = strings.TrimSuffix(repourl, ".git")
-	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found
+	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found, tooBig
 }
 
 func GetReadmeFromZip(zipBase64 string) (string, int) {

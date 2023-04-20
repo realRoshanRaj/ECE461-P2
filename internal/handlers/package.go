@@ -13,6 +13,7 @@ import (
 
 	"strings"
 
+	"github.com/apsystole/log"
 	"github.com/go-chi/chi"
 )
 
@@ -25,14 +26,14 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: find actual metadata
 	// metadata := models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
 	var metadata models.Metadata
+	var contentTooBig bool = false
 	if packageData.Content == "" && packageData.URL != "" {
 		// URL method
-		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements
+		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements (BUT IS ALWAYS TRUE)
 		rating := metrics.GenerateMetrics(packageData.URL)
-		fmt.Printf("%+v\n", rating)
+		log.Printf("%+v\n", rating)
 		if !metrics.MeasureIngestibility(rating) {
 			w.WriteHeader(http.StatusFailedDependency) // 424
 			return
@@ -43,15 +44,18 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest) // 400
 			return
 		}
-		packageData.Content = utils.ExtractZipFromURL(packageData.URL)
+		// packageType = 0 // URL method
+		// packageData.Content = utils.ExtractZipFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
 		var foundPackageJson bool
-		metadata, foundPackageJson = utils.ExtractMetadataFromZip(packageData.Content)
+		metadata, foundPackageJson, contentTooBig = utils.ExtractMetadataFromZip(packageData.Content)
+		// log.Info("length of content: ", strconv.Itoa(len(packageData.Content)))
 		if !foundPackageJson {
 			w.WriteHeader(http.StatusBadRequest) // 400
 			return
 		}
+		// packageType = 1 // Content method
 	} else {
 		// Both zip file and url provided
 		w.WriteHeader(http.StatusBadRequest) // 400
@@ -63,9 +67,12 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		Data:     packageData,
 		Metadata: metadata,
 	}
+	//output the packageInfo json to console
+	fmt.Printf("%+v\n", packageInfo.Metadata)
+	// log.Info("I'm here", unsafe.Sizeof(metadata), unsafe.Sizeof(packageInfo))
 
 	// Create package in database
-	_, statusCode := db.CreatePackage(&packageInfo)
+	_, statusCode := db.CreatePackage(&packageInfo, contentTooBig)
 
 	if statusCode == http.StatusCreated {
 		responseJSON(w, http.StatusCreated, packageInfo)
@@ -79,6 +86,10 @@ func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	// TODO: also need to return the content if URL only exists
 	pkgInfo, statusCode := db.GetPackageByID(packageID, 1)
 	if statusCode == http.StatusOK {
+		// if there is no content in the database, then download the content from the URL
+		if pkgInfo.Data.Content == "" {
+			pkgInfo.Data.Content = utils.ExtractZipFromURL(pkgInfo.Metadata.Repository)
+		}
 		responseJSON(w, http.StatusOK, pkgInfo)
 	} else {
 		w.WriteHeader(statusCode) // handles the 404 error
@@ -229,4 +240,34 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write([]byte(response))
+}
+
+func ResetRegistry(w http.ResponseWriter, r *http.Request) {
+
+	err := db.DeletePackages()
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = db.DeleteHistory()
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = db.ClearZipStorage()
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
 }
