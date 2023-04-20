@@ -247,7 +247,7 @@ func ResetRegistry(w http.ResponseWriter, r *http.Request) {
 	err := db.DeletePackages()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -255,7 +255,15 @@ func ResetRegistry(w http.ResponseWriter, r *http.Request) {
 	err = db.DeleteHistory()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = db.ClearZipStorage()
+
+	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

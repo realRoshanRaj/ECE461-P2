@@ -576,3 +576,31 @@ func DeleteHistory() error {
 
 	return nil
 }
+
+func ClearZipStorage() error {
+	ctx := context.Background()
+
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	it := client.Bucket(STORAGE_BUCKET_ID).Objects(ctx, nil)
+	for {
+		objAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if err := client.Bucket(STORAGE_BUCKET_ID).Object(objAttrs.Name).Delete(ctx); err != nil {
+			log.Printf("Failed to delete object %q: %v", objAttrs.Name, err)
+		} else {
+			log.Infof("Deleted object %q", objAttrs.Name)
+		}
+	}
+
+	return nil
+}
