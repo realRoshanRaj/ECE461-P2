@@ -210,10 +210,37 @@ func DeletePackageByID(id string) int {
 		return http.StatusInternalServerError
 	}
 
+	// Deserialize the package data into a PackageInfo struct
+	var pkg models.PackageInfo
+	err = docSnap.DataTo(&pkg)
+	if err != nil {
+		return http.StatusInternalServerError
+	}
+
 	_, err = docRef.Delete(ctx)
 	if err != nil {
 		log.Printf("Failed to delete package with document ID %s", id)
 		return http.StatusInternalServerError
+	}
+
+	if pkg.Data.ContentStorage {
+		// Create a new bucket in Firebase Storage to store the zip file.
+		storageClient, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Printf("Failed to create Storage Client: %v", err)
+			return http.StatusInternalServerError
+		}
+
+		defer storageClient.Close()
+
+		bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+		obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+		if err := obj.Delete(ctx); err != nil {
+			log.Printf("Failed to delete file from Firebase Storage: %v", err)
+			return http.StatusInternalServerError
+		}
+
 	}
 
 	return http.StatusOK
