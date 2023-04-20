@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/utils"
@@ -33,6 +34,8 @@ const (
 // GetPackageByNameAndVersion returns a package with the given name and version
 // package Type is 1 if it is a zip file, 0 if it is a url
 func CreatePackage(pkg *models.PackageInfo, contentTooBig bool) (*models.PackageInfo, int) {
+	tempContent := pkg.Data.Content
+
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
@@ -61,51 +64,48 @@ func CreatePackage(pkg *models.PackageInfo, contentTooBig bool) (*models.Package
 		return nil, http.StatusConflict // if package exist, return error 409 otherwise store package in database
 	}
 
+	// If the content is too big, store nothing for content
+	if contentTooBig {
+		// Decode the base64-encoded zip file into a byte array.
+		zipData, err := base64.StdEncoding.DecodeString(pkg.Data.Content)
+		if err != nil {
+			log.Printf("Failed to decode base64 data: %v", err)
+			return nil, http.StatusBadRequest
+		}
+
+		// log.Println(zipData)
+
+		// Create a new bucket in Firebase Storage to store the zip file.
+		storageClient, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Printf("Failed to create Storage Client: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		defer storageClient.Close()
+
+		bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+		obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+		w := obj.NewWriter(ctx)
+		if _, err := w.Write(zipData); err != nil {
+			log.Printf("Failed to write data to Firebase Storage: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+		if err := w.Close(); err != nil {
+			log.Printf("Failed to close Firebase Storage writer: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		pkg.Data.Content = "" // remove the content of the zip file
+		pkg.Data.ContentStorage = true
+	}
+
 	// Add the new package document to Firestore
 	_, err = client.Collection(COLLECTION_NAME).Doc(documentID).Set(ctx, pkg)
 	if err != nil {
 		// fmt.Println(err)
 		log.Critical("Failed to add package to Firestore: %v", err)
-		if packageType == 2 {
-			// Decode the base64-encoded zip file into a byte array.
-			zipData, err := base64.StdEncoding.DecodeString(pkg.Data.Content)
-			if err != nil {
-				log.Printf("Failed to decode base64 data: %v", err)
-				return nil, http.StatusBadRequest
-			}
-
-			// log.Println(zipData)
-
-			// Create a new bucket in Firebase Storage to store the zip file.
-			storageClient, err := storage.NewClient(ctx)
-			if err != nil {
-				log.Printf("Failed to create Storage Client: %v", err)
-				return nil, http.StatusInternalServerError
-			}
-
-			defer storageClient.Close()
-
-			bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
-			obj := bucket.Object(pkg.Metadata.ID + ".zip")
-
-			w := obj.NewWriter(ctx)
-			if _, err := w.Write(zipData); err != nil {
-				log.Printf("Failed to write data to Firebase Storage: %v", err)
-				return nil, http.StatusInternalServerError
-			}
-			if err := w.Close(); err != nil {
-				log.Printf("Failed to close Firebase Storage writer: %v", err)
-				return nil, http.StatusInternalServerError
-			}
-
-			success := recordActionEntry(client, ctx, "CREATE", pkg.Metadata)
-			if !success {
-				return nil, http.StatusInternalServerError
-			}
-
-			pkg.Data.Content = "" // remove the content of the zip file from the response
-			return pkg, http.StatusCreated
-		}
 		return nil, http.StatusInternalServerError
 	}
 
@@ -113,6 +113,8 @@ func CreatePackage(pkg *models.PackageInfo, contentTooBig bool) (*models.Package
 	if !success {
 		return nil, http.StatusInternalServerError
 	}
+
+	pkg.Data.Content = tempContent
 
 	return pkg, http.StatusCreated
 }
@@ -153,6 +155,32 @@ func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	method := "DOWNLOAD"
 	if reason == 0 {
 		method = "RATE"
+	} else if pkg.Data.ContentStorage {
+		// Download the zip file from Firebase Storage
+		storageClient, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Printf("Failed to create Storage Client: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		defer storageClient.Close()
+
+		bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+		obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+		r, err := obj.NewReader(ctx)
+		if err != nil {
+			log.Printf("Failed to read data from Firebase Storage: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		zipData, err := ioutil.ReadAll(r)
+		if err != nil {
+			log.Printf("Failed to read data from Firebase Storage: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		pkg.Data.Content = base64.StdEncoding.EncodeToString(zipData)
 	}
 	success := recordActionEntry(client, ctx, method, pkg.Metadata)
 	if !success {
