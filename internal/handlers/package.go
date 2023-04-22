@@ -215,7 +215,6 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)
 		return
-<<<<<<< HEAD
 	}
 
 	if pageNum <= 0 || startIndex >= len(packages) {
@@ -227,19 +226,6 @@ func GetPackages(w http.ResponseWriter, r *http.Request) {
 		endIndex = len(packages)
 	}
 
-=======
-	}
-
-	if pageNum <= 0 || startIndex >= len(packages) {
-		responseJSON(w, http.StatusOK, []models.PackageQuery{})
-		return
-	}
-
-	if endIndex > len(packages) {
-		endIndex = len(packages)
-	}
-
->>>>>>> 7bb6ddf08197f55067f8d6811362097539a1d58f
 	responseJSON(w, http.StatusOK, packages[startIndex:endIndex])
 }
 
