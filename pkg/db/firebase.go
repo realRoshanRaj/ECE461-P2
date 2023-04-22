@@ -2,8 +2,9 @@ package db
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/utils"
@@ -12,8 +13,11 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/storage"
+
 	"github.com/Masterminds/semver"
 
+	"github.com/apsystole/log"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -21,12 +25,17 @@ import (
 )
 
 const (
-	PROJECT_ID      string = "ece461-project-381318"
-	COLLECTION_NAME string = "packages"
-	HISTORY_NAME    string = "history"
+	PROJECT_ID        string = "ece461-project-381318"
+	STORAGE_BUCKET_ID string = "ece461-project-381318.appspot.com"
+	COLLECTION_NAME   string = "packages"
+	HISTORY_NAME      string = "history"
 )
 
-func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
+// GetPackageByNameAndVersion returns a package with the given name and version
+// package Type is 1 if it is a zip file, 0 if it is a url
+func CreatePackage(pkg *models.PackageInfo, contentTooBig bool) (*models.PackageInfo, int) {
+	tempContent := pkg.Data.Content
+
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
@@ -55,10 +64,48 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 		return nil, http.StatusConflict // if package exist, return error 409 otherwise store package in database
 	}
 
+	// If the content is too big, store nothing for content
+	if contentTooBig {
+		// Decode the base64-encoded zip file into a byte array.
+		zipData, err := base64.StdEncoding.DecodeString(pkg.Data.Content)
+		if err != nil {
+			log.Printf("Failed to decode base64 data: %v", err)
+			return nil, http.StatusBadRequest
+		}
+
+		// log.Println(zipData)
+
+		// Create a new bucket in Firebase Storage to store the zip file.
+		storageClient, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Printf("Failed to create Storage Client: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		defer storageClient.Close()
+
+		bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+		obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+		w := obj.NewWriter(ctx)
+		if _, err := w.Write(zipData); err != nil {
+			log.Printf("Failed to write data to Firebase Storage: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+		if err := w.Close(); err != nil {
+			log.Printf("Failed to close Firebase Storage writer: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		pkg.Data.Content = "" // remove the content of the zip file
+		pkg.Data.ContentStorage = true
+	}
+
 	// Add the new package document to Firestore
-	_, err = client.Collection("packages").Doc(documentID).Set(ctx, pkg)
+	_, err = client.Collection(COLLECTION_NAME).Doc(documentID).Set(ctx, pkg)
 	if err != nil {
-		log.Fatalf("Failed to add package to Firestore: %v", err)
+		// fmt.Println(err)
+		log.Critical("Failed to add package to Firestore: %v", err)
 		return nil, http.StatusInternalServerError
 	}
 
@@ -67,8 +114,9 @@ func CreatePackage(pkg *models.PackageInfo) (*models.PackageInfo, int) {
 		return nil, http.StatusInternalServerError
 	}
 
-	return pkg, http.StatusCreated
+	pkg.Data.Content = tempContent
 
+	return pkg, http.StatusCreated
 }
 
 // reason is 1 if it is for download, 0 for rate
@@ -107,6 +155,32 @@ func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	method := "DOWNLOAD"
 	if reason == 0 {
 		method = "RATE"
+	} else if pkg.Data.ContentStorage {
+		// Download the zip file from Firebase Storage
+		storageClient, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Printf("Failed to create Storage Client: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		defer storageClient.Close()
+
+		bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+		obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+		r, err := obj.NewReader(ctx)
+		if err != nil {
+			log.Printf("Failed to read data from Firebase Storage: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		zipData, err := ioutil.ReadAll(r)
+		if err != nil {
+			log.Printf("Failed to read data from Firebase Storage: %v", err)
+			return nil, http.StatusInternalServerError
+		}
+
+		pkg.Data.Content = base64.StdEncoding.EncodeToString(zipData)
 	}
 	success := recordActionEntry(client, ctx, method, pkg.Metadata)
 	if !success {
@@ -136,10 +210,37 @@ func DeletePackageByID(id string) int {
 		return http.StatusInternalServerError
 	}
 
+	// Deserialize the package data into a PackageInfo struct
+	var pkg models.PackageInfo
+	err = docSnap.DataTo(&pkg)
+	if err != nil {
+		return http.StatusInternalServerError
+	}
+
 	_, err = docRef.Delete(ctx)
 	if err != nil {
 		log.Printf("Failed to delete package with document ID %s", id)
 		return http.StatusInternalServerError
+	}
+
+	if pkg.Data.ContentStorage {
+		// Create a new bucket in Firebase Storage to store the zip file.
+		storageClient, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Printf("Failed to create Storage Client: %v", err)
+			return http.StatusInternalServerError
+		}
+
+		defer storageClient.Close()
+
+		bucket := storageClient.Bucket(STORAGE_BUCKET_ID)
+		obj := bucket.Object(pkg.Metadata.ID + ".zip")
+
+		if err := obj.Delete(ctx); err != nil {
+			log.Printf("Failed to delete file from Firebase Storage: %v", err)
+			return http.StatusInternalServerError
+		}
+
 	}
 
 	return http.StatusOK
@@ -384,4 +485,122 @@ func recordActionEntry(client *firestore.Client, ctx context.Context, action str
 	}
 
 	return newEntry != nil
+}
+
+func DeletePackages() error {
+
+	// Instantiate a client
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		return err
+	}
+
+	col := client.Collection(COLLECTION_NAME)
+	bulkwriter := client.BulkWriter(ctx)
+
+	for {
+		// Get a batch of documents
+		iter := col.Limit(1).Documents(ctx)
+		numDeleted := 0
+
+		// Iterate through the documents, adding
+		// a delete operation for each one to the BulkWriter.
+		for {
+			doc, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			bulkwriter.Delete(doc.Ref)
+			numDeleted++
+		}
+
+		// If there are no documents to delete,
+		// the process is over.
+		if numDeleted == 0 {
+			bulkwriter.End()
+			break
+		}
+
+		bulkwriter.Flush()
+	}
+
+	return nil
+}
+
+func DeleteHistory() error {
+
+	// Instantiate a client
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		return err
+	}
+
+	col := client.Collection(HISTORY_NAME)
+	bulkwriter := client.BulkWriter(ctx)
+
+	for {
+		// Get a batch of documents
+		iter := col.Limit(1).Documents(ctx)
+		numDeleted := 0
+
+		// Iterate through the documents, adding
+		// a delete operation for each one to the BulkWriter.
+		for {
+			doc, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			bulkwriter.Delete(doc.Ref)
+			numDeleted++
+		}
+
+		// If there are no documents to delete,
+		// the process is over.
+		if numDeleted == 0 {
+			bulkwriter.End()
+			break
+		}
+
+		bulkwriter.Flush()
+	}
+
+	return nil
+}
+
+func ClearZipStorage() error {
+	ctx := context.Background()
+
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	it := client.Bucket(STORAGE_BUCKET_ID).Objects(ctx, nil)
+	for {
+		objAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if err := client.Bucket(STORAGE_BUCKET_ID).Object(objAttrs.Name).Delete(ctx); err != nil {
+			log.Printf("Failed to delete object %q: %v", objAttrs.Name, err)
+		} else {
+			log.Infof("Deleted object %q", objAttrs.Name)
+		}
+	}
+
+	return nil
 }

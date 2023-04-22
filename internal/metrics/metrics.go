@@ -2,7 +2,6 @@ package metrics
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"pkgmanager/internal/metrics/api/graphql"
@@ -10,6 +9,8 @@ import (
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/utils"
 	"strings"
+
+	"github.com/apsystole/log"
 )
 
 func GenerateMetrics(url string) models.Metric {
@@ -43,9 +44,9 @@ func GenerateMetrics(url string) models.Metric {
 		LicenseScore:         utils.RoundFloat(metrics[0], 1),
 		PullRequest:          utils.RoundFloat(fraction, 2),
 		GoodPinningPractice:  utils.RoundFloat(version_score, 2)}
-
-	packageRating.NetScore = utils.RoundFloat((packageRating.LicenseScore*(packageRating.Correctness+3*packageRating.ResponsiveMaintainer+packageRating.BusFactor+2*packageRating.RampUp))/7.0, 1)
 	log.Printf("%+v\n", packageRating)
+	packageRating.NetScore = utils.RoundFloat((packageRating.LicenseScore*(packageRating.Correctness+3*packageRating.ResponsiveMaintainer+packageRating.BusFactor+2*packageRating.RampUp))/7.0, 1)
+
 	return packageRating
 	// return models.Metric{}
 }
