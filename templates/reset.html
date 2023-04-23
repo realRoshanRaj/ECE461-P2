@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Confirmation</title>
+</head>
+<body>
+    <h1>Are you sure you want to reset?</h1>
+    <button onclick="confirmReset()">Yes</button>
+    <button onclick="cancelReset()">No</button>
+
+    <script>
+        function confirmReset() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/reset", true);
+            xhr.send();
+            alert("Reset confirmed.");
+            window.location.href = "/";
+        }
+        function cancelReset() {
+            alert("Reset cancelled.");
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

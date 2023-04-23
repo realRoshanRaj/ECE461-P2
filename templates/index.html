@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{.Title}}</title>
+    </head>
+    <body>
+        <h1>{{.Body}}</h1>
+        <button onclick="update()">Update</button>
+        <button onclick="create()">Create</button>
+        <button onclick="remove()">Delete</button>
+        <button onclick="search()">Search</button>
+        <button onclick="rate()">Rate</button>
+        <button onclick="reset()">Reset</button>
+
+        <script>
+            function update() {
+                window.location.href = "/update";
+            }
+
+            function create() {
+                window.location.href = "/create";
+            }
+
+            function remove() {
+                window.location.href = "/remove";
+            }
+
+            function search() {
+                window.location.href = "/search";
+            }
+
+            function rate() {
+                window.location.href = "/rate";
+            }
+            function reset() {
+                window.location.href = "/reset";
+            }
+        </script>
+    </body>
+</html>
