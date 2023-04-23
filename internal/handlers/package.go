@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"pkgmanager/internal/metrics"
@@ -21,6 +20,8 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	// initialize a packagedata struct based on the request body
 	packageData := models.PackageData{}
 	err := json.NewDecoder(r.Body).Decode(&packageData)
+	log.Debugf("CreatePackage called %+v", packageData)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
@@ -58,6 +59,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		// packageType = 1 // Content method
 	} else {
 		// Both zip file and url provided
+
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
@@ -68,7 +70,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		Metadata: metadata,
 	}
 	//output the packageInfo json to console
-	fmt.Printf("%+v\n", packageInfo.Metadata)
+	log.Printf("Create: %+v\n", packageInfo.Metadata)
 	// log.Info("I'm here", unsafe.Sizeof(metadata), unsafe.Sizeof(packageInfo))
 
 	// Create package in database
@@ -83,6 +85,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
+	log.Debugf("DownloadPackage called %s", packageID)
 	// TODO: also need to return the content if URL only exists
 	pkgInfo, statusCode := db.GetPackageByID(packageID, 1)
 	if statusCode == http.StatusOK {
@@ -101,6 +104,7 @@ func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 	// initialize a packagedata struct based on the request body
 	packageInfo := models.PackageInfo{}
 	err := json.NewDecoder(r.Body).Decode(&packageInfo)
+	log.Debugf("UpdatePackage (%s) called %+v", packageID, packageInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
@@ -121,7 +125,7 @@ func DeletePackage(w http.ResponseWriter, r *http.Request) {
 
 func RatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-
+	log.Debugf("RatePackage called %s", packageID)
 	pkgInfo, statusCode := db.GetPackageByID(packageID, 0)
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode) // handles the 404 error

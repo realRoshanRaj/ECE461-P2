@@ -20,6 +20,7 @@ type PackageJson struct {
 	Name       string      `json:"name"`
 	Version    string      `json:"version"`
 	Repository interface{} `json:"repository"`
+	Homepage   string      `json:"homepage"`
 }
 
 // returns a metadata struct and a boolean indicating whether the package.json file was found. The last bool indicates whether the size of the package is too large
@@ -114,8 +115,11 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) {
 	if !found {
 		return models.Metadata{}, found, tooBig
 	}
+
 	var repourl string
-	if str, ok := pkgJson.Repository.(string); ok {
+	if pkgJson.Homepage != "" {
+		repourl = pkgJson.Homepage
+	} else if str, ok := pkgJson.Repository.(string); ok {
 		repourl = "https://github.com/" + str
 		fmt.Println("Option 1", repourl)
 		// fmt.Println(str)
