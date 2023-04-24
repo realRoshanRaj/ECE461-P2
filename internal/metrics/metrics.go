@@ -23,13 +23,13 @@ func GenerateMetrics(url string) models.Metric {
 
 	// repo_resp := rest.GetRepoResponse(url)          // repository data
 	contri_resp := rest.GetContributorResponse(url) //contributor data
-	totalPRs, err := rest.GetNumberOfMergedPRs(repo_owner, repo_name, token)
+	commits_in_pr, err := rest.GetCommitsInMergedPullRequests(repo_owner, repo_name, token, url)
 	if err != nil {
 		log.Println(err)
 	}
 
-	numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token)
-	fraction := float64(totalPRs) / float64(numCommits)
+	numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token, url)
+	fraction := float64(commits_in_pr) / float64(numCommits)
 	version_score := rest.GetVersionPinningResponse(url)
 
 	metrics := graphql.Graphql_func(repo_owner, repo_name, token)

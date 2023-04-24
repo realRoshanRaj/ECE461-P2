@@ -556,11 +556,11 @@ func TestFractionOfCode(t *testing.T) {
 	token = os.Getenv("GITHUB_TOKEN")
 	owner := "cloudinary"
 	name := "cloudinary_npm"
-	numCommits, err := rest.GetNumCommits(owner, name, token)
+	numCommits, err := rest.GetNumCommits(owner, name, token, "https://github.com/cloudinary/cloudinary_npm")
 	if err != nil {
 		t.Fatal(err)
 	}
-	totalPRs, _ := rest.GetNumberOfMergedPRs(owner, name, token)
+	totalPRs, _ := rest.GetCommitsInMergedPullRequests(owner, name, token, "https://github.com/cloudinary/cloudinary_npm")
 
 	if numCommits < 0 || totalPRs < 0 {
 		t.Fatal("Test Fraction of Code Failed. numCOmmits or totalPRs is less than 0")
