@@ -3,6 +3,7 @@ package frontend
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 )
@@ -23,7 +24,7 @@ func RenderIndex(w http.ResponseWriter, r *http.Request) {
 
 	data := PageData{
 		Title: "My Page",
-		Body:  "Welcome to my page!",
+		Body:  "Package Manager",
 	}
 
 	if err := tmpl.Execute(w, data); err != nil {
@@ -237,5 +238,68 @@ func HandleReset(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Not Redirecting but Handled
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func RenderSearch(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/search.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func HandleSearch(w http.ResponseWriter, r *http.Request) {
+	// Parse the form data
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Get the value of the "name" field
+	name := r.FormValue("name")
+	version := r.FormValue("version")
+	//id := r.FormValue("ID")
+	//URL := r.FormValue("URL")
+	//Content := r.FormValue("Content")
+	//JSProgram := r.FormValue("JSProgram")
+	bdy := []map[string]string{
+		{"Version": version, "Name": name},
+	}
+	fmt.Println(bdy)
+	bod, err := json.Marshal(bdy)
+	fmt.Println(bod)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Call the API endpoint
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/packages/", bytes.NewBuffer(bod))
+	//print the response. not request
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check the response status code
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, fmt.Sprint(resp.StatusCode), resp.StatusCode)
+		return
+	}
+
+	// Redirect the user back to the index page
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

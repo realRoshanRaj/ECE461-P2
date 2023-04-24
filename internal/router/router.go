@@ -23,6 +23,8 @@ func GetRouter() *chi.Mux {
 	router.Post("/remove", frontend.HandleRemove)
 	router.Get("/reset", frontend.RenderReset)
 	router.Post("/reset", frontend.HandleReset)
+	router.Get("/search", frontend.RenderSearch)
+	router.Post("/search", frontend.HandleSearch)
 
 	// Define endpointss
 	router.Post("/packages", handler.GetPackages)
