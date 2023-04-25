@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"pkgmanager/internal/metrics"
 	"pkgmanager/internal/models"
@@ -19,7 +21,13 @@ import (
 func CreatePackage(w http.ResponseWriter, r *http.Request) {
 	// initialize a packagedata struct based on the request body
 	packageData := models.PackageData{}
-	err := json.NewDecoder(r.Body).Decode(&packageData)
+	body, err := ioutil.ReadAll(r.Body)
+
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	err = json.NewDecoder(r.Body).Decode(&packageData)
+
+	log.Debugln(string(body))
 	log.Debugf("CreatePackage called %+v", packageData)
 
 	if err != nil {
@@ -34,7 +42,7 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		// URL method
 		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements (BUT IS ALWAYS TRUE)
 		rating := metrics.GenerateMetrics(packageData.URL)
-		log.Printf("%+v\n", rating)
+		log.Printf("Package Ingestion Rating: %+v\n", rating)
 		if !metrics.MeasureIngestibility(rating) {
 			w.WriteHeader(http.StatusFailedDependency) // 424
 			return
@@ -241,6 +249,8 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 		w.Write([]byte(err.Error()))
 		return
 	}
+	//print the payload to log
+	log.Debugln(json.MarshalIndent(payload, "", "  "))
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write([]byte(response))
