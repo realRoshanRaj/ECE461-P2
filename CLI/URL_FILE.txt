@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 https://github.com/nullivex/nodist
+=======
+https://github.com/lodash/lodash
+>>>>>>> 9831485... fix code quality
