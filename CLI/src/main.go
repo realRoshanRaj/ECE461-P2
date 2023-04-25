@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	gq "pkgmanager/internal/metrics/api/graphql"
 	"pkgmanager/internal/metrics/api/rest"
@@ -105,100 +106,44 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// For each URL fetch data
 	for i := 0; i < len(urls); i++ {
-		//if url is npm turn into github url
 
 		convertUrl(&urls[i])
 
-		// Used for Graphql
 		split_url := strings.Split(urls[i], "/")
 		repo_owner := split_url[3]
 		repo_name := split_url[4]
 
-		// fmt.Println(rest.GetDefaultBranchName(urls[i]))
 		version_score := rest.GetVersionPinningResponse(urls[i])
-		// fmt.Println("version pinning net score for", repo_name, ":", version_score)
-		// fmt.Printf("SPLIT URL: %s\n", split_url)
-		// fmt.Printf("REPO OWNER: %s\n", repo_owner)
-		// fmt.Printf("REPO NAME: %s\n", repo_name)
 
-		// Gets HTTP response from Rest API
-
-		repo_resp := rest.GetRepoResponse(urls[i]) // repository data
-		// fmt.Println(token)
+		repo_resp := rest.GetRepoResponse(urls[i])
 
 		contri_resp := rest.GetContributorResponse(urls[i]) //contributor data
 
 		// prs_resp := rest.GetPullRequestsResponse(urls[i]) //pull request data
-		totalPRs, err := rest.GetNumberOfMergedPRs(repo_owner, repo_name, token)
+		totalPRs, err := rest.GetCommitsInMergedPullRequests(repo_owner, repo_name, token, urls[i])
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// decoder := json.NewDecoder(prs_resp.Body)
 		fmt.Println("Total Commits with PR: ", totalPRs)
-
-		// var prs []struct {
-		// 	Title    string `json:"title"`
-		// 	Url      string `json:"url"`
-		// 	Commit   string `json:"commits_url"`
-		// 	Comments string `json:"comments_url"`
-		// }
-		numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token)
+		numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token, urls[i])
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// if err := decoder.Decode(&prs); err != nil {
-		// 	log.Fatalf("Error decoding pull request response: %v", err)
-		// }
-		// fmt.Printf("printing PRs..\n")
-		// //count := 0
-		// total_pr_lines := 0
-		// for _, pr := range prs {
-		// 	fmt.Printf("%s: %s\n", pr.Title, pr.Url)
-		// 	fmt.Printf("commits: %s\n", pr.Commit)
-		// 	pr_resp := rest.GetPullRequestResponse(pr.Url)
-		// 	decoder := json.NewDecoder(pr_resp.Body)
-		// 	var pr_data struct {
-		// 		Additions int  `json:"additions"`
-		// 		Deletions int  `json:"deletions"`
-		// 		Merged    bool `json:"merged"`
-		// 		Reviewers []struct {
-		// 			Login string `json:"login"`
-		// 		} `json:"requested_reviewers"`
-		// 	}
 		fmt.Println("Num Commits: ", numCommits)
 
-		// 	if err := decoder.Decode(&pr_data); err != nil {
-		// 		log.Fatalf("Error decoding pull request response: %v", err)
-		// 	}
 		fraction := float64(totalPRs) / float64(numCommits) * 100
+		fraction = math.Round(fraction*100) / 100
 
-		// 	addition := pr_data.Additions
-		// 	deletion := pr_data.Deletions
-		// 	diff := addition - deletion
-		// 	if pr_data.Merged {
-		// 		fmt.Printf("difference: %d\n", diff)
-		// 		total_pr_lines += diff
-		// 	}
-		// 	fmt.Printf("count of merged PRs: %d\n", total_pr_lines)
 		fmt.Println("Fraction: ", fraction, "%")
 
-		// }
-
-		// Gets Intermediate metric values from Graphql NOT FINAL SCORES
 		metrics := gq.Graphql_func(repo_owner, repo_name, token)
 
-		// Inserts the metrics into final function to do math on them and make a new struct out of them
-
 		_, _, _, _, _, _, _, _, _ = repos.Construct(repo_resp, contri_resp, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], fraction, version_score)
-		// fmt.Printf("URL: %s", url_test)
-		// make a new Metric struct named url[i]
-		_, _, _, _, _, _, _, _, _ = GetMetrics("https://github.com/lodash/lodash")
-		// fmt.Printf("PRR: %f", prr)
-		// fmt.Printf("Version score: %f", version)
+
+		_, _, _, _, _, _, _, _, _ = GetMetrics("https://github.com/cloudinary/cloudinary_npm")
 
 		if log_level >= 2 {
 			log.Println(urls[i])
@@ -216,14 +161,7 @@ func main() {
 // Converts npm url to github url
 func convertUrl(url *string) {
 	if strings.HasPrefix(*url, "https://www.npmjs") {
-		// data, err := exec.Command("node", "giturl.js", *url).Output()
-		// if err != nil {
-		// 	fmt.Println("Error:", err)
-		// } else {
-		// 	fmt.Println("URL: ", *url)
-		// 	*url = strings.TrimSuffix(string(data), "\n")
-		// 	fmt.Println("URL: ", *url)
-		// }
+
 		rawgithubURL := rest.GetGithubURL(*url)
 
 		gitLinkMatch := regexp.MustCompile(".*github.com/(.*).git")
@@ -289,17 +227,18 @@ func GetMetrics(url string) (string, float64, float64, float64, float64, float64
 	contri_resp := rest.GetContributorResponse(url) //contributor data
 
 	// prs_resp := rest.GetPullRequestsResponse(url) //pull request data
-	totalPRs, err := rest.GetNumberOfMergedPRs(repo_owner, repo_name, token)
+	totalPRs, err := rest.GetCommitsInMergedPullRequests(repo_owner, repo_name, token, url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token)
+	numCommits, err := rest.GetNumCommits(repo_owner, repo_name, token, url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fraction := float64(totalPRs) / float64(numCommits) * 100
+	fraction = math.Round(fraction*100) / 100
 
 	version_score := rest.GetVersionPinningResponse(url)
 
