@@ -250,7 +250,8 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 		return
 	}
 	//print the payload to log
-	log.Debugln(json.MarshalIndent(payload, "", "  "))
+	prettyPrint, err := json.MarshalIndent(payload, "", "  ")
+	log.Debugln(string(prettyPrint))
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write([]byte(response))
