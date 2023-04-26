@@ -187,16 +187,34 @@ func DeletePackageByName(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(statusCode) // handles error/status codes
 }
 
+func GetPackagePopularity(w http.ResponseWriter, r *http.Request) {
+	packageName := chi.URLParam(r, "name")
+	// print("in here")
+	downloads, statusCode := db.GetPackagePopularityByName(packageName)
+
+	// Create a JSON object with the name and downloads fields
+	result := map[string]interface{}{
+		"name":      packageName,
+		"downloads": downloads,
+	}
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, result)
+	} else {
+		w.WriteHeader(statusCode) // handles the 404 error
+	}
+}
+
 func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
 	reqBody, err := io.ReadAll(r.Body)
-	if err!=nil{
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError) // 400
 		return
 	}
 
 	var regexMap map[string]string
 	err = json.Unmarshal(reqBody, &regexMap)
-	if err != nil{
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
