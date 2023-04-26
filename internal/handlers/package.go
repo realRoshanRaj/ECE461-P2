@@ -118,8 +118,24 @@ func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: find actual metadata
+	// Find and set the repository for the new package
+	if packageInfo.Data.Content == "" && packageInfo.Data.URL != "" {
+		// given update url
+		packageInfo.Metadata.Repository = packageInfo.Data.URL
+	} else if packageInfo.Data.Content != "" && packageInfo.Data.URL == "" {
+		// Content method (zip file)
 
+		// Find the repository for the new package
+		metadata, foundPackageJson, _ := utils.ExtractMetadataFromZip(packageInfo.Data.Content)
+		if !foundPackageJson {
+			w.WriteHeader(http.StatusBadRequest) // 400
+			return
+		}
+		packageInfo.Metadata.Repository = metadata.Repository
+	} else {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
 	statusCode := db.UpdatePackageByID(packageID, packageInfo)
 	w.WriteHeader(statusCode)
 	// responseJSON(w, http.StatusCreated, packageID)
@@ -192,7 +208,13 @@ const MAX_PER_PAGE = 8
 
 func GetPackages(w http.ResponseWriter, r *http.Request) {
 	var pkgs []models.PackageQuery
-	err := json.NewDecoder(r.Body).Decode(&pkgs)
+	body, err := ioutil.ReadAll(r.Body)
+
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	err = json.NewDecoder(r.Body).Decode(&pkgs)
+	log.Debugln(string(body))
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
