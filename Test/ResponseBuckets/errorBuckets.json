@@ -1,34 +1,13 @@
 {
   "400": {
-    "0f4f0078-317d-4e4d-b543-6b93a63026d0": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "POST",
-            "path": "/packages",
-            "query": "offset=fuzzstring",
-            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"fuzzstring\"\n    }]\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 400,
-            "codeDescription": "Bad Request",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "10357627-3b35-4360-8eea-cdaf664d7fe4": [
+    "4627e980-57a2-41b2-8033-a9bbe12cfb3e": [
       {
         "request": {
           "RequestData": {
             "method": "POST",
             "path": "/package",
             "query": "",
-            "body": "{\n    \"Content\":\"fuzzstring\",\n    \"URL\":\"fuzzstring\",\n    \"JSProgram\":\"fuzzstring\"}\r\n"
+            "body": "{\n    \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n    \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n    \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n"
           }
         },
         "response": {
@@ -42,28 +21,7 @@
         }
       }
     ],
-    "1b68a853-dff0-4e3a-97e8-c31dac3c2de3": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "POST",
-            "path": "/packages",
-            "query": "offset=1",
-            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"fuzzstring\"\n    }]\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 400,
-            "codeDescription": "Bad Request",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "7493de5c-9ebf-4686-9bfe-7f0a246d605a": [
+    "4b4bd4e8-20c9-49a4-ad3b-fbd3d669718d": [
       {
         "request": {
           "RequestData": {
@@ -83,122 +41,59 @@
           }
         }
       }
+    ],
+    "807cf445-baee-45b1-92d4-61931f9efab0": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/packages",
+            "query": "offset=1",
+            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"IoAyy6G3YCyJeGnFTwlU\"\n    }]\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "9f16660f-aad7-44f0-a34e-c1dfb061c1e8": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/packages",
+            "query": "offset=IoAyy6G3YCyJeGnFTwlU",
+            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"IoAyy6G3YCyJeGnFTwlU\"\n    }]\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
     ]
   },
   "404": {
-    "0a061329-e750-4ea5-9624-92cbba768fef": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "10b9e74a-86ea-4219-a82e-fe3cda1b27cc": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "POST",
-            "path": "/package/byRegEx",
-            "query": "",
-            "body": "{\n    \"RegEx\":\"fuzzstring\"}\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "14d047c5-3759-452f-b7d7-f35b24c0ef1a": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "POST",
-            "path": "/package/byRegEx",
-            "query": "",
-            "body": "{\"RegEx\":\"fuzzstring\"}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "2ad12759-966c-4b1e-8bce-bdd5ec456b5a": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/byName/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "2bed9b20-854a-4a31-a0d4-2f249bd64194": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "38c061b0-6e33-420e-b916-66fa5ea82497": [
+    "005577a1-9e6d-49ba-b9e4-33f2a36fc7ce": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
             "query": "",
-            "body": "{\"metadata\":{\"Name\":\"fuzzstring\",\"Version\":\"fuzzstring\",\"ID\":\"fuzzstring\"},\"data\":{}}"
+            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
           }
         },
         "response": {
@@ -212,33 +107,12 @@
         }
       }
     ],
-    "3cae4001-a791-4e20-a88d-0c6490d7838f": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"fuzzstring\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"fuzzstring\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"fuzzstring\",\n            \"URL\":\"fuzzstring\",\n            \"JSProgram\":\"fuzzstring\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "3ebb45a7-d658-44cc-831b-ad27772b902f": [
+    "0915b407-1f15-441c-b41c-bdbc28d202da": [
       {
         "request": {
           "RequestData": {
             "method": "GET",
-            "path": "/package/byName/fuzzstring",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
             "query": "",
             "body": ""
           }
@@ -254,28 +128,7 @@
         }
       }
     ],
-    "5091c50c-546e-41d1-b492-58b9dfc9d573": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/byName/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "5220073e-a240-4deb-894e-9af1779ea7b7": [
+    "157993c0-5da6-4fc6-8176-03f903ac49e9": [
       {
         "request": {
           "RequestData": {
@@ -296,12 +149,12 @@
         }
       }
     ],
-    "5f6732e6-0e40-46ee-a253-2450378c17c9": [
+    "15f532f4-c968-4970-b338-c0fdf818f655": [
       {
         "request": {
           "RequestData": {
-            "method": "DELETE",
-            "path": "/package/fuzzstring",
+            "method": "GET",
+            "path": "/package/byName/Underscore",
             "query": "",
             "body": ""
           }
@@ -317,14 +170,266 @@
         }
       }
     ],
-    "5fe31488-b260-4dd3-aecd-53d5bfe74b30": [
+    "2acb1947-f0cd-47c2-8085-dfadf654def8": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"1.2.3\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "2f14344a-f559-460f-8d58-b21a7564db83": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"1.2.3\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "2fd09696-1828-410c-b03b-5537d6677b68": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "30b8da4e-8099-43bd-b29d-e394e61892e3": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "31a3592b-fd8d-4ac0-847f-950865d98f15": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/Underscore",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "33e979d5-66b2-4fd5-b892-7a33e0b91fbc": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "36111791-7c93-403e-8208-bb759fe1a804": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "3caca113-0c43-4c57-bf2a-31a6a113870d": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "40641a85-4236-478d-abbe-80b0f0f2d115": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "478439d0-0171-4f6c-8e97-c9a887146088": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "48ed9dd4-6677-455c-a905-374f0f7904f4": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "50adac2d-9b0b-433d-8b0e-960284293a8b": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "56884394-f119-44ad-85a7-9b0061519dee": [
       {
         "request": {
           "RequestData": {
             "method": "POST",
             "path": "/package/byRegEx",
             "query": "",
-            "body": "{\n    \"RegEx\":\"fuzzstring\"}\r\n"
+            "body": "{\n    \"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n"
           }
         },
         "response": {
@@ -338,287 +443,14 @@
         }
       }
     ],
-    "6e65f4ad-e20b-4fc8-a701-0817e78109bd": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/Underscore",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "707a22f1-5195-4a6f-9a92-3c1673e3a5bf": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/byName/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "7dd2fb00-235d-41a7-9da0-3e06604421f6": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "7f93f633-005e-456d-86ed-e1b7f3ba9d3c": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "859536cc-dc23-45f2-b605-e0c36ba0b899": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "85fcc1fa-693e-4020-be4a-d29ff3fecca5": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"fuzzstring\"\n            ,\n            \"Version\":\"fuzzstring\",\n            \"ID\":\n                \"fuzzstring\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"fuzzstring\",\n            \"URL\":\"fuzzstring\",\n            \"JSProgram\":\"fuzzstring\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "8f040951-4279-4aea-9544-4dbf27a876c2": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "8fbf2afc-75fc-419d-b1e9-6ee0f01e1933": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/Underscore",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "93bce2e4-00bb-4ac9-9dfa-d6a638d02768": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "9c2c260b-068b-46e0-8136-0f8ecc63c11f": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/Underscore",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "a0b8ee43-dbeb-4645-8c68-7758192adcb2": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/fuzzstring/rate",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "b17f3a0d-95d2-4253-88f4-76a08a1633d0": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"fuzzstring\"\n            ,\n            \"Version\":\"fuzzstring\",\n            \"ID\":\n                \"fuzzstring\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"fuzzstring\",\n            \"URL\":\"fuzzstring\",\n            \"JSProgram\":\"fuzzstring\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "bcb18b93-67ef-4a5e-a417-9332d67061f4": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"fuzzstring\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"fuzzstring\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"fuzzstring\",\n            \"URL\":\"fuzzstring\",\n            \"JSProgram\":\"fuzzstring\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "c3195bd3-8d25-48c0-920c-e9c364297eca": [
+    "5ea819ea-3373-473d-95fc-cc7faa3c4728": [
       {
         "request": {
           "RequestData": {
             "method": "POST",
             "path": "/package/byRegEx",
             "query": "",
-            "body": "{\"RegEx\":\"fuzzstring\"}"
+            "body": "{\"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}"
           }
         },
         "response": {
@@ -632,12 +464,117 @@
         }
       }
     ],
-    "cda3b031-28b2-4116-9630-5bd66423e8f5": [
+    "6297d146-f852-436e-8b9f-b277493bd07c": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "660a70f0-a125-41bd-af6f-d2ad4cf2d028": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "708f27ac-5160-4c64-93a1-d7cd78c301a2": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "9990c034-7ce1-4313-8f4c-167d67d327f9": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "9c931f83-36e3-4385-878c-800b610a1942": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "a07a2b53-b359-4057-9a39-354d10ff446b": [
       {
         "request": {
           "RequestData": {
             "method": "GET",
-            "path": "/package/fuzzstring",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
             "query": "",
             "body": ""
           }
@@ -653,54 +590,12 @@
         }
       }
     ],
-    "d649a04b-c7e8-4897-80ff-17dc55735e1e": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/fuzzstring",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "dc76b34b-b625-432c-897c-ade6783d2aaf": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\"metadata\":{\"Name\":\"fuzzstring\",\"Version\":\"1.2.3\",\"ID\":\"fuzzstring\"},\"data\":{}}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "e10347cd-bd19-40d5-ba26-3d64eab86ae9": [
+    "a09862f9-f2a2-40dd-b675-355f7386ddd2": [
       {
         "request": {
           "RequestData": {
             "method": "GET",
-            "path": "/package/fuzzstring/rate",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
             "query": "",
             "body": ""
           }
@@ -716,14 +611,35 @@
         }
       }
     ],
-    "e713e0cc-e97b-4125-afaf-f1b2b76eb6db": [
+    "aff2f60e-4106-4638-aa21-e79ea183e055": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU/rate",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "b533ec05-4eb8-41d2-bdee-55de8c2f3555": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
             "query": "",
-            "body": "{\"metadata\":{\"Name\":\"fuzzstring\",\"Version\":\"1.2.3\",\"ID\":\"fuzzstring\"},\"data\":{}}"
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
           }
         },
         "response": {
@@ -737,12 +653,12 @@
         }
       }
     ],
-    "f074a1dc-d33a-461e-ab6e-91486d3e690c": [
+    "cf640c3b-114b-4e6a-bb38-a183c365dd11": [
       {
         "request": {
           "RequestData": {
             "method": "DELETE",
-            "path": "/package/byName/fuzzstring",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
             "query": "",
             "body": ""
           }
@@ -758,12 +674,33 @@
         }
       }
     ],
-    "f2a92656-5df3-48a0-9de1-45a45c433562": [
+    "d4206f9e-a91c-4125-bbc4-849173a5c96f": [
       {
         "request": {
           "RequestData": {
-            "method": "DELETE",
-            "path": "/package/fuzzstring",
+            "method": "POST",
+            "path": "/package/byRegEx",
+            "query": "",
+            "body": "{\"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "e8a715ff-4155-4223-9364-bd4bc5a0ee42": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/Underscore",
             "query": "",
             "body": ""
           }
@@ -779,14 +716,77 @@
         }
       }
     ],
-    "f38d1242-f355-4003-ac98-eedc4026b368": [
+    "ea170c20-a66d-4959-8e07-a9fdacd916ba": [
       {
         "request": {
           "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "method": "GET",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU/rate",
             "query": "",
-            "body": "{\"metadata\":{\"Name\":\"fuzzstring\",\"Version\":\"fuzzstring\",\"ID\":\"fuzzstring\"},\"data\":{}}"
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "eed7ab23-900c-4761-b35c-73e114585770": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/package/byRegEx",
+            "query": "",
+            "body": "{\n    \"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "f24f3be7-6fb0-4feb-b270-48c1df5f1f0a": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "fc658cbb-d991-49cb-b2c7-546e9f20b508": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "query": "",
+            "body": ""
           }
         },
         "response": {
@@ -802,14 +802,14 @@
     ]
   },
   "501": {
-    "014eb9b1-fd87-4c81-95b3-08947f004de6": [
+    "04d0bc66-2e6f-4af1-a8ec-d065d6815458": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\n    \"User\":\n        {\n            \"name\":\"fuzzstring\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"fuzzstring\"\n        }\n    }\r\n"
+            "body": "{\"User\":{\"name\":\"Alfalfa\",\"isAdmin\":true},\"Secret\":{\"password\":\"IoAyy6G3YCyJeGnFTwlU\"}}"
           }
         },
         "response": {
@@ -823,14 +823,14 @@
         }
       }
     ],
-    "556117e5-77b4-46b2-b664-59404e540f88": [
+    "264eaa84-2e0b-49e0-9a27-a01ab44baf19": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\"User\":{\"name\":\"Alfalfa\",\"isAdmin\":true},\"Secret\":{\"password\":\"fuzzstring\"}}"
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
           }
         },
         "response": {
@@ -844,14 +844,14 @@
         }
       }
     ],
-    "a37b1eb6-a72d-4d31-986a-8e3c43643dfb": [
+    "946a7cf8-4f11-4a5d-8f52-453f82bd99ba": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"fuzzstring\"\n        }\n    }\r\n"
+            "body": "{\"User\":{\"name\":\"IoAyy6G3YCyJeGnFTwlU\",\"isAdmin\":true},\"Secret\":{\"password\":\"IoAyy6G3YCyJeGnFTwlU\"}}"
           }
         },
         "response": {
@@ -865,14 +865,14 @@
         }
       }
     ],
-    "ec51a27f-a3c4-4c5b-8673-91ad2d028800": [
+    "bbc16be1-a659-460e-a1bc-0e9ae0146b4f": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"fuzzstring\"\n        }\n    }\r\n"
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
           }
         },
         "response": {
@@ -886,14 +886,14 @@
         }
       }
     ],
-    "f56a82ab-8300-47d5-ac0a-f2364f3a4530": [
+    "c2faa600-53f3-4b53-a873-3ab624407cc9": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\"User\":{\"name\":\"fuzzstring\",\"isAdmin\":true},\"Secret\":{\"password\":\"fuzzstring\"}}"
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
           }
         },
         "response": {

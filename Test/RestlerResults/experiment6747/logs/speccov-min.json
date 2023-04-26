@@ -1,0 +1,353 @@
+{
+    "2cf9e105b78f22c8cba7d77ae184dbf94bd947b5_1": {
+        "verb": "GET",
+        "endpoint": "/package/{id}/rate",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/IoAyy6G3YCyJeGnFTwlU/rate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:05 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "2cf9e105b78f22c8cba7d77ae184dbf94bd947b5_2": {
+        "verb": "GET",
+        "endpoint": "/package/{id}/rate",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/IoAyy6G3YCyJeGnFTwlU/rate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:05 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "34378edc1c9c7e4a438d92f5d892fa0a51880371_1": {
+        "verb": "PUT",
+        "endpoint": "/authenticate",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n",
+        "response": "HTTP/1.1 501 Not Implemented\r\nDate: Wed, 26 Apr 2023 05:54:05 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "34378edc1c9c7e4a438d92f5d892fa0a51880371_2": {
+        "verb": "PUT",
+        "endpoint": "/authenticate",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{\n    \"User\":\n        {\n            \"name\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n",
+        "response": "HTTP/1.1 501 Not Implemented\r\nDate: Wed, 26 Apr 2023 05:54:05 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "34378edc1c9c7e4a438d92f5d892fa0a51880371_3": {
+        "verb": "PUT",
+        "endpoint": "/authenticate",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{\"User\":{\"name\":\"Alfalfa\",\"isAdmin\":true},\"Secret\":{\"password\":\"IoAyy6G3YCyJeGnFTwlU\"}}",
+        "response": "HTTP/1.1 501 Not Implemented\r\nDate: Wed, 26 Apr 2023 05:54:05 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "34378edc1c9c7e4a438d92f5d892fa0a51880371_4": {
+        "verb": "PUT",
+        "endpoint": "/authenticate",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{\"User\":{\"name\":\"IoAyy6G3YCyJeGnFTwlU\",\"isAdmin\":true},\"Secret\":{\"password\":\"IoAyy6G3YCyJeGnFTwlU\"}}",
+        "response": "HTTP/1.1 501 Not Implemented\r\nDate: Wed, 26 Apr 2023 05:54:05 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "372ed7a4465fd8552af28bd18ae4deac31545b50_1": {
+        "verb": "DELETE",
+        "endpoint": "/reset",
+        "valid": 1,
+        "matching_prefix": [],
+        "request": "DELETE /reset HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 200 OK\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "53c40289bc28496ce0dc38077ca4ccae5f2a4441_1": {
+        "verb": "POST",
+        "endpoint": "/package",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /package HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\n    \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n    \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n    \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n",
+        "response": "HTTP/1.1 400 Bad Request\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "53c40289bc28496ce0dc38077ca4ccae5f2a4441_2": {
+        "verb": "POST",
+        "endpoint": "/package",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /package HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{}",
+        "response": "HTTP/1.1 400 Bad Request\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "622f8847b89cdc3edbb1fc1c095a74df6195b6c3_1": {
+        "verb": "POST",
+        "endpoint": "/package/byRegEx",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\n    \"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "622f8847b89cdc3edbb1fc1c095a74df6195b6c3_2": {
+        "verb": "POST",
+        "endpoint": "/package/byRegEx",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\n    \"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "622f8847b89cdc3edbb1fc1c095a74df6195b6c3_3": {
+        "verb": "POST",
+        "endpoint": "/package/byRegEx",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "622f8847b89cdc3edbb1fc1c095a74df6195b6c3_4": {
+        "verb": "POST",
+        "endpoint": "/package/byRegEx",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_1": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/id8d20920c82 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:06 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_2": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/id8b6d6629e0 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_3": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/id05e4079bfc HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_4": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/ided142ccf71 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_5": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/id9663a562ba HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"1.2.3\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_6": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/id850d312173 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_7": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/iddd30e65787 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"1.2.3\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_8": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "PUT /package/ida4561d053c HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_1": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:07 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_2": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_3": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_4": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_5": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_6": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_7": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_8": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:08 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "bc5261a7f782f1ba433b4a9ae4042326e24ae026_1": {
+        "verb": "DELETE",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "bc5261a7f782f1ba433b4a9ae4042326e24ae026_2": {
+        "verb": "DELETE",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "bc5261a7f782f1ba433b4a9ae4042326e24ae026_3": {
+        "verb": "DELETE",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "bc5261a7f782f1ba433b4a9ae4042326e24ae026_4": {
+        "verb": "DELETE",
+        "endpoint": "/package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/byName/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "cc816fc30c6302121cf2006c7792022bbd135aae_1": {
+        "verb": "DELETE",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "cc816fc30c6302121cf2006c7792022bbd135aae_2": {
+        "verb": "DELETE",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "cc816fc30c6302121cf2006c7792022bbd135aae_3": {
+        "verb": "DELETE",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:09 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "cc816fc30c6302121cf2006c7792022bbd135aae_4": {
+        "verb": "DELETE",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "DELETE /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "dda8837d7e90fc25b149d3cf4b78cb64d0af2def_1": {
+        "verb": "POST",
+        "endpoint": "/packages",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /packages?offset=1 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"IoAyy6G3YCyJeGnFTwlU\"\n    }]\r\n",
+        "response": "HTTP/1.1 400 Bad Request\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "dda8837d7e90fc25b149d3cf4b78cb64d0af2def_2": {
+        "verb": "POST",
+        "endpoint": "/packages",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "POST /packages?offset=IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"IoAyy6G3YCyJeGnFTwlU\"\n    }]\r\n",
+        "response": "HTTP/1.1 400 Bad Request\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "dda8837d7e90fc25b149d3cf4b78cb64d0af2def_3": {
+        "verb": "POST",
+        "endpoint": "/packages",
+        "valid": 1,
+        "matching_prefix": [],
+        "request": "POST /packages HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\nContent-Type: application/json\r\n\r\n[{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\"}]",
+        "response": "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 2\r\n\r\n[]"
+    },
+    "f3af48e85240ea07e9d43e24792a41c036c96b0c_1": {
+        "verb": "GET",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "f3af48e85240ea07e9d43e24792a41c036c96b0c_2": {
+        "verb": "GET",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "f3af48e85240ea07e9d43e24792a41c036c96b0c_3": {
+        "verb": "GET",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    },
+    "f3af48e85240ea07e9d43e24792a41c036c96b0c_4": {
+        "verb": "GET",
+        "endpoint": "/package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "request": "GET /package/IoAyy6G3YCyJeGnFTwlU HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: IoAyy6G3YCyJeGnFTwlU\r\n\r\n",
+        "response": "HTTP/1.1 404 Not Found\r\nDate: Wed, 26 Apr 2023 05:54:10 GMT\r\nContent-Length: 0\r\n\r\n"
+    }}
