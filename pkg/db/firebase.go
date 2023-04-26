@@ -124,7 +124,6 @@ func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
-		println("Here3")
 		log.Printf("Failed to create FireStore Client: %v", err)
 		return nil, http.StatusInternalServerError
 	}
