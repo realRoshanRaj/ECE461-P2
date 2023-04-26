@@ -104,19 +104,8 @@ type RepoPackageJson struct {
 	URL  string `json:"url"`
 }
 
-// returns metadata, ifFound and if the package is too big
-func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) {
-	pkgJson, found, tooBig := extractPackageJsonFromZip(zipfile)
-	// fmt.Println(pkgJson.Name)
-	// fmt.Println(pkgJson.Version)
-	// fmt.Println(pkgJson.Repository)
-
-	// TODO: parse different string variants of repository
-	if !found {
-		return models.Metadata{}, found, tooBig
-	}
-
-	var repourl string
+func ExtractHomepageFromPackageJson(pkgJson PackageJson) string {
+	var repourl string = ""
 	if pkgJson.Homepage != "" {
 		repourl = pkgJson.Homepage
 	} else if str, ok := pkgJson.Repository.(string); ok {
@@ -137,10 +126,51 @@ func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) {
 			// fmt.Println(url)
 		}
 	} else {
-		return models.Metadata{}, false, false // GITHUB URL NOT FOUND
+		return "" // GITHUB URL NOT FOUND
+	}
+	repourl = strings.TrimSuffix(repourl, ".git")
+
+	return repourl
+}
+
+// returns metadata, ifFound and if the package is too big
+func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) {
+	pkgJson, found, tooBig := extractPackageJsonFromZip(zipfile)
+	// fmt.Println(pkgJson.Name)
+	// fmt.Println(pkgJson.Version)
+	// fmt.Println(pkgJson.Repository)
+
+	// TODO: parse different string variants of repository
+	if !found {
+		return models.Metadata{}, found, tooBig
 	}
 
-	repourl = strings.TrimSuffix(repourl, ".git")
+	// var repourl string
+	// if pkgJson.Homepage != "" {
+	// 	repourl = pkgJson.Homepage
+	// } else if str, ok := pkgJson.Repository.(string); ok {
+	// 	repourl = "https://github.com/" + str
+	// 	fmt.Println("Option 1", repourl)
+	// 	// fmt.Println(str)
+	// } else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
+	// 	repourl = repo.URL
+	// 	fmt.Println("Option 2", repourl)
+
+	// 	// fmt.Println(repo.URL)
+	// } else if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
+	// 	if url, ok := m["url"].(string); ok {
+	// 		repourl = url
+	// 		// fmt.Println("Option 3", repourl) This is the one that works
+	// 		repourl = strings.Replace(repourl, "http://", "https://", 1)
+	// 		repourl = strings.Replace(repourl, "git://", "https://", 1)
+	// 		// fmt.Println(url)
+	// 	}
+	// } else {
+	// 	return models.Metadata{}, false, false // GITHUB URL NOT FOUND
+	// }
+
+	// repourl = strings.TrimSuffix(repourl, ".git")
+	repourl := ExtractHomepageFromPackageJson(*pkgJson)
 	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found, tooBig
 }
 
