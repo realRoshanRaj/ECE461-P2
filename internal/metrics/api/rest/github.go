@@ -38,25 +38,6 @@ type PageInfo struct {
 	HasNextPage bool
 }
 
-type PullRequestConnection struct {
-	PageInfo PageInfo
-	Edges    []struct {
-		Node PullRequest
-	}
-}
-
-type Repository struct {
-	PullRequests PullRequestConnection `graphql:"pullRequests(states: MERGED, first: 100, after: $pullRequestCursor)"`
-}
-
-type PRResponse struct {
-	Repository Repository `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
-}
-
-type Query struct {
-	Query string `json:"query"`
-}
-
 type CommitResponse struct {
 	Data struct {
 		Repository struct {
@@ -71,11 +52,12 @@ type CommitResponse struct {
 	} `json:"data"`
 }
 
-func GetNumCommits(owner string, repo string, token string) (int, error) {
+func GetNumCommits(owner string, repo string, token string, url string) (int, error) {
+	defaultBranch := GetDefaultBranchName(url)
 	query := fmt.Sprintf(`
 	{
 	  repository(owner: "%s", name: "%s") {
-	    ref(qualifiedName: "master") {
+	    ref(qualifiedName: "%s") {
 	      target {
 	        ... on Commit {
 	          history {
@@ -86,7 +68,7 @@ func GetNumCommits(owner string, repo string, token string) (int, error) {
 	    }
 	  }
 	}
-	`, owner, repo)
+	`, owner, repo, defaultBranch)
 
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", "https://api.github.com/graphql", bytes.NewBufferString(fmt.Sprintf(`{"query": %q}`, query)))
@@ -112,38 +94,57 @@ func GetNumCommits(owner string, repo string, token string) (int, error) {
 	return numCommits, nil
 }
 
-func GetNumberOfMergedPRs(repositoryOwner, repositoryName, accessToken string) (int, error) {
+type PullRequestConnection struct {
+	TotalCount int
+	Nodes      []struct {
+		Commits struct {
+			TotalCount int
+		}
+	} `graphql:"nodes"`
+}
+
+type Repository struct {
+	DefaultBranchRef struct {
+		Name string
+	}
+	PullRequests PullRequestConnection `graphql:"pullRequests(states: MERGED, baseRefName: $baseRefName, first: 100)"`
+}
+
+type Query struct {
+	Repository Repository `graphql:"repository(owner: $owner, name: $name)"`
+}
+
+func GetCommitsInMergedPullRequests(owner string, name string, token string, url string) (int, error) {
+	// Create a new authenticated GitHub client
+	defaultBranch := GetDefaultBranchName(url)
 	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: accessToken},
+		&oauth2.Token{AccessToken: token},
 	)
 	httpClient := oauth2.NewClient(context.Background(), src)
-
 	client := githubv4.NewClient(httpClient)
 
+	// Define the variables for the GraphQL query
 	variables := map[string]interface{}{
-		"repositoryOwner":   githubv4.String(repositoryOwner),
-		"repositoryName":    githubv4.String(repositoryName),
-		"pullRequestCursor": (*githubv4.String)(nil),
+		"owner":       githubv4.String(owner),
+		"name":        githubv4.String(name),
+		"baseRefName": githubv4.String(defaultBranch),
 	}
 
-	var totalPRs int
-	for {
-		var query PRResponse
-		err := client.Query(context.Background(), &query, variables)
-		if err != nil {
-			return 0, err
-		}
-
-		totalPRs += len(query.Repository.PullRequests.Edges)
-
-		if !query.Repository.PullRequests.PageInfo.HasNextPage {
-			break
-		}
-
-		variables["pullRequestCursor"] = githubv4.NewString(query.Repository.PullRequests.PageInfo.EndCursor)
+	// Execute the GraphQL query
+	var query Query
+	err := client.Query(context.Background(), &query, variables)
+	if err != nil {
+		return 0, fmt.Errorf("error querying GitHub API: %v", err)
 	}
 
-	return totalPRs, nil
+	// Sum up the commit counts for each merged pull request
+	totalCommits := 0
+	for _, pr := range query.Repository.PullRequests.Nodes {
+		totalCommits += pr.Commits.TotalCount
+	}
+
+	// Return the total commit count
+	return totalCommits, nil
 }
 
 // TODO: change the log printf functions to new log
