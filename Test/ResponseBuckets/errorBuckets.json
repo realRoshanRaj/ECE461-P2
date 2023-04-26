@@ -1,13 +1,13 @@
 {
   "400": {
-    "4627e980-57a2-41b2-8033-a9bbe12cfb3e": [
+    "054c1da3-d346-4c8d-a17d-e61ca62e3447": [
       {
         "request": {
           "RequestData": {
-            "method": "POST",
-            "path": "/package",
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
             "query": "",
-            "body": "{\n    \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n    \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n    \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n"
+            "body": "{\"metadata\":{\"Name\":\"mrfSCNboJ7dBRWqCuNGh\",\"Version\":\"mrfSCNboJ7dBRWqCuNGh\",\"ID\":\"mrfSCNboJ7dBRWqCuNGh\"},\"data\":{}}"
           }
         },
         "response": {
@@ -21,7 +21,91 @@
         }
       }
     ],
-    "4b4bd4e8-20c9-49a4-ad3b-fbd3d669718d": [
+    "0e189f24-0c4a-4700-b9ca-ad359d62d619": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"URL\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"JSProgram\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "349f18fa-2b4c-43d3-95dc-7c859e9fc39e": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"URL\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"JSProgram\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "6cc23902-138a-436f-8906-42b48de2c200": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"mrfSCNboJ7dBRWqCuNGh\",\"Version\":\"1.2.3\",\"ID\":\"mrfSCNboJ7dBRWqCuNGh\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "791c7c2a-3937-4952-a9cc-6ded74101336": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n            ,\n            \"Version\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"ID\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"URL\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"JSProgram\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "a15572e8-b871-4f0d-b57d-5b0a03385e76": [
       {
         "request": {
           "RequestData": {
@@ -42,14 +126,14 @@
         }
       }
     ],
-    "807cf445-baee-45b1-92d4-61931f9efab0": [
+    "c2a53265-e458-42f3-8edc-7433e6ef267c": [
       {
         "request": {
           "RequestData": {
-            "method": "POST",
-            "path": "/packages",
-            "query": "offset=1",
-            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"IoAyy6G3YCyJeGnFTwlU\"\n    }]\r\n"
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"mrfSCNboJ7dBRWqCuNGh\",\"Version\":\"1.2.3\",\"ID\":\"mrfSCNboJ7dBRWqCuNGh\"},\"data\":{}}"
           }
         },
         "response": {
@@ -63,14 +147,98 @@
         }
       }
     ],
-    "9f16660f-aad7-44f0-a34e-c1dfb061c1e8": [
+    "c967c8e6-f4ad-48bf-8abb-191e39ccab49": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"mrfSCNboJ7dBRWqCuNGh\",\"Version\":\"mrfSCNboJ7dBRWqCuNGh\",\"ID\":\"mrfSCNboJ7dBRWqCuNGh\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "da68d744-a4b6-4c29-9bed-4328f8415e0d": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n            ,\n            \"Version\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"ID\":\n                \"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"URL\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"JSProgram\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "e5e1707d-ed04-42f3-9f98-8de09442cac1": [
       {
         "request": {
           "RequestData": {
             "method": "POST",
             "path": "/packages",
-            "query": "offset=IoAyy6G3YCyJeGnFTwlU",
-            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"IoAyy6G3YCyJeGnFTwlU\"\n    }]\r\n"
+            "query": "offset=mrfSCNboJ7dBRWqCuNGh",
+            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"mrfSCNboJ7dBRWqCuNGh\"\n    }]\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "f5bc9fc8-8c09-4145-b9db-0fd21b59d140": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/package",
+            "query": "",
+            "body": "{\n    \"Content\":\"mrfSCNboJ7dBRWqCuNGh\",\n    \"URL\":\"mrfSCNboJ7dBRWqCuNGh\",\n    \"JSProgram\":\"mrfSCNboJ7dBRWqCuNGh\"}\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "f74d14b7-1922-4f7e-9271-c214c37f282d": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/packages",
+            "query": "offset=1",
+            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"mrfSCNboJ7dBRWqCuNGh\"\n    }]\r\n"
           }
         },
         "response": {
@@ -86,33 +254,12 @@
     ]
   },
   "404": {
-    "005577a1-9e6d-49ba-b9e4-33f2a36fc7ce": [
+    "0b2f65ab-bfc3-4343-9530-ac870c8b88b6": [
       {
         "request": {
           "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "0915b407-1f15-441c-b41c-bdbc28d202da": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "method": "DELETE",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
             "query": "",
             "body": ""
           }
@@ -128,7 +275,112 @@
         }
       }
     ],
-    "157993c0-5da6-4fc6-8176-03f903ac49e9": [
+    "189edbbf-b46f-43ed-a239-76c2809e04e6": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "21d8068c-3dc3-4903-aad1-0b871dea141b": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "2e7c848d-cb61-4a54-ab69-0642219ad9b9": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "405e93d4-a235-4599-a85a-c8f5c30b0415": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "5420f28c-c496-41f7-8d23-a127e45aa117": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "5e02835c-fbd1-4062-a20e-f33bd9a83639": [
       {
         "request": {
           "RequestData": {
@@ -149,7 +401,49 @@
         }
       }
     ],
-    "15f532f4-c968-4970-b338-c0fdf818f655": [
+    "6b67c299-faa7-4497-a0e6-3504becc3505": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "7f215bcd-1f7d-4f09-ba43-c0a0f1ee85bd": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "8666e6e6-61d9-4b22-8a9b-8744aa532b5a": [
       {
         "request": {
           "RequestData": {
@@ -170,54 +464,12 @@
         }
       }
     ],
-    "2acb1947-f0cd-47c2-8085-dfadf654def8": [
+    "872fa72b-2def-4292-9e36-ae5cc1be5f6e": [
       {
         "request": {
           "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"1.2.3\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "2f14344a-f559-460f-8d58-b21a7564db83": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"1.2.3\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "2fd09696-1828-410c-b03b-5537d6677b68": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "method": "DELETE",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
             "query": "",
             "body": ""
           }
@@ -233,12 +485,12 @@
         }
       }
     ],
-    "30b8da4e-8099-43bd-b29d-e394e61892e3": [
+    "96a420cc-19bb-4198-b76e-c58fb9b4b3c9": [
       {
         "request": {
           "RequestData": {
             "method": "GET",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
             "query": "",
             "body": ""
           }
@@ -254,7 +506,49 @@
         }
       }
     ],
-    "31a3592b-fd8d-4ac0-847f-950865d98f15": [
+    "9846a88a-4533-45d0-9cf7-acea187f7983": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "9c6f2d5c-f81c-44a0-b1bd-d63672abb306": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/package/byRegEx",
+            "query": "",
+            "body": "{\"RegEx\":\"mrfSCNboJ7dBRWqCuNGh\"}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "9f3c5b9f-2974-42fc-bd0b-3be730266e2f": [
       {
         "request": {
           "RequestData": {
@@ -275,33 +569,12 @@
         }
       }
     ],
-    "33e979d5-66b2-4fd5-b892-7a33e0b91fbc": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "36111791-7c93-403e-8208-bb759fe1a804": [
+    "aa304c45-a427-4365-8c20-bde94b27c87c": [
       {
         "request": {
           "RequestData": {
             "method": "DELETE",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
             "query": "",
             "body": ""
           }
@@ -317,119 +590,14 @@
         }
       }
     ],
-    "3caca113-0c43-4c57-bf2a-31a6a113870d": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "40641a85-4236-478d-abbe-80b0f0f2d115": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "478439d0-0171-4f6c-8e97-c9a887146088": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "48ed9dd4-6677-455c-a905-374f0f7904f4": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "50adac2d-9b0b-433d-8b0e-960284293a8b": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "56884394-f119-44ad-85a7-9b0061519dee": [
+    "ae9edbd6-73c6-4057-9ee7-41d622fcd27d": [
       {
         "request": {
           "RequestData": {
             "method": "POST",
             "path": "/package/byRegEx",
             "query": "",
-            "body": "{\n    \"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n"
+            "body": "{\"RegEx\":\"mrfSCNboJ7dBRWqCuNGh\"}"
           }
         },
         "response": {
@@ -443,259 +611,7 @@
         }
       }
     ],
-    "5ea819ea-3373-473d-95fc-cc7faa3c4728": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "POST",
-            "path": "/package/byRegEx",
-            "query": "",
-            "body": "{\"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "6297d146-f852-436e-8b9f-b277493bd07c": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "660a70f0-a125-41bd-af6f-d2ad4cf2d028": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "708f27ac-5160-4c64-93a1-d7cd78c301a2": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "9990c034-7ce1-4313-8f4c-167d67d327f9": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\"metadata\":{\"Name\":\"IoAyy6G3YCyJeGnFTwlU\",\"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\"ID\":\"IoAyy6G3YCyJeGnFTwlU\"},\"data\":{}}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "9c931f83-36e3-4385-878c-800b610a1942": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "a07a2b53-b359-4057-9a39-354d10ff446b": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "a09862f9-f2a2-40dd-b675-355f7386ddd2": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "aff2f60e-4106-4638-aa21-e79ea183e055": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU/rate",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "b533ec05-4eb8-41d2-bdee-55de8c2f3555": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "PUT",
-            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
-            "query": "",
-            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n            ,\n            \"Version\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"ID\":\n                \"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"URL\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"JSProgram\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "cf640c3b-114b-4e6a-bb38-a183c365dd11": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "DELETE",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "d4206f9e-a91c-4125-bbc4-849173a5c96f": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "POST",
-            "path": "/package/byRegEx",
-            "query": "",
-            "body": "{\"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}"
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "e8a715ff-4155-4223-9364-bd4bc5a0ee42": [
+    "c5b7f794-c7a6-4b83-bb24-3efffbb4cd3f": [
       {
         "request": {
           "RequestData": {
@@ -716,35 +632,14 @@
         }
       }
     ],
-    "ea170c20-a66d-4959-8e07-a9fdacd916ba": [
-      {
-        "request": {
-          "RequestData": {
-            "method": "GET",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU/rate",
-            "query": "",
-            "body": ""
-          }
-        },
-        "response": {
-          "ResponseData": {
-            "code": 404,
-            "codeDescription": "Not Found",
-            "content": "",
-            "isFailure": true,
-            "isBug": false
-          }
-        }
-      }
-    ],
-    "eed7ab23-900c-4761-b35c-73e114585770": [
+    "c9e71aa3-a561-4777-b65d-ca25e05cb625": [
       {
         "request": {
           "RequestData": {
             "method": "POST",
             "path": "/package/byRegEx",
             "query": "",
-            "body": "{\n    \"RegEx\":\"IoAyy6G3YCyJeGnFTwlU\"}\r\n"
+            "body": "{\n    \"RegEx\":\"mrfSCNboJ7dBRWqCuNGh\"}\r\n"
           }
         },
         "response": {
@@ -758,12 +653,12 @@
         }
       }
     ],
-    "f24f3be7-6fb0-4feb-b270-48c1df5f1f0a": [
+    "e22daa2c-3c0f-4415-9654-8609fc02fb91": [
       {
         "request": {
           "RequestData": {
             "method": "GET",
-            "path": "/package/IoAyy6G3YCyJeGnFTwlU",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
             "query": "",
             "body": ""
           }
@@ -779,14 +674,77 @@
         }
       }
     ],
-    "fc658cbb-d991-49cb-b2c7-546e9f20b508": [
+    "e94d94b5-894f-4c2a-94ab-0d4af5bfdb51": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "e9774f83-3e81-42d5-85a3-311d45d9d22c": [
       {
         "request": {
           "RequestData": {
             "method": "DELETE",
-            "path": "/package/byName/IoAyy6G3YCyJeGnFTwlU",
+            "path": "/package/byName/mrfSCNboJ7dBRWqCuNGh",
             "query": "",
             "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "ee2a550e-03f0-4c59-abd1-323827e949ce": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/mrfSCNboJ7dBRWqCuNGh",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "f36288c2-52bf-41cd-8cae-760d552fab46": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/package/byRegEx",
+            "query": "",
+            "body": "{\n    \"RegEx\":\"mrfSCNboJ7dBRWqCuNGh\"}\r\n"
           }
         },
         "response": {
@@ -802,14 +760,14 @@
     ]
   },
   "501": {
-    "04d0bc66-2e6f-4af1-a8ec-d065d6815458": [
+    "33acc415-2c7b-4a58-9de0-7a7571b90619": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\"User\":{\"name\":\"Alfalfa\",\"isAdmin\":true},\"Secret\":{\"password\":\"IoAyy6G3YCyJeGnFTwlU\"}}"
+            "body": "{\"User\":{\"name\":\"mrfSCNboJ7dBRWqCuNGh\",\"isAdmin\":true},\"Secret\":{\"password\":\"mrfSCNboJ7dBRWqCuNGh\"}}"
           }
         },
         "response": {
@@ -823,14 +781,14 @@
         }
       }
     ],
-    "264eaa84-2e0b-49e0-9a27-a01ab44baf19": [
+    "59d0d71a-1b27-4f12-8695-8662adaef0ed": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"mrfSCNboJ7dBRWqCuNGh\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
           }
         },
         "response": {
@@ -844,14 +802,14 @@
         }
       }
     ],
-    "946a7cf8-4f11-4a5d-8f52-453f82bd99ba": [
+    "63be04d9-e111-4b1f-9064-7889cfcd2eb5": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\"User\":{\"name\":\"IoAyy6G3YCyJeGnFTwlU\",\"isAdmin\":true},\"Secret\":{\"password\":\"IoAyy6G3YCyJeGnFTwlU\"}}"
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
           }
         },
         "response": {
@@ -865,14 +823,14 @@
         }
       }
     ],
-    "bbc16be1-a659-460e-a1bc-0e9ae0146b4f": [
+    "933ceeef-b525-430f-bf4f-f52a62c09f98": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\n    \"User\":\n        {\n            \"name\":\"IoAyy6G3YCyJeGnFTwlU\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"mrfSCNboJ7dBRWqCuNGh\"\n        }\n    }\r\n"
           }
         },
         "response": {
@@ -886,14 +844,14 @@
         }
       }
     ],
-    "c2faa600-53f3-4b53-a873-3ab624407cc9": [
+    "9a08c928-d450-4ddd-b983-e226de17a0ca": [
       {
         "request": {
           "RequestData": {
             "method": "PUT",
             "path": "/authenticate",
             "query": "",
-            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"IoAyy6G3YCyJeGnFTwlU\"\n        }\n    }\r\n"
+            "body": "{\"User\":{\"name\":\"Alfalfa\",\"isAdmin\":true},\"Secret\":{\"password\":\"mrfSCNboJ7dBRWqCuNGh\"}}"
           }
         },
         "response": {

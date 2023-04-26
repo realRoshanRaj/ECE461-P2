@@ -1,14 +1,14 @@
 {
-    "final_spec_coverage": "2 / 11",
+    "final_spec_coverage": "3 / 11",
     "rendered_requests": "11 / 11",
-    "rendered_requests_valid_status": "2 / 11",
-    "num_fully_valid": 2,
+    "rendered_requests_valid_status": "3 / 11",
+    "num_fully_valid": 3,
     "num_sequence_failures": 0,
     "num_invalid_by_failed_resource_creations": 0,
     "total_object_creations": 0,
     "total_requests_sent": {
         "gc": 0,
-        "main_driver": 44
+        "main_driver": 43
     },
     "bug_buckets": {
         "main_driver_501": 1
