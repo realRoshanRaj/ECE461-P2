@@ -1,0 +1,23 @@
+{
+  "SwaggerSpecFilePath": [
+    "/Users/seungkeunlee/Documents/GitHub/ECE461-P2/spec.yml"
+  ],
+  "GrammarOutputDirectoryPath": "/Users/seungkeunlee/Documents/GitHub/ECE461-P2/Compile",
+  "CustomDictionaryFilePath": "/Users/seungkeunlee/Documents/GitHub/ECE461-P2/Compile/defaultDict.json",
+  "IncludeOptionalParameters": true,
+  "UseHeaderExamples": true,
+  "UsePathExamples": false,
+  "UseQueryExamples": true,
+  "UseBodyExamples": true,
+  "UseAllExamplePayloads": false,
+  "DiscoverExamples": false,
+  "ExamplesDirectory": "",
+  "DataFuzzing": true,
+  "ReadOnlyFuzz": false,
+  "ResolveQueryDependencies": true,
+  "ResolveBodyDependencies": true,
+  "ResolveHeaderDependencies": false,
+  "UseRefreshableToken": true,
+  "AllowGetProducers": false,
+  "TrackFuzzedParameterNames": false
+}
