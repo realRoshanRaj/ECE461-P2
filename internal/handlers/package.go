@@ -34,7 +34,6 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
-
 	// metadata := models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
 	var metadata models.Metadata
 	var contentTooBig bool = false
@@ -189,11 +188,19 @@ func DeletePackageByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
-	regex, err := io.ReadAll(r.Body)
-	if err != nil {
+	reqBody, err := io.ReadAll(r.Body)
+	if err!=nil{
+		w.WriteHeader(http.StatusInternalServerError) // 400
+		return
+	}
+
+	var regexMap map[string]string
+	err = json.Unmarshal(reqBody, &regexMap)
+	if err != nil{
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
+	regex := regexMap["RegEx"]
 
 	packages, statusCode := db.GetPackageByRegex(string(regex))
 

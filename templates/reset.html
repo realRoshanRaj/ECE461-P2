@@ -1,25 +1,62 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
     <title>Reset Confirmation</title>
-</head>
-<body>
-    <h1>Are you sure you want to reset?</h1>
-    <button onclick="confirmReset()">Yes</button>
-    <button onclick="cancelReset()">No</button>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+      body {
+      margin: 0;
+      }
+      header {
+      background-color: #e05454;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      }
+      main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 84px);
+      }
+      .btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      }
+      .btn-container button {
+      flex-basis: calc(33.33% - 20px);
+      margin: 10px;
+      padding: 20px 30px;
+      font-size: 1.2rem;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Are you sure you want to reset?</h1>
+    </header>
+    <main>
+      <div class="btn-container">
+        <button class="btn btn-success" onclick="confirmReset()">Yes</button>
+        <button class="btn btn-danger" onclick="cancelReset()">No</button>
+      </div>
+    </main>
     <script>
-        function confirmReset() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/reset", true);
-            xhr.send();
-            alert("Reset confirmed.");
-            window.location.href = "/";
-        }
-        function cancelReset() {
-            alert("Reset cancelled.");
-            window.location.href = "/";
-        }
+      function confirmReset() {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/reset", true);
+          xhr.send();
+          alert("Reset confirmed.");
+          window.location.href = "/";
+      }
+      function cancelReset() {
+          alert("Reset cancelled.");
+          window.location.href = "/";
+      }
     </script>
-</body>
+  </body>
 </html>

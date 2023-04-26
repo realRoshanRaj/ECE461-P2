@@ -124,6 +124,7 @@ func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
+		println("Here3")
 		log.Printf("Failed to create FireStore Client: %v", err)
 		return nil, http.StatusInternalServerError
 	}
@@ -186,7 +187,6 @@ func GetPackageByID(id string, reason int) (*models.PackageInfo, int) {
 	if !success {
 		return nil, http.StatusInternalServerError
 	}
-
 	return &pkg, http.StatusOK
 }
 
@@ -357,17 +357,16 @@ func DeletePackageByName(package_name string) int {
 	return http.StatusOK
 }
 
-func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
+func GetPackageByRegex(regex string) ([]models.Metadata, int) {
 	packages, statusCode := GetAllPackages()
-	var pkgs []models.PackageQuery
+	var pkgs []models.Metadata
 	for _, pkg := range packages {
 		matched, err := regexp.MatchString(regex, pkg.Metadata.Name)
 		if err != nil {
 			return nil, http.StatusInternalServerError
 		}
-
 		if matched {
-			tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+			tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
 			pkgs = append(pkgs, tmp)
 		} else {
 			var readme string
@@ -387,7 +386,7 @@ func GetPackageByRegex(regex string) ([]models.PackageQuery, int) {
 				return nil, http.StatusInternalServerError
 			}
 			if matched {
-				tmp := models.PackageQuery{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version}
+				tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
 				pkgs = append(pkgs, tmp)
 			}
 		}

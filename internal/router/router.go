@@ -3,9 +3,8 @@ package router
 import (
 	"net/http"
 
-	handler "pkgmanager/internal/handlers"
-
 	"pkgmanager/frontend"
+	handler "pkgmanager/internal/handlers"
 
 	"github.com/apsystole/log"
 	"github.com/go-chi/chi"
@@ -23,6 +22,10 @@ func GetRouter() *chi.Mux {
 	router.Post("/remove", frontend.HandleRemove)
 	router.Get("/reset", frontend.RenderReset)
 	router.Post("/reset", frontend.HandleReset)
+	router.Get("/rate", frontend.RenderRate)
+	router.Post("/rate", frontend.HandleRate)
+	router.Get("/search", frontend.RenderSearch)
+	router.Post("/search", frontend.HandleSearch)
 
 	// Define endpointss
 	router.Post("/packages", handler.GetPackages)

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <main>
+      {{if .}}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">User Name</th>
+              <th scope="col">Is Admin</th>
+              <th scope="col">Date</th>
+              <th scope="col">Package Name</th>
+              <th scope="col">Package Version</th>
+              <th scope="col">Package ID</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .}}
+              <tr>
+                <td>{{.UserName}}</td>
+                <td>{{.UserIsAdmin}}</td>
+                <td>{{.Date}}</td>
+                <td>{{.PackageName}}</td>
+                <td>{{.PackageVersion}}</td>
+                <td>{{.PackageID}}</td>
+                <td>{{.Action}}</td>
+              </tr>
+            {{end}}
+          </tbody>
+        </table>
+      {{else}}
+        <p>No results found.</p>
+      {{end}}
+      <button class="btn btn-primary" onclick="window.location.href='/search'">Back to search</button>
+    </main>
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
