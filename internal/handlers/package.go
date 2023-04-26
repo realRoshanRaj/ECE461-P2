@@ -208,7 +208,13 @@ const MAX_PER_PAGE = 8
 
 func GetPackages(w http.ResponseWriter, r *http.Request) {
 	var pkgs []models.PackageQuery
-	err := json.NewDecoder(r.Body).Decode(&pkgs)
+	body, err := ioutil.ReadAll(r.Body)
+
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	err = json.NewDecoder(r.Body).Decode(&pkgs)
+	log.Debugln(string(body))
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
