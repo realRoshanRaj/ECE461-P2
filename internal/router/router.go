@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 
+	"pkgmanager/frontend"
 	handler "pkgmanager/internal/handlers"
 
 	"github.com/apsystole/log"
@@ -12,7 +13,21 @@ import (
 func GetRouter() *chi.Mux {
 	router := chi.NewRouter()
 
-	// Define endpoints
+	router.Get("/", frontend.RenderIndex)
+	router.Get("/update", frontend.RenderUpdate)
+	router.Post("/update", frontend.HandleUpdate)
+	router.Get("/create", frontend.RenderCreate)
+	router.Post("/create", frontend.HandleCreate)
+	router.Get("/remove", frontend.RenderRemove)
+	router.Post("/remove", frontend.HandleRemove)
+	router.Get("/reset", frontend.RenderReset)
+	router.Post("/reset", frontend.HandleReset)
+	router.Get("/rate", frontend.RenderRate)
+	router.Post("/rate", frontend.HandleRate)
+	router.Get("/search", frontend.RenderSearch)
+	router.Post("/search", frontend.HandleSearch)
+
+	// Define endpointss
 	router.Post("/packages", handler.GetPackages)
 
 	router.Delete("/reset", handler.ResetRegistry)

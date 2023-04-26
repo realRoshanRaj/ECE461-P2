@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Delete</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    body {
+      margin: 0;
+    }
+    header {
+      background-color: #e05454;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 84px);
+    }
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
+    .form-container label {
+      margin-top: 10px;
+    }
+    .form-container input, select {
+      margin-bottom: 10px;
+    }
+    .form-container input[type=submit] {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Delete</h1>
+  </header>
+  <main>
+    <div class="form-container">
+        <form action="/remove" method="post">
+            <label for="searchBy">Remove By:</label>
+            <select id="searchBy" name="searchBy" class="form-control">
+                <option value="name">Name</option>
+                <option value="id">ID</option>
+            </select>
+            <label for="value">Value:</label>
+            <input type="text" id="value" name="value" class="form-control">
+            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
+        </form>
+    </div>
+  </main>
+</body>
+</html>
