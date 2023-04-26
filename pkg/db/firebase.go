@@ -335,14 +335,29 @@ func DeletePackageByName(package_name string) int {
 	defer client.Close()
 	query := client.Collection(HISTORY_NAME).Where("PackageMetadata.Name", "==", package_name)
 
-	docs, err := query.Documents(ctx).GetAll()
+	docs, _ := query.Documents(ctx).GetAll()
 
 	if len(docs) == 0 {
 		log.Println("No documents found")
 		return http.StatusNotFound
 	}
 
+	// delete history
 	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	// delete package itself
+	query = client.Collection(COLLECTION_NAME).Where("metadata.Name", "==", package_name)
+
+	docs, _ = query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return http.StatusNotFound
+	}
+
 	for _, doc := range docs {
 		batch.Delete(doc.Ref)
 	}
