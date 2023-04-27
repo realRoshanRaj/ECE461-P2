@@ -1,0 +1,7 @@
+Request from grammar does not exist in the Request Collection!
+DELETE /reset
+
+2023-04-27 17:08:56.023: Initializing: Garbage collection every 30 seconds.
+2023-04-27 17:08:56.026: Generation: 1 
+2023-04-27 17:09:03.938: Terminating garbage collection. Waiting for max 300 seconds. 
+Done.

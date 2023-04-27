@@ -1,0 +1,619 @@
+{
+  "400": {
+    "2548c889-7a13-48b0-89e0-78f987f117e5": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"URL\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"JSProgram\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "2c7798a4-ade7-4cfb-b58d-c7506dc66a5b": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/package",
+            "query": "",
+            "body": "{}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "3dfdf922-d87f-4358-a432-813dcc63cd60": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n            ,\n            \"Version\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"ID\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"URL\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"JSProgram\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "56a3f31c-ada6-407e-a66e-097be58a218c": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"URL\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"JSProgram\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "78c65ad1-5e14-46aa-a0bb-c1083faaa2b5": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"GmgX1hlDuX9aOjeAsGJV\",\"Version\":\"1.2.3\",\"ID\":\"GmgX1hlDuX9aOjeAsGJV\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "8be8ae24-0962-457e-91b6-0c9462011ca6": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"GmgX1hlDuX9aOjeAsGJV\",\"Version\":\"GmgX1hlDuX9aOjeAsGJV\",\"ID\":\"GmgX1hlDuX9aOjeAsGJV\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "981730c3-ad08-4f68-99c1-fc75baa62f64": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"GmgX1hlDuX9aOjeAsGJV\",\"Version\":\"GmgX1hlDuX9aOjeAsGJV\",\"ID\":\"GmgX1hlDuX9aOjeAsGJV\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "c2f2cab3-e4da-4d25-aa98-178d8ba7bcb9": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\"metadata\":{\"Name\":\"GmgX1hlDuX9aOjeAsGJV\",\"Version\":\"1.2.3\",\"ID\":\"GmgX1hlDuX9aOjeAsGJV\"},\"data\":{}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "c9ea7623-4fdd-4bb4-866a-1721899fd4e3": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/packages",
+            "query": "offset=GmgX1hlDuX9aOjeAsGJV",
+            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"GmgX1hlDuX9aOjeAsGJV\"\n    }]\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "cf320370-cd3c-4785-98df-431bf4d23708": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/packages",
+            "query": "offset=1",
+            "body": "[\n    {\n        \"Version\":\n            \"Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)\"\n        ,\n        \"Name\":\n            \"GmgX1hlDuX9aOjeAsGJV\"\n    }]\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "fd19a8c9-4ecd-4105-931d-cd7971c80f77": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/package/id_RANDOM_SUFFIX_ABSTRACTED_",
+            "query": "",
+            "body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n            ,\n            \"Version\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"ID\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"URL\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"JSProgram\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 400,
+            "codeDescription": "Bad Request",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ]
+  },
+  "404": {
+    "01b2f34c-66cd-4169-879d-68a808b25c7a": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "471b1c32-c291-4884-b5f1-cacddd42e779": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "509219de-842a-4b36-b1aa-aeec8502b0f9": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "51711959-c032-47d3-8ddc-b08f2371a641": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "56abb653-73a8-4909-a751-47856bfd3dc1": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "73036c77-e971-4b64-b5c9-2f6675929b4f": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "a866b61e-ef04-428f-9e1a-45012e92abc6": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "cc87ac0c-184d-4e26-946d-51d7eda541be": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "d8670508-daa8-4366-8c50-3c9b7f61652f": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "d9db143f-b5bf-4f00-ac4f-11fb66dad966": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/byName/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "e1cf3c5e-a1d5-44f0-9c9a-cd0db9ec14dc": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "GET",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "f4e858ef-e3d4-4460-a159-8ce019661546": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "DELETE",
+            "path": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "query": "",
+            "body": ""
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 404,
+            "codeDescription": "Not Found",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ]
+  },
+  "409": {
+    "89b6e79c-7a48-42b6-b2b1-fa282e7ae4f4": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "POST",
+            "path": "/package",
+            "query": "",
+            "body": "{\n    \"Content\":\"\",\n    \"URL\":\"https://github.com/cloudinary/cloudinary_npm\",\n    \"JSProgram\":\"\"}\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 409,
+            "codeDescription": "Conflict",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ]
+  },
+  "501": {
+    "07624ab0-282e-48a0-ad25-9ad1097bfbae": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/authenticate",
+            "query": "",
+            "body": "{\"User\":{\"name\":\"Alfalfa\",\"isAdmin\":true},\"Secret\":{\"password\":\"GmgX1hlDuX9aOjeAsGJV\"}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 501,
+            "codeDescription": "Not Implemented",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "11e9ca96-458f-4155-8f73-2d1b248e542a": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/authenticate",
+            "query": "",
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 501,
+            "codeDescription": "Not Implemented",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "29e4258a-2865-4e23-bf43-6983ee24ada1": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/authenticate",
+            "query": "",
+            "body": "{\"User\":{\"name\":\"GmgX1hlDuX9aOjeAsGJV\",\"isAdmin\":true},\"Secret\":{\"password\":\"GmgX1hlDuX9aOjeAsGJV\"}}"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 501,
+            "codeDescription": "Not Implemented",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "600570a5-40a0-4465-bddd-59a63511cc6c": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/authenticate",
+            "query": "",
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 501,
+            "codeDescription": "Not Implemented",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ],
+    "83e573e5-922a-464b-95ad-b4f94b1211b5": [
+      {
+        "request": {
+          "RequestData": {
+            "method": "PUT",
+            "path": "/authenticate",
+            "query": "",
+            "body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n"
+          }
+        },
+        "response": {
+          "ResponseData": {
+            "code": 501,
+            "codeDescription": "Not Implemented",
+            "content": "",
+            "isFailure": true,
+            "isBug": false
+          }
+        }
+      }
+    ]
+  }
+}

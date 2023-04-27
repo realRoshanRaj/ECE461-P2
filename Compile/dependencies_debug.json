@@ -1,0 +1,957 @@
+[
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/authenticate",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Secret",
+            "fullPath": {
+              "path": [
+                "Secret"
+              ]
+            }
+          }
+        },
+        "ContainerName": "authenticate",
+        "PathContainerName": "authenticate",
+        "CandidateTypeNames": [
+          "authenticate"
+        ],
+        "AccessPath": "Secret",
+        "AccessPathParts": {
+          "path": [
+            "Secret"
+          ]
+        },
+        "ResourceName": "Secret",
+        "ProducerParameterName": "secret",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/authenticate",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "password",
+            "fullPath": {
+              "path": [
+                "Secret",
+                "password"
+              ]
+            }
+          }
+        },
+        "ContainerName": "Secret",
+        "BodyContainerName": "Secret",
+        "PathContainerName": "authenticate",
+        "CandidateTypeNames": [
+          "secret"
+        ],
+        "AccessPath": "Secret/password",
+        "AccessPathParts": {
+          "path": [
+            "Secret",
+            "password"
+          ]
+        },
+        "ResourceName": "password",
+        "ProducerParameterName": "password",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/authenticate",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "User",
+            "fullPath": {
+              "path": [
+                "User"
+              ]
+            }
+          }
+        },
+        "ContainerName": "authenticate",
+        "PathContainerName": "authenticate",
+        "CandidateTypeNames": [
+          "authenticate"
+        ],
+        "AccessPath": "User",
+        "AccessPathParts": {
+          "path": [
+            "User"
+          ]
+        },
+        "ResourceName": "User",
+        "ProducerParameterName": "user",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/authenticate",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "isAdmin",
+            "fullPath": {
+              "path": [
+                "User",
+                "isAdmin"
+              ]
+            }
+          }
+        },
+        "ContainerName": "User",
+        "BodyContainerName": "User",
+        "PathContainerName": "authenticate",
+        "CandidateTypeNames": [
+          "user"
+        ],
+        "AccessPath": "User/isAdmin",
+        "AccessPathParts": {
+          "path": [
+            "User",
+            "isAdmin"
+          ]
+        },
+        "ResourceName": "isAdmin",
+        "ProducerParameterName": "admin",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "Bool"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/authenticate",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "name",
+            "fullPath": {
+              "path": [
+                "User",
+                "name"
+              ]
+            }
+          }
+        },
+        "ContainerName": "User",
+        "BodyContainerName": "User",
+        "PathContainerName": "authenticate",
+        "CandidateTypeNames": [
+          "user"
+        ],
+        "AccessPath": "User/name",
+        "AccessPathParts": {
+          "path": [
+            "User",
+            "name"
+          ]
+        },
+        "ResourceName": "name",
+        "ProducerParameterName": "name",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Content",
+            "fullPath": {
+              "path": [
+                "Content"
+              ]
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "Content",
+        "AccessPathParts": {
+          "path": [
+            "Content"
+          ]
+        },
+        "ResourceName": "Content",
+        "ProducerParameterName": "content",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "JSProgram",
+            "fullPath": {
+              "path": [
+                "JSProgram"
+              ]
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "JSProgram",
+        "AccessPathParts": {
+          "path": [
+            "JSProgram"
+          ]
+        },
+        "ResourceName": "JSProgram",
+        "ProducerParameterName": "program",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "URL",
+            "fullPath": {
+              "path": [
+                "URL"
+              ]
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "URL",
+        "AccessPathParts": {
+          "path": [
+            "URL"
+          ]
+        },
+        "ResourceName": "URL",
+        "ProducerParameterName": "url",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/byName/{name}",
+          "method": "Get"
+        },
+        "ResourceReference": {
+          "PathResource": {
+            "name": "name",
+            "pathToParameter": [
+              "package",
+              "byName"
+            ],
+            "responsePath": {
+              "path": []
+            }
+          }
+        },
+        "ContainerName": "byName",
+        "PathContainerName": "byName",
+        "CandidateTypeNames": [
+          "by__name"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "name",
+        "ProducerParameterName": "name",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Path"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/byName/{name}",
+          "method": "Delete"
+        },
+        "ResourceReference": {
+          "PathResource": {
+            "name": "name",
+            "pathToParameter": [
+              "package",
+              "byName"
+            ],
+            "responsePath": {
+              "path": []
+            }
+          }
+        },
+        "ContainerName": "byName",
+        "PathContainerName": "byName",
+        "CandidateTypeNames": [
+          "by__name"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "name",
+        "ProducerParameterName": "name",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Path"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/byRegEx",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "RegEx",
+            "fullPath": {
+              "path": [
+                "RegEx"
+              ]
+            }
+          }
+        },
+        "ContainerName": "byRegEx",
+        "PathContainerName": "byRegEx",
+        "CandidateTypeNames": [
+          "by__reg__ex"
+        ],
+        "AccessPath": "RegEx",
+        "AccessPathParts": {
+          "path": [
+            "RegEx"
+          ]
+        },
+        "ResourceName": "RegEx",
+        "ProducerParameterName": "ex",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Get"
+        },
+        "ResourceReference": {
+          "PathResource": {
+            "name": "id",
+            "pathToParameter": [
+              "package"
+            ],
+            "responsePath": {
+              "path": []
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "id",
+        "ProducerParameterName": "id",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Path"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "PathResource": {
+            "name": "id",
+            "pathToParameter": [
+              "package"
+            ],
+            "responsePath": {
+              "path": []
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "id",
+        "ProducerParameterName": "id",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Path"
+    },
+    "producer": {
+      "DictionaryPayload": {
+        "payloadType": "UuidSuffix",
+        "primitiveType": "String",
+        "name": "id",
+        "isObject": false
+      }
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "data",
+            "fullPath": {
+              "path": [
+                "data"
+              ]
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "data",
+        "AccessPathParts": {
+          "path": [
+            "data"
+          ]
+        },
+        "ResourceName": "data",
+        "ProducerParameterName": "data",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Content",
+            "fullPath": {
+              "path": [
+                "data",
+                "Content"
+              ]
+            }
+          }
+        },
+        "ContainerName": "data",
+        "BodyContainerName": "data",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "datum"
+        ],
+        "AccessPath": "data/Content",
+        "AccessPathParts": {
+          "path": [
+            "data",
+            "Content"
+          ]
+        },
+        "ResourceName": "Content",
+        "ProducerParameterName": "content",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "JSProgram",
+            "fullPath": {
+              "path": [
+                "data",
+                "JSProgram"
+              ]
+            }
+          }
+        },
+        "ContainerName": "data",
+        "BodyContainerName": "data",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "datum"
+        ],
+        "AccessPath": "data/JSProgram",
+        "AccessPathParts": {
+          "path": [
+            "data",
+            "JSProgram"
+          ]
+        },
+        "ResourceName": "JSProgram",
+        "ProducerParameterName": "program",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "URL",
+            "fullPath": {
+              "path": [
+                "data",
+                "URL"
+              ]
+            }
+          }
+        },
+        "ContainerName": "data",
+        "BodyContainerName": "data",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "datum"
+        ],
+        "AccessPath": "data/URL",
+        "AccessPathParts": {
+          "path": [
+            "data",
+            "URL"
+          ]
+        },
+        "ResourceName": "URL",
+        "ProducerParameterName": "url",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "metadata",
+            "fullPath": {
+              "path": [
+                "metadata"
+              ]
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "metadata",
+        "AccessPathParts": {
+          "path": [
+            "metadata"
+          ]
+        },
+        "ResourceName": "metadata",
+        "ProducerParameterName": "metadata",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "ID",
+            "fullPath": {
+              "path": [
+                "metadata",
+                "ID"
+              ]
+            }
+          }
+        },
+        "ContainerName": "metadata",
+        "BodyContainerName": "metadata",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "metadatum"
+        ],
+        "AccessPath": "metadata/ID",
+        "AccessPathParts": {
+          "path": [
+            "metadata",
+            "ID"
+          ]
+        },
+        "ResourceName": "ID",
+        "ProducerParameterName": "id",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Name",
+            "fullPath": {
+              "path": [
+                "metadata",
+                "Name"
+              ]
+            }
+          }
+        },
+        "ContainerName": "metadata",
+        "BodyContainerName": "metadata",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "metadatum"
+        ],
+        "AccessPath": "metadata/Name",
+        "AccessPathParts": {
+          "path": [
+            "metadata",
+            "Name"
+          ]
+        },
+        "ResourceName": "Name",
+        "ProducerParameterName": "name",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Put"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Version",
+            "fullPath": {
+              "path": [
+                "metadata",
+                "Version"
+              ]
+            }
+          }
+        },
+        "ContainerName": "metadata",
+        "BodyContainerName": "metadata",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "metadatum"
+        ],
+        "AccessPath": "metadata/Version",
+        "AccessPathParts": {
+          "path": [
+            "metadata",
+            "Version"
+          ]
+        },
+        "ResourceName": "Version",
+        "ProducerParameterName": "version",
+        "IsNestedBodyResource": true,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}",
+          "method": "Delete"
+        },
+        "ResourceReference": {
+          "PathResource": {
+            "name": "id",
+            "pathToParameter": [
+              "package"
+            ],
+            "responsePath": {
+              "path": []
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "package",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "id",
+        "ProducerParameterName": "id",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Path"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/package/{id}/rate",
+          "method": "Get"
+        },
+        "ResourceReference": {
+          "PathResource": {
+            "name": "id",
+            "pathToParameter": [
+              "package"
+            ],
+            "responsePath": {
+              "path": []
+            }
+          }
+        },
+        "ContainerName": "package",
+        "PathContainerName": "rate",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "id",
+        "ProducerParameterName": "id",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Path"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/packages",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "QueryResource": "offset"
+        },
+        "ContainerName": "packages",
+        "PathContainerName": "packages",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPathParts": {
+          "path": []
+        },
+        "ResourceName": "offset",
+        "ProducerParameterName": "offset",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Query"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/packages",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Name",
+            "fullPath": {
+              "path": [
+                "[0]",
+                "Name"
+              ]
+            }
+          }
+        },
+        "ContainerName": "packages",
+        "PathContainerName": "packages",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "[0]/Name",
+        "AccessPathParts": {
+          "path": [
+            "[0]",
+            "Name"
+          ]
+        },
+        "ResourceName": "Name",
+        "ProducerParameterName": "name",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  },
+  {
+    "consumer": {
+      "id": {
+        "RequestId": {
+          "endpoint": "/packages",
+          "method": "Post"
+        },
+        "ResourceReference": {
+          "BodyResource": {
+            "name": "Version",
+            "fullPath": {
+              "path": [
+                "[0]",
+                "Version"
+              ]
+            }
+          }
+        },
+        "ContainerName": "packages",
+        "PathContainerName": "packages",
+        "CandidateTypeNames": [
+          "package"
+        ],
+        "AccessPath": "[0]/Version",
+        "AccessPathParts": {
+          "path": [
+            "[0]",
+            "Version"
+          ]
+        },
+        "ResourceName": "Version",
+        "ProducerParameterName": "version",
+        "IsNestedBodyResource": false,
+        "PrimitiveType": "String"
+      },
+      "parameterKind": "Body"
+    }
+  }
+]

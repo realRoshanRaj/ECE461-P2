@@ -1,0 +1,1045 @@
+
+Generation-1: Rendering Sequence-1
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: 2cf9e105b78f22c8cba7d77ae184dbf94bd947b5
+
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'CYTefITokbMxGyErK7Gp'
+		- restler_static_string: '/'
+		- restler_static_string: 'rate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:08:56.033: Sending: 'GET /package/CYTefITokbMxGyErK7Gp/rate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:08:57.865: Received: 'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nDate: Thu, 27 Apr 2023 21:08:57 GMT\r\nContent-Length: 149\r\n\r\n{"NetScore":0,"BusFactor":0.63,"Correctness":0.96,"RampUp":1,"ResponsiveMaintainer":0.57,"LicenseScore":0,"GoodPinningPractice":1,"PullRequest":0.64}'
+
+
+Generation-1: Rendering Sequence-2
+
+	Request: 1 (Remaining candidate combinations: 4)
+	Request hash: 34378edc1c9c7e4a438d92f5d892fa0a51880371
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'authenticate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "User":\n        {\n            "name":'
+		+ restler_fuzzable_string: ["Alfalfa", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "isAdmin":'
+		- restler_fuzzable_bool: 'true'
+		- restler_static_string: '\n        }\n    ,\n    "Secret":\n        {\n            "password":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:08:57.867: Sending: 'PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\nContent-Length: 184\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "User":\n        {\n            "name":"Alfalfa",\n            "isAdmin":true\n        }\n    ,\n    "Secret":\n        {\n            "password":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:08:57.867: Received: 'HTTP/1.1 501 Not Implemented\r\nDate: Thu, 27 Apr 2023 21:08:57 GMT\r\nContent-Length: 0\r\n\r\n'
+
+2023-04-27 17:08:57.868: Attempting to reproduce bug...
+2023-04-27 17:08:57.871: Sending: 'PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\nContent-Length: 184\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "User":\n        {\n            "name":"Alfalfa",\n            "isAdmin":true\n        }\n    ,\n    "Secret":\n        {\n            "password":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:08:57.871: Received: 'HTTP/1.1 501 Not Implemented\r\nDate: Thu, 27 Apr 2023 21:08:57 GMT\r\nContent-Length: 0\r\n\r\n'
+
+2023-04-27 17:08:57.871: Done replaying sequence.
+
+Generation-1: Rendering Sequence-2
+
+	Request: 1 (Remaining candidate combinations: 3)
+	Request hash: 34378edc1c9c7e4a438d92f5d892fa0a51880371
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'authenticate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "User":\n        {\n            "name":'
+		+ restler_fuzzable_string: ["Alfalfa", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "isAdmin":'
+		- restler_fuzzable_bool: 'true'
+		- restler_static_string: '\n        }\n    ,\n    "Secret":\n        {\n            "password":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:08:57.874: Sending: 'PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\nContent-Length: 197\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "User":\n        {\n            "name":"GmgX1hlDuX9aOjeAsGJV",\n            "isAdmin":true\n        }\n    ,\n    "Secret":\n        {\n            "password":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:08:57.874: Received: 'HTTP/1.1 501 Not Implemented\r\nDate: Thu, 27 Apr 2023 21:08:57 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-2
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: 34378edc1c9c7e4a438d92f5d892fa0a51880371
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'authenticate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "User":\n        {\n            "name":'
+		+ restler_fuzzable_string: ["Alfalfa", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "isAdmin":'
+		- restler_fuzzable_bool: 'true'
+		- restler_static_string: '\n        }\n    ,\n    "Secret":\n        {\n            "password":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:08:57.875: Sending: 'PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\nContent-Length: 87\r\nUser-Agent: restler/9.1.1\r\n\r\n{"User":{"name":"Alfalfa","isAdmin":true},"Secret":{"password":"GmgX1hlDuX9aOjeAsGJV"}}'
+
+2023-04-27 17:08:57.876: Received: 'HTTP/1.1 501 Not Implemented\r\nDate: Thu, 27 Apr 2023 21:08:57 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-2
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: 34378edc1c9c7e4a438d92f5d892fa0a51880371
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'authenticate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "User":\n        {\n            "name":'
+		+ restler_fuzzable_string: ["Alfalfa", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "isAdmin":'
+		- restler_fuzzable_bool: 'true'
+		- restler_static_string: '\n        }\n    ,\n    "Secret":\n        {\n            "password":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:08:57.878: Sending: 'PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\nContent-Length: 100\r\nUser-Agent: restler/9.1.1\r\n\r\n{"User":{"name":"GmgX1hlDuX9aOjeAsGJV","isAdmin":true},"Secret":{"password":"GmgX1hlDuX9aOjeAsGJV"}}'
+
+2023-04-27 17:08:57.878: Received: 'HTTP/1.1 501 Not Implemented\r\nDate: Thu, 27 Apr 2023 21:08:57 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-3
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: 53c40289bc28496ce0dc38077ca4ccae5f2a4441
+
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "Content":'
+		- restler_static_string: '""'
+		- restler_static_string: ',\n    "URL":'
+		- restler_static_string: '"https://github.com/cloudinary/cloudinary_npm"'
+		- restler_static_string: ',\n    "JSProgram":'
+		- restler_static_string: '""'
+		- restler_static_string: '}'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:08:57.880: Sending: 'POST /package HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 99\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "Content":"",\n    "URL":"https://github.com/cloudinary/cloudinary_npm",\n    "JSProgram":""}\r\n'
+
+2023-04-27 17:09:00.160: Received: 'HTTP/1.1 409 Conflict\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-3
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: 53c40289bc28496ce0dc38077ca4ccae5f2a4441
+
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "Content":'
+		- restler_static_string: '""'
+		- restler_static_string: ',\n    "URL":'
+		- restler_static_string: '"https://github.com/cloudinary/cloudinary_npm"'
+		- restler_static_string: ',\n    "JSProgram":'
+		- restler_static_string: '""'
+		- restler_static_string: '}'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.165: Sending: 'POST /package HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 2\r\nUser-Agent: restler/9.1.1\r\n\r\n{}'
+
+2023-04-27 17:09:00.166: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-4
+
+	Request: 1 (Remaining candidate combinations: 4)
+	Request hash: 622f8847b89cdc3edbb1fc1c095a74df6195b6c3
+
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byRegEx'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "RegEx":'
+		- restler_static_string: '""'
+		- restler_static_string: '}'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.169: Sending: 'POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\nContent-Length: 19\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "RegEx":""}\r\n'
+
+2023-04-27 17:09:00.487: Received: 'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 133\r\n\r\n[{"Name":"fecha","Version":"4.2.3","ID":"CYTefITokbMxGyErK7Gp"},{"Name":"cloudinary","Version":"1.36.2","ID":"o13yNBvp5Byko8DVQG8q"}]'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 8)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.494: Sending: 'PUT /package/id683986b33c HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\nContent-Length: 379\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "GmgX1hlDuX9aOjeAsGJV"\n            ,\n            "Version":"1.2.3",\n            "ID":\n                "GmgX1hlDuX9aOjeAsGJV"\n        }\n    ,\n    "data":\n        {\n            "Content":"GmgX1hlDuX9aOjeAsGJV",\n            "URL":"GmgX1hlDuX9aOjeAsGJV",\n            "JSProgram":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:09:00.494: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 7)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.497: Sending: 'PUT /package/idd3e328725a HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\nContent-Length: 394\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "GmgX1hlDuX9aOjeAsGJV"\n            ,\n            "Version":"GmgX1hlDuX9aOjeAsGJV",\n            "ID":\n                "GmgX1hlDuX9aOjeAsGJV"\n        }\n    ,\n    "data":\n        {\n            "Content":"GmgX1hlDuX9aOjeAsGJV",\n            "URL":"GmgX1hlDuX9aOjeAsGJV",\n            "JSProgram":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:09:00.497: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 6)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.500: Sending: 'PUT /package/idf30579101e HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 379\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "GmgX1hlDuX9aOjeAsGJV"\n            ,\n            "Version":"1.2.3",\n            "ID":\n                "GmgX1hlDuX9aOjeAsGJV"\n        }\n    ,\n    "data":\n        {\n            "Content":"GmgX1hlDuX9aOjeAsGJV",\n            "URL":"GmgX1hlDuX9aOjeAsGJV",\n            "JSProgram":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:09:00.500: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 5)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.503: Sending: 'PUT /package/idd0721cb346 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 394\r\nUser-Agent: restler/9.1.1\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "GmgX1hlDuX9aOjeAsGJV"\n            ,\n            "Version":"GmgX1hlDuX9aOjeAsGJV",\n            "ID":\n                "GmgX1hlDuX9aOjeAsGJV"\n        }\n    ,\n    "data":\n        {\n            "Content":"GmgX1hlDuX9aOjeAsGJV",\n            "URL":"GmgX1hlDuX9aOjeAsGJV",\n            "JSProgram":"GmgX1hlDuX9aOjeAsGJV"\n        }\n    }\r\n'
+
+2023-04-27 17:09:00.503: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 4)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.506: Sending: 'PUT /package/idd6665b2c4b HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\nContent-Length: 100\r\nUser-Agent: restler/9.1.1\r\n\r\n{"metadata":{"Name":"GmgX1hlDuX9aOjeAsGJV","Version":"1.2.3","ID":"GmgX1hlDuX9aOjeAsGJV"},"data":{}}'
+
+2023-04-27 17:09:00.507: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 3)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.511: Sending: 'PUT /package/id3005370d05 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\nContent-Length: 115\r\nUser-Agent: restler/9.1.1\r\n\r\n{"metadata":{"Name":"GmgX1hlDuX9aOjeAsGJV","Version":"GmgX1hlDuX9aOjeAsGJV","ID":"GmgX1hlDuX9aOjeAsGJV"},"data":{}}'
+
+2023-04-27 17:09:00.511: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.515: Sending: 'PUT /package/id8be7ad6b27 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 100\r\nUser-Agent: restler/9.1.1\r\n\r\n{"metadata":{"Name":"GmgX1hlDuX9aOjeAsGJV","Version":"1.2.3","ID":"GmgX1hlDuX9aOjeAsGJV"},"data":{}}'
+
+2023-04-27 17:09:00.515: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-5
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: ae2e52b0be263bb3c5af7af1de0164105f19800c
+
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ["1.2.3", "GmgX1hlDuX9aOjeAsGJV", ...]
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.519: Sending: 'PUT /package/id3f7cf33e4b HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 115\r\nUser-Agent: restler/9.1.1\r\n\r\n{"metadata":{"Name":"GmgX1hlDuX9aOjeAsGJV","Version":"GmgX1hlDuX9aOjeAsGJV","ID":"GmgX1hlDuX9aOjeAsGJV"},"data":{}}'
+
+2023-04-27 17:09:00.519: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-6
+
+	Request: 1 (Remaining candidate combinations: 8)
+	Request hash: b629f1c5622485736860d1c22df11960e7925da1
+
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		+ restler_fuzzable_string: [fecha, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.523: Sending: 'GET /package/byName/fecha HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:00.654: Received: 'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 1081\r\n\r\n[{"User":{"isAdmin":false,"name":"default user"},"Date":"2023-04-27T16:54:41-04:00","PackageMetadata":{"Name":"fecha","Version":"4.2.3","ID":"CYTefITokbMxGyErK7Gp"},"Action":"RATE"},{"User":{"isAdmin":false,"name":"default user"},"Date":"2023-04-27T20:48:16Z","PackageMetadata":{"Name":"fecha","Version":"4.2.3","ID":"GmgX1hlDuX9aOjeAsGJV"},"Action":"CREATE"},{"User":{"isAdmin":false,"name":"default user"},"Date":"2023-04-27T16:51:14-04:00","PackageMetadata":{"Name":"fecha","Version":"4.2.3","ID":"GmgX1hlDuX9aOjeAsGJV"},"Action":"RATE"},{"User":{"isAdmin":false,"name":"default user"},"Date":"2023-04-27T20:54:09Z","PackageMetadata":{"Name":"fecha","Version":"4.2.3","ID":"CYTefITokbMxGyErK7Gp"},"Action":"CREATE"},{"User":{"isAdmin":false,"name":"default user"},"Date":"2023-04-27T17:08:42-04:00","PackageMetadata":{"Name":"fecha","Version":"4.2.3","ID":"CYTefITokbMxGyErK7Gp"},"Action":"RATE"},{"User":{"isAdmin":false,"name":"default user"},"Date":"2023-04-27T17:08:56-04:00","PackageMetadata":{"Name":"fecha","Version":"4.2.3","ID":"CYTefITokbMxGyErK7Gp"},"Action":"RATE"}]'
+
+
+Generation-1: Rendering Sequence-7
+
+	Request: 1 (Remaining candidate combinations: 4)
+	Request hash: bc5261a7f782f1ba433b4a9ae4042326e24ae026
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.658: Sending: 'DELETE /package/byName/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:00.793: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:00 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-7
+
+	Request: 1 (Remaining candidate combinations: 3)
+	Request hash: bc5261a7f782f1ba433b4a9ae4042326e24ae026
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:00.800: Sending: 'DELETE /package/byName/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:01.090: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:01 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-7
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: bc5261a7f782f1ba433b4a9ae4042326e24ae026
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:01.096: Sending: 'DELETE /package/byName/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:01.259: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:01 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-7
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: bc5261a7f782f1ba433b4a9ae4042326e24ae026
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:01.265: Sending: 'DELETE /package/byName/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:01.692: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:01 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-8
+
+	Request: 1 (Remaining candidate combinations: 4)
+	Request hash: cc816fc30c6302121cf2006c7792022bbd135aae
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:01.701: Sending: 'DELETE /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:02.058: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:02 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-8
+
+	Request: 1 (Remaining candidate combinations: 3)
+	Request hash: cc816fc30c6302121cf2006c7792022bbd135aae
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:02.063: Sending: 'DELETE /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:02.334: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:02 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-8
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: cc816fc30c6302121cf2006c7792022bbd135aae
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:02.341: Sending: 'DELETE /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:02.540: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:02 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-8
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: cc816fc30c6302121cf2006c7792022bbd135aae
+
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:02.545: Sending: 'DELETE /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:02.693: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:02 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-9
+
+	Request: 1 (Remaining candidate combinations: 3)
+	Request hash: dda8837d7e90fc25b149d3cf4b78cb64d0af2def
+
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'packages'
+		- restler_static_string: '?'
+		- restler_static_string: 'offset='
+		+ restler_fuzzable_string: [1, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '['
+		- restler_static_string: '\n    {\n        "Version":\n            "Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)"\n        ,\n        "Name":\n            '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n    }]'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:02.699: Sending: 'POST /packages?offset=1 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 182\r\nUser-Agent: restler/9.1.1\r\n\r\n[\n    {\n        "Version":\n            "Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)"\n        ,\n        "Name":\n            "GmgX1hlDuX9aOjeAsGJV"\n    }]\r\n'
+
+2023-04-27 17:09:02.700: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:02 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-9
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: dda8837d7e90fc25b149d3cf4b78cb64d0af2def
+
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'packages'
+		- restler_static_string: '?'
+		- restler_static_string: 'offset='
+		+ restler_fuzzable_string: [1, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '['
+		- restler_static_string: '\n    {\n        "Version":\n            "Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)"\n        ,\n        "Name":\n            '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n    }]'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:02.702: Sending: 'POST /packages?offset=GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 182\r\nUser-Agent: restler/9.1.1\r\n\r\n[\n    {\n        "Version":\n            "Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)"\n        ,\n        "Name":\n            "GmgX1hlDuX9aOjeAsGJV"\n    }]\r\n'
+
+2023-04-27 17:09:02.703: Received: 'HTTP/1.1 400 Bad Request\r\nDate: Thu, 27 Apr 2023 21:09:02 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-9
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: dda8837d7e90fc25b149d3cf4b78cb64d0af2def
+
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'packages'
+		- restler_static_string: '?'
+		- restler_static_string: 'offset='
+		+ restler_fuzzable_string: [1, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+		- restler_static_string: '['
+		- restler_static_string: '\n    {\n        "Version":\n            "Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)"\n        ,\n        "Name":\n            '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n    }]'
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:02.706: Sending: 'POST /packages HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Type: application/json\r\nContent-Length: 33\r\nUser-Agent: restler/9.1.1\r\n\r\n[{"Name":"GmgX1hlDuX9aOjeAsGJV"}]'
+
+2023-04-27 17:09:03.207: Received: 'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nDate: Thu, 27 Apr 2023 21:09:03 GMT\r\nContent-Length: 2\r\n\r\n[]'
+
+
+Generation-1: Rendering Sequence-10
+
+	Request: 1 (Remaining candidate combinations: 4)
+	Request hash: f3af48e85240ea07e9d43e24792a41c036c96b0c
+
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:03.212: Sending: 'GET /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:03.369: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:03 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-10
+
+	Request: 1 (Remaining candidate combinations: 3)
+	Request hash: f3af48e85240ea07e9d43e24792a41c036c96b0c
+
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:03.373: Sending: 'GET /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:03.630: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:03 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-10
+
+	Request: 1 (Remaining candidate combinations: 2)
+	Request hash: f3af48e85240ea07e9d43e24792a41c036c96b0c
+
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:03.632: Sending: 'GET /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:03.763: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:03 GMT\r\nContent-Length: 0\r\n\r\n'
+
+
+Generation-1: Rendering Sequence-10
+
+	Request: 1 (Remaining candidate combinations: 1)
+	Request hash: f3af48e85240ea07e9d43e24792a41c036c96b0c
+
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: [bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c, GmgX1hlDuX9aOjeAsGJV, ...]
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: [token_auth_method, token_refresh_interval, ...]
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:03.769: Sending: 'GET /package/GmgX1hlDuX9aOjeAsGJV HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: GmgX1hlDuX9aOjeAsGJV\r\nContent-Length: 0\r\nUser-Agent: restler/9.1.1\r\n\r\n'
+
+2023-04-27 17:09:03.927: Received: 'HTTP/1.1 404 Not Found\r\nDate: Thu, 27 Apr 2023 21:09:03 GMT\r\nContent-Length: 0\r\n\r\n'
+

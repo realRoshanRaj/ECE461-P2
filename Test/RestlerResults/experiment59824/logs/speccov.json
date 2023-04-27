@@ -1,0 +1,360 @@
+{
+    "2cf9e105b78f22c8cba7d77ae184dbf94bd947b5_1": {
+        "verb": "GET",
+        "endpoint": "/package/{id}/rate",
+        "verb_endpoint": "GET /package/{id}/rate",
+        "valid": 1,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "200",
+        "status_text": "OK",
+        "error_message": null,
+        "request_order": 0,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:08:57",
+            "request_verb": "GET",
+            "request_uri": "/package/CYTefITokbMxGyErK7Gp/rate",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: GmgX1hlDuX9aOjeAsGJV"
+            ],
+            "request_body": null,
+            "response_status_code": "200",
+            "response_status_text": "OK",
+            "response_headers": [
+                "Content-Type: application/json",
+                "Date: Thu, 27 Apr 2023 21:08:57 GMT",
+                "Content-Length: 149"
+            ],
+            "response_body": "{\"NetScore\":0,\"BusFactor\":0.63,\"Correctness\":0.96,\"RampUp\":1,\"ResponsiveMaintainer\":0.57,\"LicenseScore\":0,\"GoodPinningPractice\":1,\"PullRequest\":0.64}"
+        },
+        "tracked_parameters": {}
+    },
+    "34378edc1c9c7e4a438d92f5d892fa0a51880371_1": {
+        "verb": "PUT",
+        "endpoint": "/authenticate",
+        "verb_endpoint": "PUT /authenticate",
+        "valid": 0,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 1,
+        "status_code": "501",
+        "status_text": "Not Implemented",
+        "error_message": "",
+        "request_order": 1,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:08:57",
+            "request_verb": "PUT",
+            "request_uri": "/authenticate",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "Content-Type: application/json"
+            ],
+            "request_body": "{\n    \"User\":\n        {\n            \"name\":\"Alfalfa\",\n            \"isAdmin\":true\n        }\n    ,\n    \"Secret\":\n        {\n            \"password\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n",
+            "response_status_code": "501",
+            "response_status_text": "Not Implemented",
+            "response_headers": [
+                "Date: Thu, 27 Apr 2023 21:08:57 GMT",
+                "Content-Length: 0"
+            ],
+            "response_body": ""
+        },
+        "tracked_parameters": {}
+    },
+    "53c40289bc28496ce0dc38077ca4ccae5f2a4441_1": {
+        "verb": "POST",
+        "endpoint": "/package",
+        "verb_endpoint": "POST /package",
+        "valid": 0,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "409",
+        "status_text": "Conflict",
+        "error_message": "",
+        "request_order": 2,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:00",
+            "request_verb": "POST",
+            "request_uri": "/package",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: GmgX1hlDuX9aOjeAsGJV",
+                "Content-Type: application/json"
+            ],
+            "request_body": "{\n    \"Content\":\"\",\n    \"URL\":\"https://github.com/cloudinary/cloudinary_npm\",\n    \"JSProgram\":\"\"}\r\n",
+            "response_status_code": "409",
+            "response_status_text": "Conflict",
+            "response_headers": [
+                "Date: Thu, 27 Apr 2023 21:09:00 GMT",
+                "Content-Length: 0"
+            ],
+            "response_body": ""
+        },
+        "tracked_parameters": {}
+    },
+    "622f8847b89cdc3edbb1fc1c095a74df6195b6c3_1": {
+        "verb": "POST",
+        "endpoint": "/package/byRegEx",
+        "verb_endpoint": "POST /package/byRegEx",
+        "valid": 1,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "200",
+        "status_text": "OK",
+        "error_message": null,
+        "request_order": 3,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:00",
+            "request_verb": "POST",
+            "request_uri": "/package/byRegEx",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                "Content-Type: application/json"
+            ],
+            "request_body": "{\n    \"RegEx\":\"\"}\r\n",
+            "response_status_code": "200",
+            "response_status_text": "OK",
+            "response_headers": [
+                "Content-Type: application/json",
+                "Date: Thu, 27 Apr 2023 21:09:00 GMT",
+                "Content-Length: 133"
+            ],
+            "response_body": "[{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"CYTefITokbMxGyErK7Gp\"},{\"Name\":\"cloudinary\",\"Version\":\"1.36.2\",\"ID\":\"o13yNBvp5Byko8DVQG8q\"}]"
+        },
+        "tracked_parameters": {}
+    },
+    "ae2e52b0be263bb3c5af7af1de0164105f19800c_1": {
+        "verb": "PUT",
+        "endpoint": "/package/{id}",
+        "verb_endpoint": "PUT /package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "400",
+        "status_text": "Bad Request",
+        "error_message": "",
+        "request_order": 4,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:00",
+            "request_verb": "PUT",
+            "request_uri": "/package/id683986b33c",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                "Content-Type: application/json"
+            ],
+            "request_body": "{\n    \"metadata\":\n        {\n            \"Name\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n            ,\n            \"Version\":\"1.2.3\",\n            \"ID\":\n                \"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    ,\n    \"data\":\n        {\n            \"Content\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"URL\":\"GmgX1hlDuX9aOjeAsGJV\",\n            \"JSProgram\":\"GmgX1hlDuX9aOjeAsGJV\"\n        }\n    }\r\n",
+            "response_status_code": "400",
+            "response_status_text": "Bad Request",
+            "response_headers": [
+                "Date: Thu, 27 Apr 2023 21:09:00 GMT",
+                "Content-Length: 0"
+            ],
+            "response_body": ""
+        },
+        "tracked_parameters": {}
+    },
+    "b629f1c5622485736860d1c22df11960e7925da1_1": {
+        "verb": "GET",
+        "endpoint": "/package/byName/{name}",
+        "verb_endpoint": "GET /package/byName/{name}",
+        "valid": 1,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "200",
+        "status_text": "OK",
+        "error_message": null,
+        "request_order": 5,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:00",
+            "request_verb": "GET",
+            "request_uri": "/package/byName/fecha",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            ],
+            "request_body": null,
+            "response_status_code": "200",
+            "response_status_text": "OK",
+            "response_headers": [
+                "Content-Type: application/json",
+                "Date: Thu, 27 Apr 2023 21:09:00 GMT",
+                "Content-Length: 1081"
+            ],
+            "response_body": "[{\"User\":{\"isAdmin\":false,\"name\":\"default user\"},\"Date\":\"2023-04-27T16:54:41-04:00\",\"PackageMetadata\":{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"CYTefITokbMxGyErK7Gp\"},\"Action\":\"RATE\"},{\"User\":{\"isAdmin\":false,\"name\":\"default user\"},\"Date\":\"2023-04-27T20:48:16Z\",\"PackageMetadata\":{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"GmgX1hlDuX9aOjeAsGJV\"},\"Action\":\"CREATE\"},{\"User\":{\"isAdmin\":false,\"name\":\"default user\"},\"Date\":\"2023-04-27T16:51:14-04:00\",\"PackageMetadata\":{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"GmgX1hlDuX9aOjeAsGJV\"},\"Action\":\"RATE\"},{\"User\":{\"isAdmin\":false,\"name\":\"default user\"},\"Date\":\"2023-04-27T20:54:09Z\",\"PackageMetadata\":{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"CYTefITokbMxGyErK7Gp\"},\"Action\":\"CREATE\"},{\"User\":{\"isAdmin\":false,\"name\":\"default user\"},\"Date\":\"2023-04-27T17:08:42-04:00\",\"PackageMetadata\":{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"CYTefITokbMxGyErK7Gp\"},\"Action\":\"RATE\"},{\"User\":{\"isAdmin\":false,\"name\":\"default user\"},\"Date\":\"2023-04-27T17:08:56-04:00\",\"PackageMetadata\":{\"Name\":\"fecha\",\"Version\":\"4.2.3\",\"ID\":\"CYTefITokbMxGyErK7Gp\"},\"Action\":\"RATE\"}]"
+        },
+        "tracked_parameters": {}
+    },
+    "bc5261a7f782f1ba433b4a9ae4042326e24ae026_1": {
+        "verb": "DELETE",
+        "endpoint": "/package/byName/{name}",
+        "verb_endpoint": "DELETE /package/byName/{name}",
+        "valid": 0,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "404",
+        "status_text": "Not Found",
+        "error_message": "",
+        "request_order": 6,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:00",
+            "request_verb": "DELETE",
+            "request_uri": "/package/byName/GmgX1hlDuX9aOjeAsGJV",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            ],
+            "request_body": null,
+            "response_status_code": "404",
+            "response_status_text": "Not Found",
+            "response_headers": [
+                "Date: Thu, 27 Apr 2023 21:09:00 GMT",
+                "Content-Length: 0"
+            ],
+            "response_body": ""
+        },
+        "tracked_parameters": {}
+    },
+    "cc816fc30c6302121cf2006c7792022bbd135aae_1": {
+        "verb": "DELETE",
+        "endpoint": "/package/{id}",
+        "verb_endpoint": "DELETE /package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "404",
+        "status_text": "Not Found",
+        "error_message": "",
+        "request_order": 7,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:02",
+            "request_verb": "DELETE",
+            "request_uri": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            ],
+            "request_body": null,
+            "response_status_code": "404",
+            "response_status_text": "Not Found",
+            "response_headers": [
+                "Date: Thu, 27 Apr 2023 21:09:02 GMT",
+                "Content-Length: 0"
+            ],
+            "response_body": ""
+        },
+        "tracked_parameters": {}
+    },
+    "dda8837d7e90fc25b149d3cf4b78cb64d0af2def_3": {
+        "verb": "POST",
+        "endpoint": "/packages",
+        "verb_endpoint": "POST /packages",
+        "valid": 1,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "200",
+        "status_text": "OK",
+        "error_message": null,
+        "request_order": 8,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:03",
+            "request_verb": "POST",
+            "request_uri": "/packages",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: GmgX1hlDuX9aOjeAsGJV",
+                "Content-Type: application/json"
+            ],
+            "request_body": "[{\"Name\":\"GmgX1hlDuX9aOjeAsGJV\"}]",
+            "response_status_code": "200",
+            "response_status_text": "OK",
+            "response_headers": [
+                "Content-Type: application/json",
+                "Date: Thu, 27 Apr 2023 21:09:03 GMT",
+                "Content-Length: 2"
+            ],
+            "response_body": "[]"
+        },
+        "tracked_parameters": {}
+    },
+    "f3af48e85240ea07e9d43e24792a41c036c96b0c_1": {
+        "verb": "GET",
+        "endpoint": "/package/{id}",
+        "verb_endpoint": "GET /package/{id}",
+        "valid": 0,
+        "matching_prefix": [],
+        "invalid_due_to_sequence_failure": 0,
+        "invalid_due_to_resource_failure": 0,
+        "invalid_due_to_parser_failure": 0,
+        "invalid_due_to_500": 0,
+        "status_code": "404",
+        "status_text": "Not Found",
+        "error_message": "",
+        "request_order": 9,
+        "sample_request": {
+            "request_sent_timestamp": null,
+            "response_received_timestamp": "2023-04-27 21:09:03",
+            "request_verb": "GET",
+            "request_uri": "/package/GmgX1hlDuX9aOjeAsGJV",
+            "request_headers": [
+                "Accept: application/json",
+                "Host: localhost:8080",
+                "X-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            ],
+            "request_body": null,
+            "response_status_code": "404",
+            "response_status_text": "Not Found",
+            "response_headers": [
+                "Date: Thu, 27 Apr 2023 21:09:03 GMT",
+                "Content-Length: 0"
+            ],
+            "response_body": ""
+        },
+        "tracked_parameters": {}
+    }
+}

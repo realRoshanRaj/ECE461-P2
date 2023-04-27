@@ -1,0 +1,326 @@
+Request from grammar does not exist in the Request Collection!
+DELETE /reset
+
+Setting fuzzing schemes: directed-smoke-test
+2023-04-27 17:08:56.023: Going to fuzz a set with 10 requests
+2023-04-27 17:08:56.023: Request-0: Value Combinations: 2
+2023-04-27 17:08:56.023: Request-1: Value Combinations: 4
+2023-04-27 17:08:56.023: Request-2: Value Combinations: 2
+2023-04-27 17:08:56.023: Request-3: Value Combinations: 4
+2023-04-27 17:08:56.023: Request-4: Value Combinations: 8
+2023-04-27 17:08:56.023: Request-5: Value Combinations: 8
+2023-04-27 17:08:56.023: Request-6: Value Combinations: 4
+2023-04-27 17:08:56.023: Request-7: Value Combinations: 4
+2023-04-27 17:08:56.023: Request-8: Value Combinations: 3
+2023-04-27 17:08:56.023: Request-9: Value Combinations: 4
+2023-04-27 17:08:56.023: Avg. Value Combinations per Request: 4.3
+2023-04-27 17:08:56.023: Median Value Combinations per Request: 4.0
+2023-04-27 17:08:56.023: Min Value Combinations per Request: 2
+2023-04-27 17:08:56.023: Max Value Combinations per Request: 8
+2023-04-27 17:08:56.023: Total dependencies: 0
+
+2023-04-27 17:08:56.026: Generation: 1 / Sequences Collection Size: 10 
+(After directed-smoke-test Extend)
+
+Rendering request 0 from scratch
+
+2023-04-27 17:08:57.866: Request 0
+2023-04-27 17:08:57.866: Endpoint - /package/{id}/rate
+2023-04-27 17:08:57.866: Hex Def - 2cf9e105b78f22c8cba7d77ae184dbf94bd947b5
+2023-04-27 17:08:57.866: Sequence length that satisfies dependencies: 1
+2023-04-27 17:08:57.866: Rendering VALID
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'CYTefITokbMxGyErK7Gp'
+		- restler_static_string: '/'
+		- restler_static_string: 'rate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+
+Rendering request 1 from scratch
+
+2023-04-27 17:08:57.879: Request 1
+2023-04-27 17:08:57.879: Endpoint - /authenticate
+2023-04-27 17:08:57.879: Hex Def - 34378edc1c9c7e4a438d92f5d892fa0a51880371
+2023-04-27 17:08:57.879: Sequence length that satisfies dependencies: 1
+2023-04-27 17:08:57.879: Rendering INVALID
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'authenticate'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "User":\n        {\n            "name":'
+		+ restler_fuzzable_string: ['"Alfalfa"', '"GmgX1hlDuX9aOjeAsGJV"']
+		- restler_static_string: ',\n            "isAdmin":'
+		- restler_fuzzable_bool: 'true'
+		- restler_static_string: '\n        }\n    ,\n    "Secret":\n        {\n            "password":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+Rendering request 2 from scratch
+
+2023-04-27 17:09:00.168: Request 2
+2023-04-27 17:09:00.168: Endpoint - /package
+2023-04-27 17:09:00.168: Hex Def - 53c40289bc28496ce0dc38077ca4ccae5f2a4441
+2023-04-27 17:09:00.168: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:00.168: Rendering INVALID
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "Content":'
+		- restler_static_string: '""'
+		- restler_static_string: ',\n    "URL":'
+		- restler_static_string: '"https://github.com/cloudinary/cloudinary_npm"'
+		- restler_static_string: ',\n    "JSProgram":'
+		- restler_static_string: '""'
+		- restler_static_string: '}'
+		- restler_static_string: '\r\n'
+
+Rendering request 3 from scratch
+
+2023-04-27 17:09:00.491: Request 3
+2023-04-27 17:09:00.491: Endpoint - /package/byRegEx
+2023-04-27 17:09:00.491: Hex Def - 622f8847b89cdc3edbb1fc1c095a74df6195b6c3
+2023-04-27 17:09:00.491: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:00.491: Rendering VALID
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byRegEx'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: ['bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "RegEx":'
+		- restler_static_string: '""'
+		- restler_static_string: '}'
+		- restler_static_string: '\r\n'
+
+Rendering request 4 from scratch
+
+2023-04-27 17:09:00.522: Request 4
+2023-04-27 17:09:00.522: Endpoint - /package/{id}
+2023-04-27 17:09:00.522: Hex Def - ae2e52b0be263bb3c5af7af1de0164105f19800c
+2023-04-27 17:09:00.522: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:00.522: Rendering INVALID
+		- restler_static_string: 'PUT '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_custom_payload_uuid4_suffix: 'i'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: ['bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+		- restler_static_string: '{'
+		- restler_static_string: '\n    "metadata":\n        {\n            "Name":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n            ,\n            "Version":'
+		+ restler_fuzzable_string: ['"1.2.3"', '"GmgX1hlDuX9aOjeAsGJV"']
+		- restler_static_string: ',\n            "ID":\n                '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    ,\n    "data":\n        {\n            "Content":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "URL":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: ',\n            "JSProgram":'
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n        }\n    }'
+		- restler_static_string: '\r\n'
+
+Rendering request 5 from scratch
+
+2023-04-27 17:09:00.656: Request 5
+2023-04-27 17:09:00.656: Endpoint - /package/byName/{name}
+2023-04-27 17:09:00.656: Hex Def - b629f1c5622485736860d1c22df11960e7925da1
+2023-04-27 17:09:00.656: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:00.656: Rendering VALID
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		+ restler_fuzzable_string: ['fecha', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: ['bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+
+Rendering request 6 from scratch
+
+2023-04-27 17:09:01.698: Request 6
+2023-04-27 17:09:01.698: Endpoint - /package/byName/{name}
+2023-04-27 17:09:01.698: Hex Def - bc5261a7f782f1ba433b4a9ae4042326e24ae026
+2023-04-27 17:09:01.698: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:01.698: Rendering INVALID
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_static_string: 'byName'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: ['bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+
+Rendering request 7 from scratch
+
+2023-04-27 17:09:02.697: Request 7
+2023-04-27 17:09:02.697: Endpoint - /package/{id}
+2023-04-27 17:09:02.697: Hex Def - cc816fc30c6302121cf2006c7792022bbd135aae
+2023-04-27 17:09:02.697: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:02.697: Rendering INVALID
+		- restler_static_string: 'DELETE '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: ['bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+
+Rendering request 8 from scratch
+
+2023-04-27 17:09:03.210: Request 8
+2023-04-27 17:09:03.210: Endpoint - /packages
+2023-04-27 17:09:03.210: Hex Def - dda8837d7e90fc25b149d3cf4b78cb64d0af2def
+2023-04-27 17:09:03.210: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:03.210: Rendering VALID
+		- restler_static_string: 'POST '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'packages'
+		- restler_static_string: '?'
+		- restler_static_string: 'offset='
+		+ restler_fuzzable_string: ['1', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: '\r\n'
+		- restler_static_string: 'Content-Type: '
+		- restler_static_string: 'application/json'
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+		- restler_static_string: '['
+		- restler_static_string: '\n    {\n        "Version":\n            "Exact (1.2.3)\nBounded range (1.2.3-2.1.0)\nCarat (^1.2.3)\nTilde (~1.2.0)"\n        ,\n        "Name":\n            '
+		- restler_fuzzable_string: '"GmgX1hlDuX9aOjeAsGJV"'
+		- restler_static_string: '\n    }]'
+		- restler_static_string: '\r\n'
+
+Rendering request 9 from scratch
+
+2023-04-27 17:09:03.930: Request 9
+2023-04-27 17:09:03.931: Endpoint - /package/{id}
+2023-04-27 17:09:03.931: Hex Def - f3af48e85240ea07e9d43e24792a41c036c96b0c
+2023-04-27 17:09:03.931: Sequence length that satisfies dependencies: 1
+2023-04-27 17:09:03.931: Rendering INVALID
+		- restler_static_string: 'GET '
+		- restler_static_string: ''
+		- restler_static_string: '/'
+		- restler_static_string: 'package'
+		- restler_static_string: '/'
+		- restler_fuzzable_string: 'GmgX1hlDuX9aOjeAsGJV'
+		- restler_static_string: ' HTTP/1.1\r\n'
+		- restler_static_string: 'Accept: application/json\r\n'
+		- restler_static_string: 'Host: localhost:8080\r\n'
+		- restler_static_string: 'X-Authorization: '
+		+ restler_fuzzable_string: ['bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c', 'GmgX1hlDuX9aOjeAsGJV']
+		- restler_static_string: '\r\n'
+		+ restler_refreshable_authentication_token: ['token_auth_method', 'token_refresh_interval']
+		- restler_static_string: '\r\n'
+
+2023-04-27 17:09:03.931: Generation: 1 / Sequences Collection Size: 4 
+(After directed-smoke-test Render)
+
+2023-04-27 17:09:03.932: Final Swagger spec coverage: 4 / 10
+2023-04-27 17:09:03.932: Rendered requests: 10 / 10
+2023-04-27 17:09:03.932: Rendered requests with "valid" status codes: 4 / 10
+2023-04-27 17:09:03.932: Num fully valid requests (no resource creation failures): 4
+2023-04-27 17:09:03.932: Num requests not rendered due to invalid sequence re-renders: 0
+2023-04-27 17:09:03.932: Num invalid requests caused by failed resource creations: 0
+2023-04-27 17:09:03.932: Total Creations of Dyn Objects: 0
+2023-04-27 17:09:03.932: Total Requests Sent: {'gc': 0, 'main_driver': 32}
+2023-04-27 17:09:03.932: Bug Buckets: {'main_driver_501': 1}
+
+Testing completed -- below are the final stats:
+
+2023-04-27 17:09:03.938: Final Swagger spec coverage: 4 / 10
+2023-04-27 17:09:03.938: Rendered requests: 10 / 10
+2023-04-27 17:09:03.938: Rendered requests with "valid" status codes: 4 / 10
+2023-04-27 17:09:03.938: Num fully valid requests (no resource creation failures): 4
+2023-04-27 17:09:03.938: Num requests not rendered due to invalid sequence re-renders: 0
+2023-04-27 17:09:03.938: Num invalid requests caused by failed resource creations: 0
+2023-04-27 17:09:03.938: Total Creations of Dyn Objects: 0
+2023-04-27 17:09:03.938: Total Requests Sent: {'gc': 0, 'main_driver': 32}
+2023-04-27 17:09:03.938: Bug Buckets: {'main_driver_501': 1}
