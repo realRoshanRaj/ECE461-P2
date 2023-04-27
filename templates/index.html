@@ -30,7 +30,7 @@
       }
 
       .btn-container button {
-        flex-basis: calc(33.33% - 20px);
+        flex-basis: calc(25% - 20px); 
         margin: 10px;
         padding: 20px 30px;
         font-size: 1.2rem;
@@ -46,10 +46,13 @@
     <main>
       <div class="btn-container">
         <button class="btn btn-success" onclick="create()">Create</button>
-        <button class="btn btn-primary" onclick="update()">Update</button>
+        <button class="btn btn-primary" onclick="search()">Search</button>
+        <button class="btn btn-warning" onclick="update()">Update</button>
         <button class="btn btn-danger" onclick="remove()">Delete</button>
-        <button class="btn btn-info" onclick="search()">Search</button>
-        <button class="btn btn-warning" onclick="rate()">Rate</button>
+        <button class="btn btn-success" onclick="download()">Download</button>
+        <button class="btn btn-primary" onclick="rate()">Rate</button>
+        <button class="btn btn-warning" onclick="history()">History</button>
+        
         <button class="btn btn-danger" onclick="reset()">Reset</button>
       </div>
     </main>
@@ -69,6 +72,14 @@
 
       function search() {
         window.location.href = "/search";
+      }
+
+      function history() {
+        window.location.href = "/history";
+      }
+
+      function download() {
+        window.location.href = "/download";
       }
 
       function rate() {

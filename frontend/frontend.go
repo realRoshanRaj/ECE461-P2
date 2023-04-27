@@ -7,9 +7,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"pkgmanager/internal/models"
-	"strconv"
 )
 
 // define a struct to hold the data for the template
@@ -20,8 +18,10 @@ type PageData struct {
 
 var baseURL = "https://ece461-project2-2shruw53aq-uc.a.run.app"
 
+// "http://localhost:8080"
+
 // Redirects to error page
-func handleError(w http.ResponseWriter, r *http.Request, error_code string){
+func handleError(w http.ResponseWriter, r *http.Request, error_code string) {
 	// Display an error message to the user
 	tmpl, err := template.ParseFiles("templates/error.html")
 	if err != nil {
@@ -31,7 +31,7 @@ func handleError(w http.ResponseWriter, r *http.Request, error_code string){
 	data := struct {
 		Message string
 	}{
-		Message: "A "+error_code+" error occurred.",
+		Message: "A " + error_code + " error occurred.",
 	}
 	if err := tmpl.Execute(w, data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -39,10 +39,10 @@ func handleError(w http.ResponseWriter, r *http.Request, error_code string){
 }
 
 // Redirects to success page
-func handleSuccess(w http.ResponseWriter, r *http.Request){
+func handleSuccess(w http.ResponseWriter, r *http.Request) {
 	// Display an error message to the user
 	tmpl, err := template.ParseFiles("templates/success.html")
-	if err != nil{
+	if err != nil {
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
 		return
 	}
@@ -315,13 +315,7 @@ func RenderRate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get the metric values from the query parameters
-	metrics := make([]float64, 8)
-	for i := range metrics {
-		metrics[i], _ = strconv.ParseFloat(r.URL.Query().Get("metrics"+strconv.Itoa(i+1)), 64)
-	}
-
-	if err := tmpl.Execute(w, metrics); err != nil {
+	if err := tmpl.Execute(w, nil); err != nil {
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
 		return
 	}
@@ -333,7 +327,7 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := r.FormValue("ID")
+	id := r.FormValue("id")
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/"+id+"/rate", nil)
 	if err != nil {
@@ -364,7 +358,6 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	// Store metric values in slice
 	metrics := []float64{
 		met_data.NetScore,
 		met_data.BusFactor,
@@ -376,14 +369,17 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 		met_data.PullRequest,
 	}
 
-	// Redirect the user back to the rate page with the calculated values as query parameters
-	queryParams := url.Values{}
-	for i, value := range metrics {
-		queryParams.Set("metrics"+strconv.Itoa(i+1), fmt.Sprintf("%.2f", value))
+	tmpl, err := template.ParseFiles("templates/rate_results.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
 	}
 
-	// Not Redirecting but Handled
-	http.Redirect(w, r, "/rate?"+queryParams.Encode(), http.StatusSeeOther)
+	if err := tmpl.Execute(w, metrics); err != nil {
+		fmt.Println(err)
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
 }
 
 func RenderSearch(w http.ResponseWriter, r *http.Request) {
@@ -400,73 +396,35 @@ func RenderSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleSearch(w http.ResponseWriter, r *http.Request) {
-    // Parse the form data
-    if err := r.ParseForm(); err != nil {
-        handleError(w, r, fmt.Sprint(http.StatusBadRequest))
-        return
-    }
-
-    // Get the search type and query
-    searchType := r.FormValue("type")
-    query := r.FormValue("q")
-
-    // Create a new HTTP client
-    client := &http.Client{}
-
-    // Declare a variable to hold the response body
-    var respBody []byte
-
-    // Handle the different search types
-    switch searchType {
-    case "id":
-        // Make a GET request to the API
-        req, err := http.NewRequest(http.MethodGet, baseURL+"/package/"+query, nil)
-        if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-			return
-		}
-		resp, err := client.Do(req)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-			return
-		}
-		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode))
-			return
-		}
-        defer resp.Body.Close()
-
-        // Stream the response body and decode the JSON data in chunks
-		var packageInfo map[string]map[string]string
-		decoder := json.NewDecoder(resp.Body)
-		if err := decoder.Decode(&packageInfo); err != nil {
-    		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-    		return
-		}
-
- 		tmpl, err := template.ParseFiles("templates/package_info.html")
-     	if err != nil{
-       		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-       		return 
-     	}
-
-	 	if err := tmpl.Execute(w, packageInfo); err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-			return
-		}
+	// Parse the form data
+	if err := r.ParseForm(); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
 		return
+	}
 
-    case "regex":
-        // Create a JSON body for the request
-        reqBody, err := json.Marshal(map[string]string{"RegEx": string(query)})
-        if err != nil {
-            handleError(w, r, fmt.Sprint(http.StatusBadRequest))
-            return
-        }
+	// Get the search type and query
+	searchType := r.FormValue("type")
+	query := r.FormValue("q")
 
-        // Make a POST request to the API
+	// Create a new HTTP client
+	client := &http.Client{}
+
+	// Declare a variable to hold the response body
+	var respBody []byte
+
+	// Handle the different search types
+	switch searchType {
+	case "regex":
+		// Create a JSON body for the request
+		reqBody, err := json.Marshal(map[string]string{"RegEx": string(query)})
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+			return
+		}
+
+		// Make a POST request to the API
 		req, err := http.NewRequest(http.MethodPost, baseURL+"/package/byRegEx", bytes.NewBuffer(reqBody))
-        if err != nil {
+		if err != nil {
 			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
 			return
 		}
@@ -479,86 +437,30 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, fmt.Sprint(resp.StatusCode))
 			return
 		}
-        defer resp.Body.Close()
+		defer resp.Body.Close()
 
-        // Read the response body
-        respBody, err = ioutil.ReadAll(resp.Body)
-        if err != nil {
-            handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-            return
-        }
-
-	case "name":
-        // Make a GET request to the API
-        req, err := http.NewRequest(http.MethodGet, baseURL+"/package/byName/"+query, nil)
-        if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-			return
-		}
-		resp, err := client.Do(req)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-			return
-		}
-		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode))
-			return
-		}
-        defer resp.Body.Close()
-
+		// Read the response body
 		respBody, err = ioutil.ReadAll(resp.Body)
-        if err != nil {
-            handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-            return
-        }
-		var packageHistories []models.ActionEntry
-		err = json.Unmarshal(respBody, &packageHistories)
 		if err != nil {
-    		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-    		return
-		}
-
-		var packageHistoriesMaps []map[string]interface{}
-		for _, ph := range packageHistories {
-			phMap := map[string]interface{}{
-				"UserName":   ph.User["name"],
-				"UserIsAdmin": ph.User["isAdmin"],
-				"Date":       ph.Date,
-				"PackageName": ph.Metadata.Name,
-				"PackageVersion": ph.Metadata.Version,
-				"PackageID":  ph.Metadata.ID,
-				"Action":     ph.Action,
-			}
-			packageHistoriesMaps = append(packageHistoriesMaps, phMap)
-		}
-
- 		tmpl, err := template.ParseFiles("templates/history.html")
-     	if err != nil{
-       		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-       		return 
-     	}
-
-	 	if err := tmpl.Execute(w, packageHistoriesMaps); err != nil {
 			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
 			return
 		}
-		return
-		
-    case "semver":
-        // Get the name and version from the form data
-        name := r.FormValue("name")
-        version := r.FormValue("version")
+
+	case "semver":
+		// Get the name and version from the form data
+		name := r.FormValue("name")
+		version := r.FormValue("version")
 		reqQuery := []map[string]string{{"Name": name, "Version": version}}
 
-        // Create a JSON body for the request
-        reqBody, err := json.Marshal(reqQuery)
-        if err != nil {
-            handleError(w, r, fmt.Sprint(http.StatusBadRequest))
-            return
-        }
+		// Create a JSON body for the request
+		reqBody, err := json.Marshal(reqQuery)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+			return
+		}
 
-        req, err := http.NewRequest(http.MethodPost, baseURL+"/packages", bytes.NewBuffer(reqBody))
-        if err != nil {
+		req, err := http.NewRequest(http.MethodPost, baseURL+"/packages", bytes.NewBuffer(reqBody))
+		if err != nil {
 			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
 			return
 		}
@@ -571,31 +473,175 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, fmt.Sprint(resp.StatusCode))
 			return
 		}
-        defer resp.Body.Close()
+		defer resp.Body.Close()
 
-        // Read the response body
-        respBody, err = ioutil.ReadAll(resp.Body)
-        if err != nil {
-            handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-            return
-        }
-    }
+		// Read the response body
+		respBody, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			return
+		}
+	}
 
-    // Unmarshal the response body into a slice of maps
-    var packages []map[string]string
-    if err := json.Unmarshal(respBody, &packages);err!=nil{
-      handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-      return
-    }
+	// Unmarshal the response body into a slice of maps
+	var packages []map[string]string
+	if err := json.Unmarshal(respBody, &packages); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
 
-    // Render the results page with the packages data 
-    tmpl, err := template.ParseFiles("templates/results.html")
-    if err != nil{
-    	handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
-        return 
-    }
+	// Render the results page with the packages data
+	tmpl, err := template.ParseFiles("templates/results.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
 
-	if err := tmpl.Execute(w, map[string]interface{}{"Packages":packages}); err != nil {
+	if err := tmpl.Execute(w, map[string]interface{}{"Packages": packages}); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+}
+
+func RenderHistory(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/history_search.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+}
+
+func HandleHistory(w http.ResponseWriter, r *http.Request) {
+	// Parse the form data
+	if err := r.ParseForm(); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		return
+	}
+
+	// Get the name
+	name := r.FormValue("name")
+
+	// Create a new HTTP client
+	client := &http.Client{}
+
+	// Make a GET request to the API
+	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/byName/"+name, nil)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+	if resp.StatusCode != http.StatusOK {
+		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		return
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+	var packageHistories []models.ActionEntry
+	err = json.Unmarshal(respBody, &packageHistories)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+
+	var packageHistoriesMaps []map[string]interface{}
+	for _, ph := range packageHistories {
+		phMap := map[string]interface{}{
+			"UserName":       ph.User["name"],
+			"UserIsAdmin":    ph.User["isAdmin"],
+			"Date":           ph.Date,
+			"PackageName":    ph.Metadata.Name,
+			"PackageVersion": ph.Metadata.Version,
+			"PackageID":      ph.Metadata.ID,
+			"Action":         ph.Action,
+		}
+		packageHistoriesMaps = append(packageHistoriesMaps, phMap)
+	}
+
+	tmpl, err := template.ParseFiles("templates/history.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+
+	if err := tmpl.Execute(w, packageHistoriesMaps); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+}
+
+func RenderDownload(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/download_search.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+}
+
+func HandleDownload(w http.ResponseWriter, r *http.Request) {
+	// Parse the form data
+	if err := r.ParseForm(); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		return
+	}
+
+	// Get the name
+	id := r.FormValue("id")
+
+	// Create a new HTTP client
+	client := &http.Client{}
+
+	// Make a GET request to the API
+	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/"+id, nil)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+	if resp.StatusCode != http.StatusOK {
+		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		return
+	}
+	defer resp.Body.Close()
+
+	// Stream the response body and decode the JSON data in chunks
+	var packageInfo map[string]map[string]string
+	decoder := json.NewDecoder(resp.Body)
+	if err := decoder.Decode(&packageInfo); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+
+	tmpl, err := template.ParseFiles("templates/download.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		return
+	}
+
+	if err := tmpl.Execute(w, packageInfo); err != nil {
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
 		return
 	}
