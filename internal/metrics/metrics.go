@@ -112,6 +112,8 @@ func BusFactorScalingFunction(bf_score float64) float64 {
 
 func ResponsivenessScalingFunction(rm_score float64) float64 {
 
-	scaled := math.Log((math.E-1)*rm_score + 1)
-	return float64(scaled)
+	// scaled := math.Log((math.E-1)*rm_score + 1)
+	// return float64(scaled)
+
+	return float64(math.Sqrt(rm_score))
 }
