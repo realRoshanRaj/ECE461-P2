@@ -26,6 +26,10 @@ func GetRouter() *chi.Mux {
 	router.Post("/rate", frontend.HandleRate)
 	router.Get("/search", frontend.RenderSearch)
 	router.Post("/search", frontend.HandleSearch)
+	router.Get("/history", frontend.RenderHistory)
+	router.Post("/history", frontend.HandleHistory)
+	router.Get("/download", frontend.RenderDownload)
+	router.Post("/download", frontend.HandleDownload)
 
 	// Define endpointss
 	router.Post("/packages", handler.GetPackages)

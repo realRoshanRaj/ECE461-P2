@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Rate</title>
+  <title>History Search</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <style>
     body {
@@ -41,13 +41,13 @@
 </head>
 <body>
   <header>
-    <h1>Rate</h1>
+    <h1>History Search</h1>
   </header>
   <main>
     <div class="form-container">
-        <form action="/rate" method="post">
-            <label for="id">ID:</label>
-            <input type="text" id="id" name="id" class="form-control">
+        <form action="/history" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control">
             <input type="submit" value="Submit" class="btn btn-primary">
             <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
         </form>
