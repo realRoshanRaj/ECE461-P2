@@ -44,6 +44,7 @@ func GetRouter() *chi.Mux {
 
 	router.Get("/package/byName/{name}", handler.GetPackageHistoryByName)
 	router.Delete("/package/byName/{name}", handler.DeletePackageByName)
+	router.Get("/package/byName/{name}/popularity", handler.GetPackagePopularity)
 
 	router.Post("/package/byRegEx", handler.GetPackageByRegex)
 

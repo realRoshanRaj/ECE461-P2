@@ -324,6 +324,41 @@ func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
 	return actionEntries, http.StatusOK
 }
 
+func GetPackagePopularityByName(package_name string) (int, int) {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return -1, http.StatusInternalServerError
+	}
+	defer client.Close()
+
+	// Create a query that filters for documents with "Action" equal to "DOWNLOAD" and "PackageMetadata.Name" equal to "name"
+	query := client.Collection(HISTORY_NAME).Where("Action", "==", "DOWNLOAD").Where("PackageMetadata.Name", "==", package_name)
+
+	// Count the number of documents that match the query
+	iter := query.Documents(ctx)
+	defer iter.Stop()
+	count := 0
+	for {
+		_, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+		}
+		count++
+	}
+
+	if count == 0 {
+		return 0, http.StatusNotFound
+	}
+
+	log.Printf("Number of documents with Action equal to DOWNLOAD and PackageMetadata.Name equal to %s: %d\n", package_name, count)
+	return count, http.StatusOK
+}
+
 func DeletePackageByName(package_name string) int {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
@@ -335,14 +370,29 @@ func DeletePackageByName(package_name string) int {
 	defer client.Close()
 	query := client.Collection(HISTORY_NAME).Where("PackageMetadata.Name", "==", package_name)
 
-	docs, err := query.Documents(ctx).GetAll()
+	docs, _ := query.Documents(ctx).GetAll()
 
 	if len(docs) == 0 {
 		log.Println("No documents found")
 		return http.StatusNotFound
 	}
 
+	// delete history
 	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	// delete package itself
+	query = client.Collection(COLLECTION_NAME).Where("metadata.Name", "==", package_name)
+
+	docs, _ = query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return http.StatusNotFound
+	}
+
 	for _, doc := range docs {
 		batch.Delete(doc.Ref)
 	}
