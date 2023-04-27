@@ -16,9 +16,9 @@ type PageData struct {
 	Body  string
 }
 
-var baseURL = "http://localhost:8080"
+var baseURL = "https://ece461-project2-2shruw53aq-uc.a.run.app"
 
-// "https://ece461-project2-2shruw53aq-uc.a.run.app"
+// "http://localhost:8080"
 
 // Redirects to error page
 func handleError(w http.ResponseWriter, r *http.Request, error_code string) {
