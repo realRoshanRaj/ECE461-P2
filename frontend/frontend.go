@@ -99,6 +99,10 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("Name")
 	version := r.FormValue("Version")
 	id := r.FormValue("ID")
+	chk := utils.CheckValidChars(id)
+	if chk != 1 {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), nil)
+	}
 	URL := r.FormValue("URL")
 	Content := r.FormValue("Content")
 	JSProgram := r.FormValue("JSProgram")
@@ -226,6 +230,10 @@ func HandleRemove(w http.ResponseWriter, r *http.Request) {
 	searchBy := r.FormValue("searchBy")
 	if searchBy == "id" {
 		id := r.FormValue("value")
+		chk := utils.CheckValidChars(id)
+		if chk != 1 {
+			handleError(w, r, fmt.Sprint(http.StatusBadRequest), nil)
+		}
 		client := &http.Client{}
 		req, err := http.NewRequest(http.MethodDelete, baseURL+"/package/"+id, nil)
 		if err != nil {
@@ -246,6 +254,10 @@ func HandleRemove(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		name := r.FormValue("value")
+		chk := utils.CheckValidChars(name)
+		if chk != 1 {
+			handleError(w, r, fmt.Sprint(http.StatusBadRequest), nil)
+		}
 		client := &http.Client{}
 		req, err := http.NewRequest(http.MethodDelete, baseURL+"/package/byName/"+name, nil)
 		if err != nil {
@@ -331,6 +343,10 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id := r.FormValue("id")
+	chk := utils.CheckValidChars(id)
+	if chk != 1 {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), nil)
+	}
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/"+id+"/rate", nil)
 	if err != nil {
@@ -550,6 +566,10 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 
 	// Get the name
 	name := r.FormValue("name")
+	chk := utils.CheckValidChars(name)
+	if chk != 1 {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), nil)
+	}
 
 	// Create a new HTTP client
 	client := &http.Client{}
@@ -631,6 +651,10 @@ func HandleDownload(w http.ResponseWriter, r *http.Request) {
 
 	// Get the name
 	id := r.FormValue("id")
+	chk := utils.CheckValidChars(id)
+	if chk != 1 {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), nil)
+	}
 
 	// Create a new HTTP client
 	client := &http.Client{}

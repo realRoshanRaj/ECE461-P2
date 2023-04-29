@@ -216,6 +216,12 @@ func DeletePackageByID(id string) int {
 		batch.Delete(doc.Ref)
 	}
 
+	_, err = batch.Commit(ctx)
+	if err != nil {
+		log.Printf("Failed to delete documents: %v", err)
+		return http.StatusInternalServerError
+	}
+
 	// Reviews not deleted as there is a possibility that there are other packages with a specific name
 
 	docRef := client.Collection(COLLECTION_NAME).Doc(id)
@@ -453,10 +459,7 @@ func GetPackagePopularityByName(package_name string) (float64, int) {
 		}
 	}
 
-	gitStars, statusCode := utils.GetStarsFromURL(repo)
-	if statusCode != 200 {
-		return 0, statusCode
-	}
+	gitStars := utils.GetStarsFromURL(repo)
 	popularity := math.Round((0.5*gitStars+0.3*(avgStars*2)+0.2*(downloadRating*10))*100) / 100
 	if popularity > 10.0 {
 		return 10.0, http.StatusOK
@@ -470,7 +473,7 @@ func DeletePackageByName(package_name string) int {
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
 		log.Printf("Failed to create FireStore Client: %v", err)
-		// return http.StatusInternalServerError
+		return http.StatusInternalServerError
 	}
 
 	defer client.Close()
@@ -479,8 +482,7 @@ func DeletePackageByName(package_name string) int {
 	docs, _ := query.Documents(ctx).GetAll()
 
 	if len(docs) == 0 {
-		log.Println("No documents found")
-		return http.StatusNotFound
+		log.Println("No history found")
 	}
 
 	// delete history
@@ -494,12 +496,10 @@ func DeletePackageByName(package_name string) int {
 	docs, _ = query.Documents(ctx).GetAll()
 
 	if len(docs) == 0 {
-		log.Println("No documents found")
-		return http.StatusNotFound
+		log.Println("No reviews found")
 	}
 
 	// delete reviews
-	batch = client.Batch()
 	for _, doc := range docs {
 		batch.Delete(doc.Ref)
 	}

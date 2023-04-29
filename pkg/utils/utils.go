@@ -146,7 +146,12 @@ func ExtractHomepageFromPackageJson(pkgJson PackageJson) string {
 	return repourl
 }
 
-func GetStarsFromURL(gitURL string) (float64, int) {
+func GetStarsFromURL(gitURL string) float64 {
+	re := regexp.MustCompile(`^https://github.com/[\w-]+/[\w-]+$`)
+	if !re.MatchString(gitURL) {
+		return 0.0
+	}
+
 	splitURL := strings.Split(gitURL, "/")
 	user := splitURL[len(splitURL)-2]
 	repo := splitURL[len(splitURL)-1]
@@ -154,23 +159,34 @@ func GetStarsFromURL(gitURL string) (float64, int) {
 
 	resp, err := http.Get(apiURL)
 	if err != nil {
-		return 0.0, http.StatusBadRequest
+		return 0.0
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return 0.0
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return 0.0, http.StatusInternalServerError
+		return 0.0
 	}
 
 	var data map[string]interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return 0.0, http.StatusInternalServerError
+		return 0.0
 	}
 
 	stars := data["stargazers_count"].(float64) / 8000
-	return stars, http.StatusOK
+	return stars
+}
+
+func CheckValidChars(input string) int {
+	re := regexp.MustCompile(`^[\w-._~!$&'()*+,;=:@/?]+$`)
+	if !re.MatchString(input) {
+		return 0
+	}
+	return 1
 }
 
 // returns metadata, ifFound and if the package is too big
