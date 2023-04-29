@@ -13,7 +13,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: http://localhost:8080
+  - url: https://ece461-project2-2shruw53aq-uc.a.run.app
 paths:
   /packages:
     post:
@@ -521,6 +521,53 @@ paths:
         $ref: '#/components/schemas/AuthenticationToken'
       in: header
       required: true
+  /package/review:
+    post: 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageReviewEntry'
+      responses:
+        "200":
+          description: Package review is created.
+          
+        "400":
+          description: "There is missing field(s) in the PackageReviewEntry/AuthenticationToken\
+            \ or it is formed improperly, or the AuthenticationToken is invalid."
+
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageReviewQuery'
+            examples:
+              ExampleReview:
+                value:
+                  packageName: Underscore
+                  userName: "James Davis"
+
+      responses:
+        "200":
+          description: Package review is deleted.
+        "400":
+          description: "There is missing field(s) in the PackageName/AuthenticationToken\
+            \ or it is formed improperly, or the AuthenticationToken is invalid."
+        "404":
+          description: Package review does not exist.
+      operationId: PackageDeleteHistory
+      summary: Delete all reviews of this package.
+    parameters:
+    - examples:
+        ExampleToken:
+          value: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+      name: X-Authorization
+      description: ""
+      schema:
+        $ref: '#/components/schemas/AuthenticationToken'
+      in: header
+      required: true
 components:
   schemas:
     Package:
@@ -745,4 +792,39 @@ components:
         RegEx:
           description: A regular expression over package names and READMEs that is
             used for searching for a package
+          type: string
+    PackageReviewEntry:
+      description: "*"
+      required:
+      - userName
+      - stars
+      - review
+      - packageName
+      type: object
+      properties:
+        userName:
+          description: "name"
+          type: string
+        stars:
+          description: "number of stars for the package"
+          type: integer
+          format: int32
+        review:
+          description: "review for the package"
+          type: string
+        packageName:
+          description: "name of the package"
+          type: string
+    PackageReviewQuery:
+      description: "*"
+      required:
+      - packageName
+      - userName
+      type: object
+      properties:
+        packageName:
+          description: "name of the package"
+          type: string
+        userName:
+          description: "name of the user"
           type: string
