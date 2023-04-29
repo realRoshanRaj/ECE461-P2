@@ -30,7 +30,7 @@
       }
 
       .btn-container button {
-        flex-basis: calc(25% - 20px); 
+        flex-basis: calc(20% - 20px); 
         margin: 10px;
         padding: 20px 30px;
         font-size: 1.2rem;
@@ -48,11 +48,12 @@
         <button class="btn btn-success" onclick="create()">Create</button>
         <button class="btn btn-primary" onclick="search()">Search</button>
         <button class="btn btn-warning" onclick="update()">Update</button>
+        <button class="btn btn-secondary" onclick="create_review()">Create Review</button>
         <button class="btn btn-danger" onclick="remove()">Delete</button>
         <button class="btn btn-success" onclick="download()">Download</button>
         <button class="btn btn-primary" onclick="rate()">Rate</button>
         <button class="btn btn-warning" onclick="history()">History</button>
-        
+        <button class="btn btn-secondary" onclick="delete_review()">Delete Review</button>
         <button class="btn btn-danger" onclick="reset()">Reset</button>
       </div>
     </main>
@@ -84,6 +85,14 @@
 
       function rate() {
         window.location.href = "/rate";
+      }
+
+      function create_review() {
+        window.location.href = "/create_review";
+      }
+
+      function delete_review() {
+        window.location.href = "/delete_review";
       }
       
       function reset() {

@@ -23,6 +23,19 @@ type PackageJson struct {
 	Homepage   string      `json:"homepage"`
 }
 
+func GetZipSize(encodedZip string) (int, int) {
+	// Decode the base64 string
+	zip, err := base64.StdEncoding.DecodeString(encodedZip)
+	if err != nil {
+		return 0, http.StatusInternalServerError
+	}
+
+	// Calculate the size in KB
+	sizeKB := float64(len(zip)) / 1024.0
+
+	return int(sizeKB), http.StatusOK
+}
+
 // returns a metadata struct and a boolean indicating whether the package.json file was found. The last bool indicates whether the size of the package is too large
 func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) {
 	// Decode the base64-encoded string
@@ -131,6 +144,33 @@ func ExtractHomepageFromPackageJson(pkgJson PackageJson) string {
 	repourl = strings.TrimSuffix(repourl, ".git")
 
 	return repourl
+}
+
+func GetStarsFromURL(gitURL string) (float64, int) {
+	splitURL := strings.Split(gitURL, "/")
+	user := splitURL[len(splitURL)-2]
+	repo := splitURL[len(splitURL)-1]
+	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/%s", user, repo)
+
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		return 0.0, http.StatusBadRequest
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 0.0, http.StatusInternalServerError
+	}
+
+	var data map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return 0.0, http.StatusInternalServerError
+	}
+
+	stars := data["stargazers_count"].(float64) / 8000
+	return stars, http.StatusOK
 }
 
 // returns metadata, ifFound and if the package is too big

@@ -32,6 +32,8 @@
         <div class="json-indent"><div class="json-indent"><span class="json-key">"JSProgram"</span>: <span class="json-string">"{{.data.JSProgram}}"</span>,</div></div>
     <div class="json-indent">}</div>
 }</pre>
+<h3>Popularity: {{.Rating}} / 10</h3>
+<h3>Size: {{.Size}} kB</h3>
 <a href="data:application/zip;base64,{{.data.Content}}" download="{{.metadata.Name}}.zip" class="btn btn-primary">Download Zip File</a>
 <button class="btn btn-secondary" onclick="window.location.href='/download'">Back to search</button>
         </div>

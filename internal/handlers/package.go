@@ -187,19 +187,68 @@ func DeletePackageByName(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(statusCode) // handles error/status codes
 }
 
-func GetPackagePopularity(w http.ResponseWriter, r *http.Request) {
-	packageName := chi.URLParam(r, "name")
-	// print("in here")
-	downloads, statusCode := db.GetPackagePopularityByName(packageName)
-
-	// Create a JSON object with the name and downloads fields
-	result := map[string]interface{}{
-		"name":      packageName,
-		"downloads": downloads,
+func ReviewPackage(w http.ResponseWriter, r *http.Request) {
+	reqBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // 500
+		return
 	}
 
+	var requestBod map[string]string
+	err = json.Unmarshal(reqBody, &requestBod)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	userName := requestBod["userName"]
+	stars, err := strconv.Atoi(requestBod["stars"])
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // 500
+		return
+	}
+	review := requestBod["review"]
+	packageName := requestBod["packageName"]
+
+	statusCode := db.CreateReview(userName, stars, review, packageName)
+
+	if statusCode == http.StatusCreated {
+		responseJSON(w, http.StatusCreated, requestBod)
+	} else {
+		w.WriteHeader(statusCode)
+	}
+}
+
+func DeleteReview(w http.ResponseWriter, r *http.Request) {
+	reqBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // 500
+		return
+	}
+
+	var requestBod map[string]string
+	err = json.Unmarshal(reqBody, &requestBod)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	userName := requestBod["userName"]
+	packageName := requestBod["packageName"]
+
+	statusCode := db.DeleteReview(userName, packageName)
+
 	if statusCode == http.StatusOK {
-		responseJSON(w, http.StatusOK, result)
+		responseJSON(w, http.StatusOK, requestBod)
+	} else {
+		w.WriteHeader(statusCode)
+	}
+}
+
+func GetPackagePopularity(w http.ResponseWriter, r *http.Request) {
+	packageName := chi.URLParam(r, "name")
+	popularity, statusCode := db.GetPackagePopularityByName(packageName)
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, popularity)
 	} else {
 		w.WriteHeader(statusCode) // handles the 404 error
 	}
@@ -305,9 +354,7 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 }
 
 func ResetRegistry(w http.ResponseWriter, r *http.Request) {
-
 	err := db.DeletePackages()
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -315,7 +362,13 @@ func ResetRegistry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = db.DeleteHistory()
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	err = db.DeleteReviews()
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -323,7 +376,6 @@ func ResetRegistry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = db.ClearZipStorage()
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
