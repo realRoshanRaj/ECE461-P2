@@ -17,6 +17,8 @@ import (
 
 	"github.com/Masterminds/semver"
 
+	"math"
+
 	"github.com/apsystole/log"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
@@ -29,6 +31,7 @@ const (
 	STORAGE_BUCKET_ID string = "ece461-project-381318.appspot.com"
 	COLLECTION_NAME   string = "packages"
 	HISTORY_NAME      string = "history"
+	REVIEW_NAME       string = "review"
 )
 
 // GetPackageByNameAndVersion returns a package with the given name and version
@@ -198,6 +201,23 @@ func DeletePackageByID(id string) int {
 	}
 
 	defer client.Close()
+
+	query := client.Collection(HISTORY_NAME).Where("PackageMetadata.ID", "==", id)
+
+	docs, _ := query.Documents(ctx).GetAll()
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return http.StatusNotFound
+	}
+
+	// delete history
+	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	// Reviews not deleted as there is a possibility that there are other packages with a specific name
+
 	docRef := client.Collection(COLLECTION_NAME).Doc(id)
 	docSnap, err := docRef.Get(ctx)
 	if err != nil {
@@ -205,7 +225,6 @@ func DeletePackageByID(id string) int {
 			log.Printf("package with document ID %s not found to delete", id)
 			return http.StatusNotFound
 		}
-
 		return http.StatusInternalServerError
 	}
 
@@ -324,7 +343,7 @@ func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
 	return actionEntries, http.StatusOK
 }
 
-func GetPackagePopularityByName(package_name string) (int, int) {
+func GetPackagePopularityByName(package_name string) (float64, int) {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, PROJECT_ID)
 	if err != nil {
@@ -333,30 +352,117 @@ func GetPackagePopularityByName(package_name string) (int, int) {
 	}
 	defer client.Close()
 
-	// Create a query that filters for documents with "Action" equal to "DOWNLOAD" and "PackageMetadata.Name" equal to "name"
-	query := client.Collection(HISTORY_NAME).Where("Action", "==", "DOWNLOAD").Where("PackageMetadata.Name", "==", package_name)
+	// Create a query that filters for all documents with "Action" equal to "DOWNLOAD" in the HISTORY_NAME collection
+	allDownloadsQuery := client.Collection(HISTORY_NAME).Where("Action", "==", "DOWNLOAD")
 
-	// Count the number of documents that match the query
-	iter := query.Documents(ctx)
-	defer iter.Stop()
-	count := 0
+	// Count the number of downloads for each package
+	allDownloadsIter := allDownloadsQuery.Documents(ctx)
+	defer allDownloadsIter.Stop()
+	downloadCounts := make(map[string]int)
 	for {
-		_, err := iter.Next()
+		doc, err := allDownloadsIter.Next()
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
-		count++
+		packageName, ok := doc.Data()["PackageMetadata"].(map[string]interface{})["Name"].(string)
+		if !ok {
+			log.Printf("Failed to get package name from document")
+			return 0, http.StatusInternalServerError
+		}
+		downloadCounts[packageName]++
 	}
 
-	if count == 0 {
-		return 0, http.StatusNotFound
+	// Find the maximum download count and the download count for the input package
+	var maxDownloads int
+	var count int
+	for name, downloads := range downloadCounts {
+		if downloads > maxDownloads {
+			maxDownloads = downloads
+		}
+		if name == package_name {
+			count = downloads
+		}
 	}
 
 	log.Printf("Number of documents with Action equal to DOWNLOAD and PackageMetadata.Name equal to %s: %d\n", package_name, count)
-	return count, http.StatusOK
+
+	// Calculate the normalized download count for the input package
+	var downloadRating float64
+	if count == 0 {
+		downloadRating = 0.0
+	} else if maxDownloads > 0 {
+		downloadRating = float64(count) / float64(maxDownloads)
+	}
+
+	// Create a query that filters for documents with "packageName" equal to package_name in the REVIEW_NAME collection
+	reviewQuery := client.Collection(REVIEW_NAME).Where("packageName", "==", package_name)
+
+	// Calculate the average number of stars for the package
+	reviewIter := reviewQuery.Documents(ctx)
+	defer reviewIter.Stop()
+	var totalStars float64
+	reviewCount := 0
+	for {
+		doc, err := reviewIter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+		}
+		starsValue, ok := doc.Data()["stars"]
+		if !ok || starsValue == nil {
+			log.Printf("Document does not have a stars field")
+			continue
+		}
+		stars := float64(starsValue.(int64))
+		totalStars += stars
+		reviewCount++
+	}
+
+	var avgStars float64
+	if reviewCount > 0 {
+		avgStars = totalStars / float64(reviewCount)
+	}
+
+	// Create a query that filters for documents with "metadata.Name" equal to package_name in the COLLECTION_NAME collection
+	collectionQuery := client.Collection(COLLECTION_NAME).Where("metadata.Name", "==", package_name)
+
+	// Get the Repository field from the first matching document
+	collectionIter := collectionQuery.Documents(ctx)
+	defer collectionIter.Stop()
+	var repo string
+	doc, err := collectionIter.Next()
+	if err == iterator.Done {
+		log.Printf("No matching documents found in COLLECTION_NAME collection")
+	} else if err != nil {
+		log.Fatalf("Failed to iterate: %v", err)
+	} else {
+		metadata, ok := doc.Data()["metadata"].(map[string]interface{})
+		if !ok {
+			log.Printf("Failed to get metadata map from document")
+		} else {
+			repo, ok = metadata["Repository"].(string)
+			if !ok {
+				log.Printf("Failed to get Repository field from document")
+				return 0.0, http.StatusInternalServerError
+			}
+		}
+	}
+
+	gitStars, statusCode := utils.GetStarsFromURL(repo)
+	if statusCode != 200 {
+		return 0, statusCode
+	}
+	popularity := math.Round((0.5*gitStars+0.3*(avgStars*2)+0.2*(downloadRating*10))*100) / 100
+	if popularity > 10.0 {
+		return 10.0, http.StatusOK
+	}
+
+	return popularity, http.StatusOK
 }
 
 func DeletePackageByName(package_name string) int {
@@ -379,6 +485,21 @@ func DeletePackageByName(package_name string) int {
 
 	// delete history
 	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	query = client.Collection(REVIEW_NAME).Where("packageName", "==", package_name)
+
+	docs, _ = query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No documents found")
+		return http.StatusNotFound
+	}
+
+	// delete reviews
+	batch = client.Batch()
 	for _, doc := range docs {
 		batch.Delete(doc.Ref)
 	}
@@ -625,6 +746,50 @@ func DeleteHistory() error {
 	return nil
 }
 
+func DeleteReviews() error {
+	// Instantiate a client
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		return err
+	}
+
+	col := client.Collection(REVIEW_NAME)
+	bulkwriter := client.BulkWriter(ctx)
+
+	for {
+		// Get a batch of documents
+		iter := col.Limit(1).Documents(ctx)
+		numDeleted := 0
+
+		// Iterate through the documents, adding
+		// a delete operation for each one to the BulkWriter.
+		for {
+			doc, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			bulkwriter.Delete(doc.Ref)
+			numDeleted++
+		}
+
+		// If there are no documents to delete,
+		// the process is over.
+		if numDeleted == 0 {
+			bulkwriter.End()
+			break
+		}
+
+		bulkwriter.Flush()
+	}
+
+	return nil
+}
+
 func ClearZipStorage() error {
 	ctx := context.Background()
 
@@ -651,4 +816,113 @@ func ClearZipStorage() error {
 	}
 
 	return nil
+}
+
+func CreateReview(userName string, stars int, review string, packageName string) int {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+
+	reviewID := client.Collection(REVIEW_NAME).NewDoc().ID
+
+	// Check if the review already exists
+	query := client.Collection(REVIEW_NAME).
+		Where("userName", "==", userName).
+		Where("packageName", "==", packageName).
+		Limit(1)
+
+	docs, err := query.Documents(ctx).GetAll()
+
+	if err != nil {
+		log.Printf("Failed to retrieve documents: %v", err)
+	}
+	if len(docs) > 0 {
+		log.Printf("Review with user name %q and package name %q already exists", userName, packageName)
+		return http.StatusConflict // if package exist, return error 409 otherwise store package in database
+	}
+
+	// Check if the package exists
+	query2 := client.Collection(COLLECTION_NAME).
+		Where("metadata.Name", "==", packageName).
+		Limit(1)
+
+	docs2, err := query2.Documents(ctx).GetAll()
+	if err != nil {
+		log.Printf("Failed to retrieve documents: %v", err)
+	}
+	if len(docs2) == 0 {
+		log.Printf("No such package")
+		return http.StatusNotFound // if package exist, return error 409 otherwise store package in database
+	}
+
+	reviewStruc := map[string]interface{}{
+		"userName":    userName,
+		"packageName": packageName,
+		"review":      review,
+		"stars":       stars,
+	}
+
+	// Add the new package document to Firestore
+	_, err = client.Collection(REVIEW_NAME).Doc(reviewID).Set(ctx, reviewStruc)
+	if err != nil {
+		// fmt.Println(err)
+		log.Critical("Failed to add review to Firestore: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	query3 := client.Collection(COLLECTION_NAME).
+		Where("metadata.Name", "==", packageName)
+
+	docs3, err := query3.Documents(ctx).GetAll()
+	if err != nil {
+		log.Printf("Failed to retrieve documents: %v", err)
+	}
+	for _, doc := range docs3 {
+		data := doc.Data()
+		if pkgMetadata, ok := data["metadata"].(map[string]interface{}); ok {
+			metadata := models.Metadata{Name: pkgMetadata["Name"].(string), ID: pkgMetadata["ID"].(string), Repository: pkgMetadata["Repository"].(string), Version: pkgMetadata["Version"].(string)}
+			success := recordActionEntry(client, ctx, "REVIEW", metadata)
+			if !success {
+				return http.StatusInternalServerError
+			}
+		}
+	}
+	return http.StatusCreated
+}
+
+func DeleteReview(userName string, packageName string) int {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Printf("Failed to create FireStore Client: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	defer client.Close()
+	query := client.Collection(REVIEW_NAME).Where("packageName", "==", packageName).Where("userName", "==", userName)
+	docs, _ := query.Documents(ctx).GetAll()
+
+	if len(docs) == 0 {
+		log.Println("No reviews found")
+		return http.StatusNotFound
+	}
+
+	// delete review
+	batch := client.Batch()
+	for _, doc := range docs {
+		batch.Delete(doc.Ref)
+	}
+
+	_, err = batch.Commit(ctx)
+	if err != nil {
+		log.Printf("Failed to commit batch: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
 }

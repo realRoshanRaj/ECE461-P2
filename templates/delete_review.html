@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Delete Review</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    body {
+      margin: 0;
+    }
+    header {
+      background-color: red;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 84px);
+    }
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
+    .form-container label {
+      margin-top: 10px;
+    }
+    .form-container input, textarea {
+      margin-bottom: 10px;
+    }
+    .form-container input[type=submit] {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Delete Review</h1>
+  </header>
+  <main>
+    <div class="form-container">
+        <form action="/delete_review" method="post">
+            <label for="userName">Your Name:</label>
+            <input type="text" id="userName" name="userName" class="form-control" required>
+            <label for="packageName">Package Name:</label>
+            <input type="text" id="packageName" name="packageName" class="form-control" required>
+            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
+        </form>
+    </div>
+  </main>
+</body>
+</html>

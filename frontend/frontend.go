@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"pkgmanager/internal/models"
+	"pkgmanager/pkg/utils"
 )
 
 // define a struct to hold the data for the template
@@ -16,12 +17,13 @@ type PageData struct {
 	Body  string
 }
 
-var baseURL = "https://ece461-project2-2shruw53aq-uc.a.run.app"
+var baseURL = "http://localhost:8080"
 
-// "http://localhost:8080"
+// "https://ece461-project2-2shruw53aq-uc.a.run.app"
 
 // Redirects to error page
-func handleError(w http.ResponseWriter, r *http.Request, error_code string) {
+func handleError(w http.ResponseWriter, r *http.Request, error_code string, err error) {
+	fmt.Println(err)
 	// Display an error message to the user
 	tmpl, err := template.ParseFiles("templates/error.html")
 	if err != nil {
@@ -43,12 +45,12 @@ func handleSuccess(w http.ResponseWriter, r *http.Request) {
 	// Display an error message to the user
 	tmpl, err := template.ParseFiles("templates/success.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -57,7 +59,7 @@ func handleSuccess(w http.ResponseWriter, r *http.Request) {
 func RenderIndex(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
@@ -67,7 +69,7 @@ func RenderIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := tmpl.Execute(w, data); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -75,12 +77,12 @@ func RenderIndex(w http.ResponseWriter, r *http.Request) {
 func RenderUpdate(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/update.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -88,7 +90,7 @@ func RenderUpdate(w http.ResponseWriter, r *http.Request) {
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -109,7 +111,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	bod, err := json.Marshal(bdy)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -117,19 +119,19 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPut, baseURL+"/package/"+id, bytes.NewBuffer(bod))
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	defer resp.Body.Close()
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
-		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 		return
 	}
 
@@ -140,12 +142,12 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 func RenderCreate(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/create.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -153,7 +155,7 @@ func RenderCreate(w http.ResponseWriter, r *http.Request) {
 func HandleCreate(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -173,7 +175,7 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	bod, err := json.Marshal(bdy)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -181,19 +183,19 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPost, baseURL+"/package/", bytes.NewBuffer(bod))
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	defer resp.Body.Close()
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusCreated {
-		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 		return
 	}
 
@@ -204,19 +206,19 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 func RenderRemove(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/remove.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
 
 func HandleRemove(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -226,19 +228,19 @@ func HandleRemove(w http.ResponseWriter, r *http.Request) {
 		client := &http.Client{}
 		req, err := http.NewRequest(http.MethodDelete, baseURL+"/package/"+id, nil)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		resp, err := client.Do(req)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		defer resp.Body.Close()
 
 		// Check the response status code
 		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode))
+			handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 			return
 		}
 	} else {
@@ -246,19 +248,19 @@ func HandleRemove(w http.ResponseWriter, r *http.Request) {
 		client := &http.Client{}
 		req, err := http.NewRequest(http.MethodDelete, baseURL+"/package/byName/"+name, nil)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		resp, err := client.Do(req)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		defer resp.Body.Close()
 
 		// Check the response status code
 		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode))
+			handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 			return
 		}
 	}
@@ -270,37 +272,37 @@ func HandleRemove(w http.ResponseWriter, r *http.Request) {
 func RenderReset(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/reset.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
 
 func HandleReset(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodDelete, baseURL+"/reset", nil)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	defer resp.Body.Close()
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
-		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 		return
 	}
 
@@ -311,19 +313,19 @@ func HandleReset(w http.ResponseWriter, r *http.Request) {
 func RenderRate(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/rate.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
 
 func HandleRate(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -331,30 +333,30 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/"+id+"/rate", nil)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
-		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 		return
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	var met_data models.Metric
 
 	err = json.Unmarshal(body, &met_data)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	defer resp.Body.Close()
@@ -371,13 +373,13 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles("templates/rate_results.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, metrics); err != nil {
 		fmt.Println(err)
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -385,12 +387,12 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 func RenderSearch(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/search.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -398,7 +400,7 @@ func RenderSearch(w http.ResponseWriter, r *http.Request) {
 func HandleSearch(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -418,23 +420,23 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 		// Create a JSON body for the request
 		reqBody, err := json.Marshal(map[string]string{"RegEx": string(query)})
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+			handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 			return
 		}
 
 		// Make a POST request to the API
 		req, err := http.NewRequest(http.MethodPost, baseURL+"/package/byRegEx", bytes.NewBuffer(reqBody))
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		resp, err := client.Do(req)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode))
+			handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 			return
 		}
 		defer resp.Body.Close()
@@ -442,7 +444,7 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 		// Read the response body
 		respBody, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 
@@ -455,22 +457,22 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 		// Create a JSON body for the request
 		reqBody, err := json.Marshal(reqQuery)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+			handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 			return
 		}
 
 		req, err := http.NewRequest(http.MethodPost, baseURL+"/packages", bytes.NewBuffer(reqBody))
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		resp, err := client.Do(req)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode))
+			handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 			return
 		}
 		defer resp.Body.Close()
@@ -478,7 +480,7 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 		// Read the response body
 		respBody, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 			return
 		}
 	}
@@ -486,19 +488,41 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the response body into a slice of maps
 	var packages []map[string]string
 	if err := json.Unmarshal(respBody, &packages); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
+	}
+
+	for _, pkg := range packages {
+		name := pkg["Name"]
+		req, err := http.NewRequest(http.MethodGet, baseURL+"/popularity/"+name, nil)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+			return
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+			return
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+			return
+		}
+		rating := string(body)
+		pkg["Rating"] = rating
 	}
 
 	// Render the results page with the packages data
 	tmpl, err := template.ParseFiles("templates/results.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, map[string]interface{}{"Packages": packages}); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -506,12 +530,12 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 func RenderHistory(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/history_search.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -519,7 +543,7 @@ func RenderHistory(w http.ResponseWriter, r *http.Request) {
 func HandleHistory(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -532,29 +556,29 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 	// Make a GET request to the API
 	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/byName/"+name, nil)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 		return
 	}
 	defer resp.Body.Close()
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	var packageHistories []models.ActionEntry
 	err = json.Unmarshal(respBody, &packageHistories)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
@@ -574,12 +598,12 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles("templates/history.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, packageHistoriesMaps); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -587,12 +611,12 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 func RenderDownload(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/download_search.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, nil); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 }
@@ -600,7 +624,7 @@ func RenderDownload(w http.ResponseWriter, r *http.Request) {
 func HandleDownload(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusBadRequest))
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
 		return
 	}
 
@@ -613,36 +637,178 @@ func HandleDownload(w http.ResponseWriter, r *http.Request) {
 	// Make a GET request to the API
 	req, err := http.NewRequest(http.MethodGet, baseURL+"/package/"+id, nil)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		handleError(w, r, fmt.Sprint(resp.StatusCode))
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
 		return
 	}
 	defer resp.Body.Close()
 
 	// Stream the response body and decode the JSON data in chunks
-	var packageInfo map[string]map[string]string
+	var packageInfo map[string]interface{}
 	decoder := json.NewDecoder(resp.Body)
 	if err := decoder.Decode(&packageInfo); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
+	zip := packageInfo["data"].(map[string]interface{})["Content"].(string)
+	name := packageInfo["metadata"].(map[string]interface{})["Name"].(string)
+	zipSize, statusCode := utils.GetZipSize(zip)
+	if statusCode != http.StatusOK {
+		handleError(w, r, fmt.Sprint(statusCode), err)
+		return
+	}
+	packageInfo["Size"] = zipSize
+
+	req, err = http.NewRequest(http.MethodGet, baseURL+"/popularity/"+name, nil)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	resp, err = client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	rating := string(body)
+	packageInfo["Rating"] = rating
+
 	tmpl, err := template.ParseFiles("templates/download.html")
 	if err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
 	if err := tmpl.Execute(w, packageInfo); err != nil {
-		handleError(w, r, fmt.Sprint(http.StatusInternalServerError))
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
+}
+
+func RenderCreateReview(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/create_review.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+}
+
+func HandleCreateReview(w http.ResponseWriter, r *http.Request) {
+	//Parse the form
+	if err := r.ParseForm(); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
+		return
+	}
+
+	// Get the values of the input fields
+	userName := r.FormValue("userName")
+	packageName := r.FormValue("packageName")
+	stars := r.FormValue("stars")
+	review := r.FormValue("review")
+
+	bdy := map[string]string{"userName": userName, "packageName": packageName, "stars": stars, "review": review}
+
+	bod, err := json.Marshal(bdy)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
+		return
+	}
+
+	// Call the API endpoint
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodPost, baseURL+"/package/review", bytes.NewBuffer(bod))
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check the response status code
+	if resp.StatusCode != http.StatusCreated {
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
+		return
+	}
+
+	// Redirect the user
+	handleSuccess(w, r)
+}
+
+func RenderDeleteReview(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/delete_review.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+}
+
+func HandleDeleteReview(w http.ResponseWriter, r *http.Request) {
+	//Parse the form
+	if err := r.ParseForm(); err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
+		return
+	}
+
+	// Get the values of the input fields
+	userName := r.FormValue("userName")
+	packageName := r.FormValue("packageName")
+
+	bdy := map[string]string{"userName": userName, "packageName": packageName}
+
+	bod, err := json.Marshal(bdy)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
+		return
+	}
+
+	// Call the API endpoint
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodDelete, baseURL+"/package/review", bytes.NewBuffer(bod))
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check the response status code
+	if resp.StatusCode != http.StatusOK {
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
+		return
+	}
+
+	// Redirect the user
+	handleSuccess(w, r)
 }

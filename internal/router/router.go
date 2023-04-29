@@ -30,6 +30,10 @@ func GetRouter() *chi.Mux {
 	router.Post("/history", frontend.HandleHistory)
 	router.Get("/download", frontend.RenderDownload)
 	router.Post("/download", frontend.HandleDownload)
+	router.Get("/create_review", frontend.RenderCreateReview)
+	router.Post("/create_review", frontend.HandleCreateReview)
+	router.Get("/delete_review", frontend.RenderDeleteReview)
+	router.Post("/delete_review", frontend.HandleDeleteReview)
 
 	// Define endpointss
 	router.Post("/packages", handler.GetPackages)
@@ -48,7 +52,10 @@ func GetRouter() *chi.Mux {
 
 	router.Get("/package/byName/{name}", handler.GetPackageHistoryByName)
 	router.Delete("/package/byName/{name}", handler.DeletePackageByName)
-	router.Get("/package/byName/{name}/popularity", handler.GetPackagePopularity)
+
+	router.Get("/popularity/{name}", handler.GetPackagePopularity)
+	router.Post("/package/review", handler.ReviewPackage)
+	router.Delete("/package/review", handler.DeleteReview)
 
 	router.Post("/package/byRegEx", handler.GetPackageByRegex)
 
