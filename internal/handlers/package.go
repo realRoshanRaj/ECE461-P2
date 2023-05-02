@@ -12,8 +12,6 @@ import (
 	"pkgmanager/pkg/utils"
 	"strconv"
 
-	"strings"
-
 	"github.com/apsystole/log"
 	"github.com/go-chi/chi"
 )
@@ -158,17 +156,6 @@ func RatePackage(w http.ResponseWriter, r *http.Request) {
 	metrics := metrics.GenerateMetrics(pkgInfo.Metadata.Repository)
 	// if metrics != nil {
 	responseJSON(w, http.StatusOK, metrics)
-	// } else {
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// }
-
-	// payload := []byte(packageID)
-	// w.WriteHeader(http.StatusCreated)
-	// _, err := w.Write(payload) // put json here
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
 }
 
 func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
@@ -278,63 +265,44 @@ func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-const MAX_PER_PAGE = 8
-
 func GetPackages(w http.ResponseWriter, r *http.Request) {
+	const MAX_PER_PAGE = 10
+
 	var pkgs []models.PackageQuery
 	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
 	err = json.NewDecoder(r.Body).Decode(&pkgs)
-	log.Debugln(string(body))
-
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
-	var Version string
-	var name string
-	mode := "Exact"
-	for _, pkg := range pkgs {
-		Version = pkg.Version
-		name = pkg.Name
-	}
 
-	if strings.Contains(Version, "-") {
-		mode = "Bounded range"
-	} else if strings.Contains(Version, "^") {
-		mode = "Carat"
-	} else if strings.Contains(Version, "~") {
-		mode = "Tilde"
-	}
-
-	pageNumStr := r.URL.Query().Get("query")
-	pageNum, err := strconv.Atoi(pageNumStr)
+	offsetStr := r.URL.Query().Get("offset")
+	offset, err := strconv.Atoi(offsetStr)
 	if err != nil {
-		pageNum = 1
+		offset = 1
 	}
 
-	startIndex := (pageNum - 1) * MAX_PER_PAGE
-	endIndex := startIndex + MAX_PER_PAGE
-
-	packages, statusCode := db.GetPackages(Version, name, mode)
-
+	packages, statusCode := db.GetPackages(pkgs, (offset-1)*MAX_PER_PAGE, MAX_PER_PAGE)
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)
 		return
 	}
 
-	if pageNum <= 0 || startIndex >= len(packages) {
-		responseJSON(w, http.StatusOK, []models.PackageQuery{})
-		return
+	if len(packages) == 0 {
+		packages = []models.Metadata{}
+		offset--
 	}
 
-	if endIndex > len(packages) {
-		endIndex = len(packages)
-	}
+	w.Header().Set("offset", strconv.Itoa(offset+1))
 
-	responseJSON(w, http.StatusOK, packages[startIndex:endIndex])
+	responseJSON(w, http.StatusOK, packages)
 }
 
 // respondJSON makes the response with payload as json format

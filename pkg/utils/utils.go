@@ -156,7 +156,6 @@ func GetStarsFromURL(gitURL string) float64 {
 	user := splitURL[len(splitURL)-2]
 	repo := splitURL[len(splitURL)-1]
 	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/%s", user, repo)
-
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		return 0.0

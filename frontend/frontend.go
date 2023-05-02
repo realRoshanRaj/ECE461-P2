@@ -3,12 +3,14 @@ package frontend
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"pkgmanager/internal/models"
 	"pkgmanager/pkg/utils"
+	"strconv"
 )
 
 // define a struct to hold the data for the template
@@ -19,7 +21,7 @@ type PageData struct {
 
 var baseURL = "https://ece461-project2-2shruw53aq-uc.a.run.app"
 
-//"http://localhost:8080"
+// "http://localhost:8080"
 
 
 // Redirects to error page
@@ -395,7 +397,6 @@ func HandleRate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := tmpl.Execute(w, metrics); err != nil {
-		fmt.Println(err)
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
@@ -423,86 +424,55 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 
 	// Get the search type and query
 	searchType := r.FormValue("type")
-	query := r.FormValue("q")
 
 	// Create a new HTTP client
 	client := &http.Client{}
 
-	// Declare a variable to hold the response body
-	var respBody []byte
-
-	// Handle the different search types
 	switch searchType {
 	case "regex":
-		// Create a JSON body for the request
-		reqBody, err := json.Marshal(map[string]string{"RegEx": string(query)})
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
-			return
-		}
-
-		// Make a POST request to the API
-		req, err := http.NewRequest(http.MethodPost, baseURL+"/package/byRegEx", bytes.NewBuffer(reqBody))
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
-			return
-		}
-		resp, err := client.Do(req)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
-			return
-		}
-		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode), err)
-			return
-		}
-		defer resp.Body.Close()
-
-		// Read the response body
-		respBody, err = ioutil.ReadAll(resp.Body)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
-			return
-		}
-
+		query := r.FormValue("regex")
+		handleRegex(w, r, client, query)
 	case "semver":
-		// Get the name and version from the form data
+		offset := r.FormValue("offset")
 		name := r.FormValue("name")
 		version := r.FormValue("version")
-		reqQuery := []map[string]string{{"Name": name, "Version": version}}
+		handleSemver(w, r, client, name, version, offset)
+	default:
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), errors.New("Invalid search type"))
+		return
+	}
+}
 
-		// Create a JSON body for the request
-		reqBody, err := json.Marshal(reqQuery)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
-			return
-		}
-
-		req, err := http.NewRequest(http.MethodPost, baseURL+"/packages", bytes.NewBuffer(reqBody))
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
-			return
-		}
-		resp, err := client.Do(req)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
-			return
-		}
-		if resp.StatusCode != http.StatusOK {
-			handleError(w, r, fmt.Sprint(resp.StatusCode), err)
-			return
-		}
-		defer resp.Body.Close()
-
-		// Read the response body
-		respBody, err = ioutil.ReadAll(resp.Body)
-		if err != nil {
-			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
-			return
-		}
+func handleRegex(w http.ResponseWriter, r *http.Request, client *http.Client, query string) {
+	reqBody, err := json.Marshal(map[string]string{"RegEx": query})
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
 	}
 
-	// Unmarshal the response body into a slice of maps
+	req, err := http.NewRequest(http.MethodPost, baseURL+"/package/byRegEx", bytes.NewBuffer(reqBody))
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		handleError(w, r, fmt.Sprint(resp.StatusCode), err)
+		return
+	}
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+
 	var packages []map[string]string
 	if err := json.Unmarshal(respBody, &packages); err != nil {
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
@@ -531,14 +501,89 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 		pkg["Rating"] = rating
 	}
 
-	// Render the results page with the packages data
-	tmpl, err := template.ParseFiles("templates/results.html")
+	tmpl, err := template.New("results_regex.html").ParseFiles("templates/results_regex.html")
 	if err != nil {
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}
 
-	if err := tmpl.Execute(w, map[string]interface{}{"Packages": packages}); err != nil {
+	err = tmpl.Execute(w, map[string]interface{}{"Packages": packages})
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+}
+
+func handleSemver(w http.ResponseWriter, r *http.Request, client *http.Client, name string, version string, offset string) {
+	// Convert the offset value to an integer
+	offsetInt, err := strconv.Atoi(offset)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
+		return
+	}
+
+	reqQuery := []map[string]string{{"Name": name, "Version": version}}
+	reqBody, err := json.Marshal(reqQuery)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusBadRequest), err)
+		return
+	}
+
+	req, err := http.NewRequest(http.MethodPost, baseURL+"/packages?offset="+offset, bytes.NewBuffer(reqBody))
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+
+	var packages []map[string]string
+	err = json.Unmarshal(respBody, &packages)
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+
+	for _, pkg := range packages {
+		name := pkg["Name"]
+		req, err := http.NewRequest(http.MethodGet, baseURL+"/popularity/"+name, nil)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+			return
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+			return
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+			return
+		}
+		rating := string(body)
+		pkg["Rating"] = rating
+	}
+
+	tmpl, err := template.New("results_semver.html").ParseFiles("templates/results_semver.html")
+	if err != nil {
+		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
+		return
+	}
+
+	err = tmpl.Execute(w, map[string]interface{}{"Packages": packages, "Page": offsetInt, "QName": name, "QVersion": version, "Type": "semver", "Sub": func(a int, b int) int { return a - b }, "Add": func(a int, b int) int { return a + b }})
+	if err != nil {
 		handleError(w, r, fmt.Sprint(http.StatusInternalServerError), err)
 		return
 	}

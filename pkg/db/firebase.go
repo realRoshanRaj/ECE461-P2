@@ -330,6 +330,9 @@ func GetPackageHistoryByName(package_name string) ([]models.ActionEntry, int) {
 
 	var actionEntries []models.ActionEntry
 	docs, err := query.Documents(ctx).GetAll()
+	if err != nil {
+		return nil, http.StatusInternalServerError
+	}
 
 	if len(docs) == 0 {
 		log.Println("No documents found")
@@ -602,14 +605,61 @@ func GetAllPackages() ([]models.PackageInfo, int) {
 	return pkgs, http.StatusOK
 }
 
-func GetPackages(version string, name string, mode string) ([]models.Metadata, int) {
-	packages, statusCode := GetAllPackages()
+func GetPackages(queries []models.PackageQuery, offset int, limit int) ([]models.Metadata, int) {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, PROJECT_ID)
+	if err != nil {
+		log.Fatalf("Failed to create FireStore Client: %v", err)
+		return nil, http.StatusInternalServerError
+	}
+
+	defer client.Close()
 	var pkgs []models.Metadata
 
-	for _, pkg := range packages {
+	if len(queries) == 1 && queries[0].Name == "*" {
+		// Construct a Firestore query to retrieve all packages
+		query := client.Collection(COLLECTION_NAME).OrderBy("metadata.Name", firestore.Asc).Offset(offset).Limit(limit)
+		docs, err := query.Documents(ctx).GetAll()
+		if err != nil {
+			return nil, http.StatusInternalServerError
+		}
+		for _, doc := range docs {
+			var pkg models.PackageInfo
+			err = doc.DataTo(&pkg)
+			if err != nil {
+				return nil, http.StatusInternalServerError
+			}
+			pkgs = append(pkgs, pkg.Metadata)
+		}
+		return pkgs, http.StatusOK
+	}
+
+	for _, query := range queries {
+		version := query.Version
+		name := query.Name
+		mode := "Exact"
+
+		if strings.Contains(version, "-") {
+			mode = "Bounded range"
+		} else if strings.Contains(version, "^") {
+			mode = "Carat"
+		} else if strings.Contains(version, "~") {
+			mode = "Tilde"
+		}
+
 		if mode == "Exact" {
-			if pkg.Metadata.Version == version && pkg.Metadata.Name == name {
-				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
+			// Construct a Firestore query to retrieve packages with the exact same version and name
+			query := client.Collection(COLLECTION_NAME).Where("metadata.Name", "==", name).Where("metadata.Version", "==", version).Offset(offset).Limit(limit)
+			docs, err := query.Documents(ctx).GetAll()
+			if err != nil {
+				return nil, http.StatusInternalServerError
+			}
+			for _, doc := range docs {
+				var pkg models.PackageInfo
+				err = doc.DataTo(&pkg)
+				if err != nil {
+					return nil, http.StatusInternalServerError
+				}
 				pkgs = append(pkgs, pkg.Metadata)
 			}
 		} else if mode == "Bounded range" {
@@ -618,30 +668,57 @@ func GetPackages(version string, name string, mode string) ([]models.Metadata, i
 			upper := parts[1]
 			lowerVersion, _ := semver.NewVersion(lower)
 			upperVersion, _ := semver.NewVersion(upper)
-			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
 
-			if pkg.Metadata.Name == name && pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
-				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
-				pkgs = append(pkgs, pkg.Metadata)
+			query := client.Collection(COLLECTION_NAME).Where("metadata.Name", "==", name).Offset(offset).Limit(limit)
+			docs, err := query.Documents(ctx).GetAll()
+			if err != nil {
+				return nil, http.StatusInternalServerError
+			}
+			for _, doc := range docs {
+				var pkg models.PackageInfo
+				err = doc.DataTo(&pkg)
+				if err != nil {
+					return nil, http.StatusInternalServerError
+				}
+				pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+				if pkgVersion.GreaterThan(lowerVersion) && pkgVersion.LessThan(upperVersion) {
+					pkgs = append(pkgs, pkg.Metadata)
+				}
 			}
 		} else if mode == "Carat" || mode == "Tilde" {
 			carat, _ := semver.NewConstraint(version)
-			pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
 
-			if pkg.Metadata.Name == name && carat.Check(pkgVersion) {
-				// tmp := models.Metadata{Name: pkg.Metadata.Name, Version: pkg.Metadata.Version, ID: pkg.Metadata.ID}
-				pkgs = append(pkgs, pkg.Metadata)
+			query := client.Collection(COLLECTION_NAME).Where("metadata.Name", "==", name).Offset(offset).Limit(limit)
+			docs, err := query.Documents(ctx).GetAll()
+			if err != nil {
+				return nil, http.StatusInternalServerError
+			}
+			for _, doc := range docs {
+				var pkg models.PackageInfo
+				err = doc.DataTo(&pkg)
+				if err != nil {
+					return nil, http.StatusInternalServerError
+				}
+				pkgVersion, _ := semver.NewVersion(pkg.Metadata.Version)
+
+				if carat.Check(pkgVersion) {
+					pkgs = append(pkgs, pkg.Metadata)
+				}
 			}
 		}
 	}
 
-	return pkgs, statusCode
+	return pkgs, http.StatusOK
 }
 
 func recordActionEntry(client *firestore.Client, ctx context.Context, action string, metadata models.Metadata) bool {
 	historyCollection := client.Collection(HISTORY_NAME)
 	defaultUser := make(map[string]interface{})
-	json.Unmarshal([]byte("{\"name\": \"default user\", \"isAdmin\": false}"), &defaultUser)
+	err := json.Unmarshal([]byte("{\"name\": \"default user\", \"isAdmin\": false}"), &defaultUser)
+	if err != nil {
+		return false
+	}
 	newEntry, _, err := historyCollection.Add(ctx, models.ActionEntry{
 		User:     defaultUser,
 		Action:   strings.ToUpper(action),
@@ -684,7 +761,10 @@ func DeletePackages() error {
 				return err
 			}
 
-			bulkwriter.Delete(doc.Ref)
+			_, err = bulkwriter.Delete(doc.Ref)
+			if err != nil {
+				return err
+			}
 			numDeleted++
 		}
 
@@ -729,7 +809,10 @@ func DeleteHistory() error {
 				return err
 			}
 
-			bulkwriter.Delete(doc.Ref)
+			_, err = bulkwriter.Delete(doc.Ref)
+			if err != nil {
+				return err
+			}
 			numDeleted++
 		}
 
@@ -773,7 +856,10 @@ func DeleteReviews() error {
 				return err
 			}
 
-			bulkwriter.Delete(doc.Ref)
+			_, err = bulkwriter.Delete(doc.Ref)
+			if err != nil {
+				return err
+			}
 			numDeleted++
 		}
 

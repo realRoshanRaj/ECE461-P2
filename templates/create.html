@@ -8,7 +8,7 @@
       margin: 0;
     }
     header {
-      background-color: green;
+      background-color: #418541;
       color: white;
       padding: 20px;
       text-align: center;
@@ -86,6 +86,27 @@ function handleFileSelect(evt) {
     }
 }
 
+document.getElementById("URL").addEventListener("input", function () {
+    var contentInput = document.getElementById("Content");
+    var urlInput = document.getElementById("URL");
+
+    if (urlInput.value !== "") {
+        contentInput.disabled = true;
+    } else {
+        contentInput.disabled = false;
+    }
+});
+
+document.getElementById("Content").addEventListener("input", function () {
+    var contentInput = document.getElementById("Content");
+    var urlInput = document.getElementById("URL");
+
+    if (contentInput.value !== "") {
+        urlInput.disabled = true;
+    } else {
+        urlInput.disabled = false;
+    }
+});
 </script>
 
 </body>
