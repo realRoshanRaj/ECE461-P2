@@ -8,7 +8,7 @@
       margin: 0;
     }
     header {
-      background-color: #387cb4;
+      background-color: #946a2e;
       color: white;
       padding: 20px;
       text-align: center;
@@ -68,23 +68,19 @@
   <script>
     document.getElementById('zipFile').addEventListener('change', handleFileSelect, false);
     function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
+        var files = evt.target.files;
     
-        // Loop through the FileList and render image files as thumbnails.
         for (var i = 0, f; f = files[i]; i++) {
     
             var reader = new FileReader();
     
-            // Closure to capture the file information.
             reader.onload = (function(theFile) {
                 return function(e) {
-                    // Render thumbnail.
                     var base64 = e.target.result.split(',')[1];
                     document.getElementById('Content').value = base64;
                 };
             })(f);
     
-            // Read in the image file as a data URL.
             reader.readAsDataURL(f);
         }
     }

@@ -4,11 +4,17 @@
     <title>Reset Confirmation</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
+      .btn-custom1{
+        background-color: #418541;
+      }
+      .btn-custom2{
+        background-color: #c34a47;
+      }
       body {
       margin: 0;
       }
       header {
-      background-color: #e05454;
+      background-color: #c34a47;
       color: white;
       padding: 20px;
       text-align: center;
@@ -41,8 +47,8 @@
     </header>
     <main>
       <div class="btn-container">
-        <button class="btn btn-success" onclick="confirmReset()">Yes</button>
-        <button class="btn btn-danger" onclick="cancelReset()">No</button>
+        <button class="btn btn-custom1 btn-success" onclick="confirmReset()">Yes</button>
+        <button class="btn btn-custom2 btn-danger" onclick="cancelReset()">No</button>
       </div>
     </main>
     <script>

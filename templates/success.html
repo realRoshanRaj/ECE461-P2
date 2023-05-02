@@ -4,6 +4,9 @@
     <title>Success</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
+      .btn-custom{
+        background-color: teal;
+      }
       body {
         margin: 0;
       }
@@ -24,6 +27,8 @@
         display: flex;
         flex-direction: column;
         width: 50%;
+        justify-content: center;
+        align-items: center;
       }
       .success-container h1 {
         color: teal;
@@ -32,8 +37,7 @@
       .success-container p {
         margin-top: 10px;
       }
-      .success-container button {
-        margin-top: 20px;
+      .success-container .btn-group button {
         padding: 10px 20px;
         font-size: 1.2rem;
       }
@@ -48,8 +52,10 @@
     <main>
       <div class="success-container">
           <h1>Your Request Was Completed</h1>
-          <button onclick="goBack()">Go Back</button>
-          <button onclick="window.location.href='/'">Go To The Homepage</button>
+          <div class="btn-group text-center">
+            <button class="btn btn-custom btn-success" onclick="goBack()">Go Back</button>
+            <button class="btn btn-custom btn-success" onclick="window.location.href='/'">Go To The Homepage</button>
+          </div>
       </div>
     </main>
 
