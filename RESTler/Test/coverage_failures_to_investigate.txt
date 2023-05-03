@@ -1,0 +1,250 @@
+This file contains the failing requests, ordered by the number of blocked dependent requests.
+To improve coverage, fix the failing requests in the order listed in this file.
+
+Note: some requests are labeled as 'sequence failure'.
+This means the request depends on another request that is failing intermittently.
+For example, a DELETE request for a resource may be skipped because the resource
+PUT request failed due to exceeding quota.  The same PUT request succeeded earlier (and may
+succeed later depending on the resource clean-up behavior in the service), so it is
+considered an intermittent failure.
+
+-----------------------------------------------
+Request: Get /package/{id}/rate
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> GET /package/fuzzstring/rate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:51 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> GET /package/fuzzstring/rate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:51 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Put /authenticate
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{\n    "User":\n        {\n            "name":"Alfalfa",\n            "isAdmin":true\n        }\n    ,\n    "Secret":\n        {\n            "password":"fuzzstring"\n        }\n    }\r\n
+	< HTTP/1.1 501 Not Implemented\r\nDate: Sat, 29 Apr 2023 21:32:51 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{\n    "User":\n        {\n            "name":"fuzzstring",\n            "isAdmin":true\n        }\n    ,\n    "Secret":\n        {\n            "password":"fuzzstring"\n        }\n    }\r\n
+	< HTTP/1.1 501 Not Implemented\r\nDate: Sat, 29 Apr 2023 21:32:51 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{"User":{"name":"Alfalfa","isAdmin":true},"Secret":{"password":"fuzzstring"}}
+	< HTTP/1.1 501 Not Implemented\r\nDate: Sat, 29 Apr 2023 21:32:51 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> PUT /authenticate HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nContent-Type: application/json\r\n\r\n{"User":{"name":"fuzzstring","isAdmin":true},"Secret":{"password":"fuzzstring"}}
+	< HTTP/1.1 501 Not Implemented\r\nDate: Sat, 29 Apr 2023 21:32:51 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Post /package
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> POST /package HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\nContent-Type: application/json\r\n\r\n{\n    "Content":"fuzzstring",\n    "URL":"fuzzstring",\n    "JSProgram":"fuzzstring"}\r\n
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:52 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> POST /package HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\nContent-Type: application/json\r\n\r\n{}
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:52 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Post /package/byRegEx
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\n    "RegEx":"fuzzstring"}\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\nContent-Type: application/json\r\n\r\n{\n    "RegEx":"fuzzstring"}\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{"RegEx":"fuzzstring"}
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> POST /package/byRegEx HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\nContent-Type: application/json\r\n\r\n{"RegEx":"fuzzstring"}
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Put /package/{id}
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> PUT /package/id8064e7e6e5 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "fuzzstring"\n            ,\n            "Version":"1.2.3",\n            "ID":\n                "fuzzstring"\n        }\n    ,\n    "data":\n        {\n            "Content":"fuzzstring",\n            "URL":"fuzzstring",\n            "JSProgram":"fuzzstring"\n        }\n    }\r\n
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> PUT /package/idf79e0635c3 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "fuzzstring"\n            ,\n            "Version":"fuzzstring",\n            "ID":\n                "fuzzstring"\n        }\n    ,\n    "data":\n        {\n            "Content":"fuzzstring",\n            "URL":"fuzzstring",\n            "JSProgram":"fuzzstring"\n        }\n    }\r\n
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> PUT /package/id444bf6c577 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\nContent-Type: application/json\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "fuzzstring"\n            ,\n            "Version":"1.2.3",\n            "ID":\n                "fuzzstring"\n        }\n    ,\n    "data":\n        {\n            "Content":"fuzzstring",\n            "URL":"fuzzstring",\n            "JSProgram":"fuzzstring"\n        }\n    }\r\n
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> PUT /package/id91ce9f048b HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\nContent-Type: application/json\r\n\r\n{\n    "metadata":\n        {\n            "Name":\n                "fuzzstring"\n            ,\n            "Version":"fuzzstring",\n            "ID":\n                "fuzzstring"\n        }\n    ,\n    "data":\n        {\n            "Content":"fuzzstring",\n            "URL":"fuzzstring",\n            "JSProgram":"fuzzstring"\n        }\n    }\r\n
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 5 +++:
+	Request sequence: 
+	> PUT /package/id272b227fc1 HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\nContent-Type: application/json\r\n\r\n{"metadata":{"Name":"fuzzstring","Version":"1.2.3","ID":"fuzzstring"},"data":{}}
+	< HTTP/1.1 400 Bad Request\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Get /package/byName/{name}
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:53 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:54 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> GET /package/byName/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:54 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> GET /package/byName/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:54 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 5 +++:
+	Request sequence: 
+	> GET /package/byName/Underscore HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:54 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Delete /package/byName/{name}
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> DELETE /package/byName/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:55 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> DELETE /package/byName/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:55 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> DELETE /package/byName/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:55 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> DELETE /package/byName/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:55 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Delete /package/{id}
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> DELETE /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:55 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> DELETE /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:55 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> DELETE /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:56 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> DELETE /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:56 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+-----------------------------------------------
+Request: Get /package/{id}
+Number of blocked dependent requests: 0
+
+	+++ Combination 1 +++:
+	Request sequence: 
+	> GET /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:56 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 2 +++:
+	Request sequence: 
+	> GET /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:56 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 3 +++:
+	Request sequence: 
+	> GET /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:56 GMT\r\nContent-Length: 0\r\n\r\n
+
+
+	+++ Combination 4 +++:
+	Request sequence: 
+	> GET /package/fuzzstring HTTP/1.1\r\nAccept: application/json\r\nHost: localhost:8080\r\nX-Authorization: fuzzstring\r\n\r\n
+	< HTTP/1.1 404 Not Found\r\nDate: Sat, 29 Apr 2023 21:32:56 GMT\r\nContent-Length: 0\r\n\r\n
+
+
