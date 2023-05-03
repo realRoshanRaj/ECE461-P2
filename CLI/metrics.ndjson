@@ -1,7 +1,0 @@
-{"metric":"RAMP_UP_SCORE", "api":"graphql", "filepath":"src/main.go", "line":254}
-{"metric":"CORRECTNESS_SCORE", "api":"graphql", "filepath":"src/main.go", "line":254}
-{"metric":"CORRECTNESS_SCORE", "api":"graphql", "filepath":"src/main.go", "line":306}
-{"metric":"BUS_FACTOR_SCORE", "api":"rest", "filepath":"src/main.go", "line":172}
-{"metric":"BUS_FACTOR_SCORE", "api":"graphql", "filepath":"src/main.go", "line":254}
-{"metric":"RESPONSIVE_MAINTAINER_SCORE", "api":"graphql", "filepath":"src/main.go", "line":306}
-{"metric":"LICENSE_SCORE", "api":"graphql", "filepath":"src/main.go", "line":254}
