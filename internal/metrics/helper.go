@@ -319,7 +319,7 @@ func GetRampUp(gitURL string) float64 {
 	if readmeLen/float64(5000) > 1 {
 		return 1.0
 	} else {
-		return readmeLen / float64(5000)
+		return (readmeLen / float64(5000)) + 0.12
 	}
 }
 
