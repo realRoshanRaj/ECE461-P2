@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"pkgmanager/internal/models"
@@ -399,4 +400,46 @@ func getRepoFromURL(gitURL string) (bool, string, string) {
 	repo := matches[2]
 
 	return true, owner, repo
+}
+
+// Rounds a float 64 to precision decimal points
+func RoundFloat(val float64, precision uint) float64 {
+	ratio := math.Pow(10, float64(precision))
+	return math.Round(val*ratio) / ratio
+}
+
+func GetDefaultBranchName(httpUrl string, token string) string {
+	client := &http.Client{}
+
+	// Make sure the URL is to the repository main page
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] //converting github repo url to API url
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitH-ub API
+	repo_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer repo_resp.Body.Close()
+
+	body, err := ioutil.ReadAll(repo_resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	contents := string(body)
+
+	start_index := strings.Index(contents, `"default_branch"`) + len(`"default_branch"`)
+	end_index := strings.Index(contents[start_index:], ",") + start_index
+	defaultBranch := strings.TrimSpace(contents[start_index:end_index])
+	defaultBranch = strings.Trim(defaultBranch, `"`)
+	defaultBranch = strings.Trim(defaultBranch, `:`)
+	defaultBranch = strings.Trim(defaultBranch, `"`)
+
+	return defaultBranch
+
 }
