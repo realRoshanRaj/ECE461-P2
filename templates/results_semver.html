@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Semver Search Results</title>
 	<style>
@@ -58,6 +58,7 @@
         <h1>Semver Search Results</h1>
     </header>
     <main>
+        <!-- Displays the search results as a table -->
         {{if .Packages}}
             <table>
                 <thead>
@@ -80,7 +81,10 @@
                 </tbody>
             </table>
 
+            <!-- When the previous/next buttons are pressed there is a hidden form submitted 
+            that sends a post request to /search and reloads this page -->
             <div class="pagination">
+                <!-- If the page is not the first page, it shows a previous page button -->
                 {{if ne .Page 1}}
                     <form method="POST" action="/search">
                         <input type="hidden" name="type" value="{{.Type}}">
@@ -93,6 +97,7 @@
                     <button disabled>Previous</button> 
                 {{end}}
 
+                <!-- If the number of results is not 10, doesn't show a next page -->
                 {{if eq (len .Packages) 10}}
                     <form method="POST" action="/search">
                         <input type="hidden" name="type" value="{{.Type}}">

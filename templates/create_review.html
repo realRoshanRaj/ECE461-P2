@@ -3,6 +3,8 @@
 <head>
   <title>Create Review</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -36,8 +38,6 @@
       font-size: 1.2rem;
     }
   </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <header>
@@ -45,6 +45,7 @@
   </header>
   <main>
     <div class="form-container">
+        <!-- Form that takes in all of the information required from the user and calls a post request to create_review -->
         <form action="/create_review" method="post">
             <label for="userName">Your Name:</label>
             <input type="text" id="userName" name="userName" class="form-control" required>

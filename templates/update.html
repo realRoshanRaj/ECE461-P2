@@ -3,6 +3,8 @@
 <head>
   <title>Update</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -36,14 +38,13 @@
       font-size: 1.2rem;
     }
   </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <header>
     <h1>Update</h1>
   </header>
   <main>
+    <!-- Form that takes in all of the data needed to call the update endpoint -->
     <div class="form-container">
         <form action="/update" method="post">
             <label for="Name">Name:</label>
@@ -65,22 +66,20 @@
         </form>
     </div>
   </main>
+
+  <!-- Script that allows users to upload a zip file -->
   <script>
     document.getElementById('zipFile').addEventListener('change', handleFileSelect, false);
     function handleFileSelect(evt) {
         var files = evt.target.files;
-    
         for (var i = 0, f; f = files[i]; i++) {
-    
             var reader = new FileReader();
-    
             reader.onload = (function(theFile) {
                 return function(e) {
                     var base64 = e.target.result.split(',')[1];
                     document.getElementById('Content').value = base64;
                 };
             })(f);
-    
             reader.readAsDataURL(f);
         }
     }

@@ -3,6 +3,8 @@
   <head>
     <title>Error</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -38,14 +40,13 @@
         font-size: 1.2rem;
       }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
     <header>
       <h1>Error</h1>
     </header>
     <main>
+      <!-- Displays the specific error code to the user and provide the user with a back button -->
       <div class="error-container">
           <h1>{{.Message}}</h1>
           <button onclick="goBack()">Go Back</button>

@@ -3,9 +3,11 @@
   <head>
     <title>Search</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
       .text-wrap {
-        width: 350px;
+        width: 300px;
       }
       body {
       margin: 0;
@@ -40,17 +42,17 @@
       font-size: 1.2rem;
       }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
     <header>
       <h1>Search</h1>
     </header>
     <main>
+      <!-- Tells users how to query the entire database -->
       <div class="alert alert-info text-wrap text-center" role="alert">
         To See All Packages Use Semantic Versioning Search And Input * As The Name Leaving The Version Text Box Empty
       </div>
+      <!-- Form allowing users to pick between search by regex or by semantic versioning -->
       <div class="form-container"></div>
       <form action="/search" method="post">
         <label for="type">Search by:</label><br>
@@ -75,6 +77,7 @@
         <input type="submit" value="Search" class="btn btn-primary">
         <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
       </form>
+      <!-- Script that toggles what input options are shown to the user -->
       <script>
         function toggleInputs() {
             // Get the selected search type
@@ -89,17 +92,17 @@
                 document.querySelector("#semver-inputs").style.display = "block";
             }
         }
-        // Call toggleInput to change visible inputs to user
+        // Call toggleInput
         toggleInputs();
 
         function allResults() {
-          // Set the form values
+          // Set form values
           document.querySelector("#type").value = "semver";
           document.querySelector("#name").value = "*";
           document.querySelector("#version").value = "";
           document.querySelector("#offset").value = "1";
 
-          // Submit the form
+          // Submit form
           document.querySelector("form").submit();
         }
       </script>
