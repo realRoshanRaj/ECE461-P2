@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>{{.Title}}</title>
+    <title>ACME Module Regisirty</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
       body {
         margin: 0;
+      }
+      .btn-custom1 {
+        background-color: #418541;
+      }
+      .btn-custom2 {
+        background-color: #1e567b;
+      }
+      .btn-custom3 {
+        background-color: #946a2e;
+        color: white;
+      }
+      .btn-custom4 {
+        background-color: #d61786;
+      }
+      .btn-custom5 {
+        background-color: #c34a47;
       }
 
       header {
@@ -30,27 +48,29 @@
       }
 
       .btn-container button {
-        flex-basis: calc(33.33% - 20px);
+        flex-basis: calc(20% - 20px); 
         margin: 10px;
         padding: 20px 30px;
         font-size: 1.2rem;
       }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
     <header>
-      <h1>{{.Body}}</h1>
+      <h1>WELCOME TO THE ACME MODULE REGISTRY</h1>
     </header>
     <main>
       <div class="btn-container">
-        <button class="btn btn-success" onclick="create()">Create</button>
-        <button class="btn btn-primary" onclick="update()">Update</button>
-        <button class="btn btn-danger" onclick="remove()">Delete</button>
-        <button class="btn btn-info" onclick="search()">Search</button>
-        <button class="btn btn-warning" onclick="rate()">Rate</button>
-        <button class="btn btn-danger" onclick="reset()">Reset</button>
+        <button class="btn btn-custom1 btn-success" onclick="create()">Create</button>
+        <button class="btn btn-custom2 btn-primary" onclick="search()">Search</button>
+        <button class="btn btn-custom3 btn-success" onclick="update()">Update</button>
+        <button class="btn btn-custom4 btn-primary" onclick="create_review()">Create Review</button>
+        <button class="btn btn-custom5 btn-danger" onclick="remove()">Delete</button>
+        <button class="btn btn-custom1 btn-success" onclick="download()">Download</button>
+        <button class="btn btn-custom2 btn-primary" onclick="rate()">Rate</button>
+        <button class="btn btn-custom3 btn-success" onclick="history()">History</button>
+        <button class="btn btn-custom4 btn-info" onclick="delete_review()">Delete Review</button>
+        <button class="btn btn-custom5 btn-danger" onclick="reset()">Reset</button>
       </div>
     </main>
 
@@ -71,8 +91,24 @@
         window.location.href = "/search";
       }
 
+      function history() {
+        window.location.href = "/history";
+      }
+
+      function download() {
+        window.location.href = "/download";
+      }
+
       function rate() {
         window.location.href = "/rate";
+      }
+
+      function create_review() {
+        window.location.href = "/create_review";
+      }
+
+      function delete_review() {
+        window.location.href = "/delete_review";
       }
       
       function reset() {

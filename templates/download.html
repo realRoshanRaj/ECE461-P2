@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Package Information</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <style>
+            .json-key {
+                color: brown;
+            }
+            .json-string {
+                color: #727200;
+            }
+            .json-boolean {
+                color: blue;
+            }
+            .json-indent {
+                margin-left: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Displays the package data and metadata in a json format -->
+            <h1>Package Information</h1>
+                <pre>{
+                    <div class="json-indent"><span class="json-key">"Metadata"</span>: {</div>
+                        <div class="json-indent"><div class="json-indent"><span class="json-key">"Name"</span>: <span class="json-string">"{{.metadata.Name}}"</span>,</div></div>
+                        <div class="json-indent"><div class="json-indent"><span class="json-key">"Version"</span>: <span class="json-string">"{{.metadata.Version}}"</span>,</div></div>
+                        <div class="json-indent"><div class="json-indent"><span class="json-key">"ID"</span>: <span class="json-string">"{{.metadata.ID}}"</span>,</div></div>
+                    <div class="json-indent">},</div>
+                    <div class="json-indent"><span class="json-key">"Data"</span>: {</div>
+                        <div class="json-indent"><div class="json-indent"><span class="json-key">"Content"</span>: <span class="json-string">"{{.data.Content}}"</span>,</div></div>
+                        <div class="json-indent"><div class="json-indent"><span class="json-key">"JSProgram"</span>: <span class="json-string">"{{.data.JSProgram}}"</span>,</div></div>
+                    <div class="json-indent">}</div>
+                }</pre>
+            <!-- Displays the popularity and size of the package -->
+            <h3>Popularity: {{.Rating}} / 10</h3>
+            <h3>Size: {{.Size}} kB</h3>
+            <a href="data:application/zip;base64,{{.data.Content}}" download="{{.metadata.Name}}.zip" class="btn btn-primary">Download Zip File</a>
+            <button class="btn btn-secondary" onclick="window.location.href='/download'">Back to search</button>
+        </div>
+    </body>
+</html>

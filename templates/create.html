@@ -1,92 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Create</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <style>
-    body {
-      margin: 0;
-    }
-    header {
-      background-color: green;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100vh - 84px);
-    }
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      width: 50%;
-    }
-    .form-container label {
-      margin-top: 10px;
-    }
-    .form-container input, textarea {
-      margin-bottom: 10px;
-    }
-    .form-container input[type=submit] {
-      padding: 10px 20px;
-      font-size: 1.2rem;
-    }
-  </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
-  <header>
-    <h1>Create</h1>
-  </header>
-  <main>
-    <div class="form-container">
-        <form action="/create" method="post">
-            <label for="URL">URL:</label>
-            <input type="text" id="URL" name="URL" class="form-control">
-            <label for="Content">Content:</label>
-            <textarea id="Content" name="Content" class="form-control"></textarea>
-            <label for="JSProgram">JSProgram:</label>
-            <input type="text" id="JSProgram" name="JSProgram" class="form-control">
-            <label for="zipFile">Zip File:</label>
-            <input type="file" id="zipFile" name="zipFile" accept=".zip">
-            <input type="submit" value="Submit" class="btn btn-primary">
-            <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
-        </form>
-    </div>
-  </main>
+  <head>
+    <title>Create</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      header {
+        background-color: #418541;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 84px);
+      }
+      .form-container {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+      }
+      .form-container label {
+        margin-top: 10px;
+      }
+      .form-container input, textarea {
+        margin-bottom: 10px;
+      }
+      .form-container input[type=submit] {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+    <body>
+      <header>
+        <h1>Create</h1>
+      </header>
+      <main>
+        <!-- Form that takes the URL, Content, and JSProgram from the user -->
+        <div class="form-container">
+            <form action="/create" method="post">
+                <label for="URL">URL:</label>
+                <input type="text" id="URL" name="URL" class="form-control">
+                <label for="Content">Content:</label>
+                <textarea id="Content" name="Content" class="form-control"></textarea>
+                <label for="JSProgram">JSProgram:</label>
+                <input type="text" id="JSProgram" name="JSProgram" class="form-control">
+                <label for="zipFile">Zip File:</label>
+                <input type="file" id="zipFile" name="zipFile" accept=".zip">
+                <input type="submit" value="Submit" class="btn btn-primary">
+                <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
+            </form>
+        </div>
+      </main>
 
-<script>
+      
+      <script>
+        // Enters the base64 encoded string into the Content field
+        document.getElementById('zipFile').addEventListener('change', handleFileSelect, false);
+        // This function allows users to upload a zip file and returns a base64 encoded string
+        function handleFileSelect(evt) {
+            var files = evt.target.files;
+            for (var i = 0, f; f = files[i]; i++) {
+                var reader = new FileReader();
+                reader.onload = (function(theFile) {
+                    return function(e) {
+                        var base64 = e.target.result.split(',')[1];
+                        document.getElementById('Content').value = base64;
+                    };
+                })(f);
+                reader.readAsDataURL(f);
+            }
+        }
 
-document.getElementById('zipFile').addEventListener('change', handleFileSelect, false);
+        // This function disables the Content field when the URL field has been used
+        document.getElementById("URL").addEventListener("input", function () {
+            var contentInput = document.getElementById("Content");
+            var urlInput = document.getElementById("URL");
+            if (urlInput.value !== "") {
+                contentInput.disabled = true;
+            } else {
+                contentInput.disabled = false;
+            }
+        });
 
-function handleFileSelect(evt) {
-    var files = evt.target.files; // FileList object
+        // This function disables the URL field when the Content field has been used
+        document.getElementById("Content").addEventListener("input", function () {
+            var contentInput = document.getElementById("Content");
+            var urlInput = document.getElementById("URL");
 
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
-
-        var reader = new FileReader();
-
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-                // Render thumbnail.
-                var base64 = e.target.result.split(',')[1];
-                document.getElementById('Content').value = base64;
-            };
-        })(f);
-
-        // Read in the image file as a data URL.
-        reader.readAsDataURL(f);
-    }
-}
-
-</script>
-
-</body>
+            if (contentInput.value !== "") {
+                urlInput.disabled = true;
+            } else {
+                urlInput.disabled = false;
+            }
+        });
+      </script>
+    </body>
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>History Search</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    header {
+      background-color: #946a2e;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 84px);
+    }
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
+    .form-container label {
+      margin-top: 10px;
+    }
+    .form-container input, select {
+      margin-bottom: 10px;
+    }
+    .form-container input[type=submit] {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>History Search</h1>
+  </header>
+  <main>
+    <div class="form-container">
+        <form action="/history" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control">
+            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
+        </form>
+    </div>
+  </main>
+</body>
+</html>

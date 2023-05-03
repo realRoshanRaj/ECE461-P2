@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      main{
+        margin: 20px;
+      }
+    </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>History</title>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
   </head>
   <body>
     <main>
+      <!-- Displays the history of the package in a table format -->
       {{if .}}
         <table class="table table-striped">
           <thead>
@@ -41,13 +46,8 @@
       {{else}}
         <p>No results found.</p>
       {{end}}
-      <button class="btn btn-primary" onclick="window.location.href='/search'">Back to search</button>
+      <!-- Button that takes user back to the history search page -->
+      <button class="btn btn-dark" onclick="window.location.href='/history'">Back to search</button>
     </main>
-
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </body>
 </html>

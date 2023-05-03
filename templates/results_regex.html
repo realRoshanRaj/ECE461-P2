@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>RegEx Search Results</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial;
+      }
+      header {
+        background-color: #1e567b;
+        color: white;
+        padding: 20px;
+        font-family: Arial;
+        text-align: center;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 84px);
+        margin: 20px;
+      }
+      .back-button {
+        align-self: flex-start;
+      }
+      table td {
+        border: 1px solid #3d3c3c;
+      }
+      table {
+        table-layout: fixed;
+        width: 100%;
+      }
+      table th,
+      table td {
+        width: 33.33%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>RegEx Search Results</h1>
+    </header>
+    <main>
+      <!-- Shows the results in a table format -->
+      {{if .Packages}}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Version</th>
+              <th>ID</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .Packages}}
+              <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Version}}</td>
+                <td>{{.ID}}</td>
+                <td>{{.Rating}}</td>
+              </tr>
+            {{end}}
+          </tbody>
+        </table>
+      {{else}}
+        <p>No results found.</p>
+      {{end}}
+      <button class="back-button" onclick="window.location.href='/search'">Back to search</button>
+    </main>
+
+    <!-- Allows users to go back to the previous page -->
+    <script>
+      function goBack() {
+          window.history.back();
+      }
+    </script>
+  </body>
+</html>

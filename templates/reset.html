@@ -3,12 +3,20 @@
   <head>
     <title>Reset Confirmation</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
+      .btn-custom1{
+        background-color: #418541;
+      }
+      .btn-custom2{
+        background-color: #c34a47;
+      }
       body {
       margin: 0;
       }
       header {
-      background-color: #e05454;
+      background-color: #c34a47;
       color: white;
       padding: 20px;
       text-align: center;
@@ -32,8 +40,6 @@
       font-size: 1.2rem;
       }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
     <header>
@@ -41,10 +47,11 @@
     </header>
     <main>
       <div class="btn-container">
-        <button class="btn btn-success" onclick="confirmReset()">Yes</button>
-        <button class="btn btn-danger" onclick="cancelReset()">No</button>
+        <button class="btn btn-custom1 btn-success" onclick="confirmReset()">Yes</button>
+        <button class="btn btn-custom2 btn-danger" onclick="cancelReset()">No</button>
       </div>
     </main>
+    <!-- Sends a pop-up to the user before redirecting them to emphasize that the registry has been reset -->
     <script>
       function confirmReset() {
           var xhr = new XMLHttpRequest();

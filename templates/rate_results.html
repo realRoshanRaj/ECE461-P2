@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Rating</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        margin: 20px;
+      }
+      table {
+        border-collapse: collapse;
+      }
+      table, th, td {
+        border: 1px solid black;
+      }
+      header {
+      background-color: #1e567b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Rating</h1>
+      </header>
+      <!-- Displays the ratings as a table -->
+      <br><br>
+      {{if .}}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Net Score</th>
+              <th scope="col">Bus Factor</th>
+              <th scope="col">Correctness</th>
+              <th scope="col">Ramp Up</th>
+              <th scope="col">Responsive Maintainer</th>
+              <th scope="col">License Score</th>
+              <th scope="col">Good Pinning Practice</th>
+              <th scope="col">Pull Requests</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td>{{printf "%.2f" (index . 0)}}</td>
+                <td>{{printf "%.2f" (index . 1)}}</td>
+                <td>{{printf "%.2f" (index . 2)}}</td>
+                <td>{{printf "%.2f" (index . 3)}}</td>
+                <td>{{printf "%.2f" (index . 4)}}</td>
+                <td>{{printf "%.2f" (index . 5)}}</td>
+                <td>{{printf "%.2f" (index . 6)}}</td>
+                <td>{{printf "%.2f" (index . 7)}}</td>
+              </tr>
+          </tbody>
+        </table>
+      {{else}}
+        <p>No results found.</p>
+      {{end}}
+      <button class="btn btn-dark" onclick="window.location.href='/rate'">Back to search</button>
+    </main>
+  </body>
+</html>

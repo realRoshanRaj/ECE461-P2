@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- Shows users that their request was successfull and gives them an option to go back to the index or the previous page -->
   <head>
     <title>Success</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
+      .btn-custom{
+        background-color: teal;
+      }
       body {
         margin: 0;
       }
@@ -24,22 +30,18 @@
         display: flex;
         flex-direction: column;
         width: 50%;
+        justify-content: center;
+        align-items: center;
       }
       .success-container h1 {
         color: teal;
         text-align: center;
       }
-      .success-container p {
-        margin-top: 10px;
-      }
-      .success-container button {
-        margin-top: 20px;
+      .success-container .btn-group button {
         padding: 10px 20px;
         font-size: 1.2rem;
       }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
     <header>
@@ -48,11 +50,14 @@
     <main>
       <div class="success-container">
           <h1>Your Request Was Completed</h1>
-          <button onclick="goBack()">Go Back</button>
-          <button onclick="window.location.href='/'">Go To The Homepage</button>
+          <div class="btn-group text-center">
+            <button class="btn btn-custom btn-success" onclick="goBack()">Go Back</button>
+            <button class="btn btn-custom btn-success" onclick="window.location.href='/'">Go To The Homepage</button>
+          </div>
       </div>
     </main>
 
+    <!-- Script let's users go back to the previous page -->
     <script>
       function goBack() {
           window.history.back();

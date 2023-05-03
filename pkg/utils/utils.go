@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"pkgmanager/internal/models"
@@ -23,8 +24,25 @@ type PackageJson struct {
 	Homepage   string      `json:"homepage"`
 }
 
-// returns a metadata struct and a boolean indicating whether the package.json file was found. The last bool indicates whether the size of the package is too large
-func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) {
+type RepoPackageJson struct {
+	Type string `json:"type"`
+	URL  string `json:"url"`
+}
+
+func GetZipSize(encodedZip string) (int, int) {
+	// Decode the base64 string
+	zip, err := base64.StdEncoding.DecodeString(encodedZip)
+	if err != nil {
+		return 0, http.StatusInternalServerError
+	}
+
+	// Calculate the size in KB
+	sizeKB := float64(len(zip)) / 1024.0
+
+	return int(sizeKB), http.StatusOK
+}
+
+func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) { // Returns the packageJson and a boolean indicating whether the package.json file was found. The last bool indicates whether the size of the package is too large
 	// Decode the base64-encoded string
 	decoded, err := base64.StdEncoding.DecodeString(encodedZip)
 	if err != nil {
@@ -37,6 +55,7 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) {
 		return nil, false, false
 	}
 
+	// Removes the zip file when we are done
 	defer os.Remove(tempFile.Name())
 	defer tempFile.Close()
 
@@ -62,11 +81,11 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) {
 	}
 	defer reader.Close()
 
-	// Search for the package.json file in the zip archive
+	// Search for the package.json file in the zip
 	var packageJson PackageJson
 	found := false
 	for _, file := range reader.File {
-		if strings.HasSuffix(file.Name, "package.json") {
+		if strings.Count(file.Name, "/") == 1 && strings.HasSuffix(file.Name, "/package.json") { // Only match /package.json in root directory
 			// Open the file from the zip archive
 			zippedFile, err := file.Open()
 			if err != nil {
@@ -91,86 +110,105 @@ func extractPackageJsonFromZip(encodedZip string) (*PackageJson, bool, bool) {
 		}
 	}
 
-	// If the package.json file was not found, return an error (boolean false)
-	// if !found {
-	// 	return nil, errors.New("package.json not found in zip archive")
-	// }
-
 	return &packageJson, found, fileSize > MAX_FILE_SIZE
-}
-
-type RepoPackageJson struct {
-	Type string `json:"type"`
-	URL  string `json:"url"`
 }
 
 func ExtractHomepageFromPackageJson(pkgJson PackageJson) string {
 	var repourl string = ""
+	// First check if the Homepage is not empty
 	if pkgJson.Homepage != "" {
 		repourl = pkgJson.Homepage
-	} else if str, ok := pkgJson.Repository.(string); ok {
+		if strings.HasPrefix(repourl, "https://github.com/") { // Checking if repourl is in the form of a GitHub URL
+			repourl = strings.TrimSuffix(repourl, ".git")
+			return repourl
+		}
+	}
+	// Check if Repository key of packageJson is a string
+	if str, ok := pkgJson.Repository.(string); ok {
 		repourl = "https://github.com/" + str
-		fmt.Println("Option 1", repourl)
-		// fmt.Println(str)
-	} else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
+		if strings.HasPrefix(repourl, "https://github.com/") { // Checking if repourl is in the form of a GitHub URL
+			repourl = strings.TrimSuffix(repourl, ".git")
+			return repourl
+		}
+	}
+	// Check if Repository key of packageJson is Json
+	if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
 		repourl = repo.URL
-		fmt.Println("Option 2", repourl)
-
-		// fmt.Println(repo.URL)
-	} else if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
+		if strings.HasPrefix(repourl, "https://github.com/") { // Checking if repourl is in the form of a GitHub URL
+			repourl = strings.TrimSuffix(repourl, ".git")
+			return repourl
+		}
+	}
+	// Check if Repository key of packageJson is a map
+	if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
 		if url, ok := m["url"].(string); ok {
 			repourl = url
-			// fmt.Println("Option 3", repourl) This is the one that works
-			repourl = strings.Replace(repourl, "http://", "https://", 1)
-			repourl = strings.Replace(repourl, "git://", "https://", 1)
-			// fmt.Println(url)
+			repourl = strings.Replace(repourl, "http://", "https://", 1) // Replace http with https
+			repourl = strings.Replace(repourl, "git://", "https://", 1)  // Replace git with https
+			if strings.HasPrefix(repourl, "https://github.com/") {       // Checking if repourl is in the form of a GitHub URL
+				repourl = strings.TrimSuffix(repourl, ".git")
+				return repourl
+			}
 		}
-	} else {
-		return "" // GITHUB URL NOT FOUND
 	}
-	repourl = strings.TrimSuffix(repourl, ".git")
 
-	return repourl
+	return "" // GITHUB URL NOT FOUND
 }
 
-// returns metadata, ifFound and if the package is too big
-func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) {
-	pkgJson, found, tooBig := extractPackageJsonFromZip(zipfile)
-	// fmt.Println(pkgJson.Name)
-	// fmt.Println(pkgJson.Version)
-	// fmt.Println(pkgJson.Repository)
+func GetStarsFromURL(url string) float64 {
+	// Get the owner and repo from the url
+	found, owner, repo := getRepoFromURL(url)
+	if !found {
+		return 0.0
+	}
 
-	// TODO: parse different string variants of repository
+	// Make the request
+	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repo)
+
+	// Send the request
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		return 0.0
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return 0.0
+	}
+
+	// Read the response
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 0.0
+	}
+
+	// Get the response into a map
+	var data map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return 0.0
+	}
+
+	// Get the stars and scale the number of stars
+	stars := data["stargazers_count"].(float64) / 8000
+	return stars
+}
+
+func CheckValidChars(input string) int { // Some characters are disallowed by http If a disallowed character is passed in as a ID, this catches it and allows us to send bad request error
+	re := regexp.MustCompile(`^[\w-._~!$&'()*+,;=:@/?]+$`)
+	if !re.MatchString(input) {
+		return 0
+	}
+	return 1
+}
+
+func ExtractMetadataFromZip(zipfile string) (models.Metadata, bool, bool) { // Returns the metadata and booleans representing if Found and if the package is too big
+	pkgJson, found, tooBig := extractPackageJsonFromZip(zipfile)
 	if !found {
 		return models.Metadata{}, found, tooBig
 	}
-
-	// var repourl string
-	// if pkgJson.Homepage != "" {
-	// 	repourl = pkgJson.Homepage
-	// } else if str, ok := pkgJson.Repository.(string); ok {
-	// 	repourl = "https://github.com/" + str
-	// 	fmt.Println("Option 1", repourl)
-	// 	// fmt.Println(str)
-	// } else if repo, ok := pkgJson.Repository.(RepoPackageJson); ok {
-	// 	repourl = repo.URL
-	// 	fmt.Println("Option 2", repourl)
-
-	// 	// fmt.Println(repo.URL)
-	// } else if m, ok := pkgJson.Repository.(map[string]interface{}); ok {
-	// 	if url, ok := m["url"].(string); ok {
-	// 		repourl = url
-	// 		// fmt.Println("Option 3", repourl) This is the one that works
-	// 		repourl = strings.Replace(repourl, "http://", "https://", 1)
-	// 		repourl = strings.Replace(repourl, "git://", "https://", 1)
-	// 		// fmt.Println(url)
-	// 	}
-	// } else {
-	// 	return models.Metadata{}, false, false // GITHUB URL NOT FOUND
-	// }
-
-	// repourl = strings.TrimSuffix(repourl, ".git")
+	// Gets the github URL from packageJson
 	repourl := ExtractHomepageFromPackageJson(*pkgJson)
+	// Returns a metadata struct with all of the required info
 	return models.Metadata{Name: pkgJson.Name, Version: pkgJson.Version, ID: "packageData_ID", Repository: repourl}, found, tooBig
 }
 
@@ -208,36 +246,25 @@ func GetReadmeFromZip(zipBase64 string) (string, int) {
 				return "", http.StatusInternalServerError
 			}
 
-			// Convert the contents to string
+			// Convert the contents to a string
 			readmeText := string(readmeBytes)
 			return readmeText, http.StatusOK
 		}
 	}
 
+	// If readme not found
 	return "", http.StatusBadRequest
 }
 
 func GetReadmeTextFromGitHubURL(url string) (string, int) {
-
-	// Define the regex pattern to match GitHub repository URL
-	regexPattern := `https?://github.com/([\w-]+)/([\w-]+)`
-
-	// Compile the regex pattern
-	regex := regexp.MustCompile(regexPattern)
-
-	// Find the matches in the URL
-	matches := regex.FindStringSubmatch(url)
-
-	if len(matches) != 3 {
-		return "", http.StatusInternalServerError
+	// Get the owner and repo from the url
+	found, owner, repo := getRepoFromURL(url)
+	if !found {
+		return "", http.StatusNotFound
 	}
+	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/readme", owner, repo)
 
-	owner := matches[1]
-	name := matches[2]
-
-	repoURL := fmt.Sprintf("%s/%s", owner, name)
-
-	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/readme", repoURL)
+	// Make the request
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		return "", http.StatusInternalServerError
@@ -248,6 +275,7 @@ func GetReadmeTextFromGitHubURL(url string) (string, int) {
 		return "", http.StatusInternalServerError
 	}
 
+	// Read the response
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", http.StatusInternalServerError
@@ -263,17 +291,19 @@ func GetReadmeTextFromGitHubURL(url string) (string, int) {
 	match := regex2.FindStringSubmatch(string(body))
 
 	if len(match) != 2 {
-		return "", http.StatusInternalServerError
+		return "", http.StatusNotFound
 	}
 
+	// Get the download url to get the readme
 	downloadURL := match[1]
+	// Request the Readme
 	resp, err = http.Get(downloadURL)
 	if err != nil {
 		return "", http.StatusInternalServerError
 	}
 	defer resp.Body.Close()
 
-	// Read response body
+	// Read the response body
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", http.StatusInternalServerError
@@ -284,21 +314,21 @@ func GetReadmeTextFromGitHubURL(url string) (string, int) {
 }
 
 func ExtractMetadataFromURL(url string) (models.Metadata, bool) {
-	// Extract the repository owner and name from the URL
-	parts := strings.Split(strings.TrimPrefix(url, "https://github.com/"), "/")
-	if len(parts) < 2 {
-		// fmt.Errorf("invalid Github URL: %s", url)
+	// Get the owner and repo from the url
+	found, owner, repo := getRepoFromURL(url)
+	if !found {
 		return models.Metadata{}, false
 	}
-	owner, name := parts[0], parts[1]
-
-	// Fetch the contents of the package.json file using Github's REST API
-	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/package.json", owner, name))
+	// Make the API request
+	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/package.json", owner, repo))
 	if err != nil {
-		// return PackageJSON{}, fmt.Errorf("error fetching package.json file: %v", err)
 		return models.Metadata{}, false
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return models.Metadata{}, false
+	}
 
 	// Decode the base64-encoded content field
 	var result struct {
@@ -306,52 +336,110 @@ func ExtractMetadataFromURL(url string) (models.Metadata, bool) {
 	}
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
-		// panic(err)
 		return models.Metadata{}, false
 	}
 
+	// Get the Content
 	content, err := base64.StdEncoding.DecodeString(result.Content)
 	if err != nil {
-		// panic(err)
 		return models.Metadata{}, false
 	}
+	// Get the packageJson
 	var packageJson PackageJson
 	err = json.Unmarshal(content, &packageJson)
 	if err != nil {
-		// panic(err)
 		return models.Metadata{}, false
 	}
-	// fmt.Println(packageJson.Name)
-	// fmt.Println(packageJson.Version)
-	// fmt.Println(packageJson.Repository)
 
 	return models.Metadata{Name: packageJson.Name, Version: packageJson.Version, Repository: url, ID: "packageData_ID"}, true
 }
 
 func ExtractZipFromURL(url string) string {
-	// Extract the repository owner and name from the URL
-	parts := strings.Split(strings.TrimPrefix(url, "https://github.com/"), "/")
-	if len(parts) < 2 {
-		// fmt.Errorf("invalid Github URL: %s", url)
-		// return "", false
+	// Get the owner and repo from the url
+	found, owner, repo := getRepoFromURL(url)
+	if !found {
+		return ""
 	}
-	owner, repo := parts[0], parts[1]
 
 	// Send a GET request to the GitHub API endpoint
 	resp, err := http.Get(fmt.Sprintf("https://api.github.com/repos/%s/%s/zipball", owner, repo))
 	if err != nil {
-		// panic(err)
+		return ""
 	}
 	defer resp.Body.Close()
 
 	// Read the contents of the downloaded zip file
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		// panic(err)
+		return ""
 	}
 
 	// Encode the contents of the zip file using base64
 	encoded := base64.StdEncoding.EncodeToString(contents)
 
 	return encoded
+}
+
+func getRepoFromURL(gitURL string) (bool, string, string) {
+	// Define the regex pattern to match GitHub repository URL
+	regexPattern := `https?://github.com/([\w-]+)/([\w-]+)`
+
+	// Compile the regex pattern
+	regex := regexp.MustCompile(regexPattern)
+
+	// Find the matches in the URL
+	matches := regex.FindStringSubmatch(gitURL)
+
+	// Make sure all parts of the url are present
+	if len(matches) != 3 {
+		return false, "", ""
+	}
+
+	// Fetch the contents of the package.json file using Github's REST API
+	owner := matches[1]
+	repo := matches[2]
+
+	return true, owner, repo
+}
+
+// Rounds a float 64 to precision decimal points
+func RoundFloat(val float64, precision uint) float64 {
+	ratio := math.Pow(10, float64(precision))
+	return math.Round(val*ratio) / ratio
+}
+
+func GetDefaultBranchName(httpUrl string, token string) string {
+	client := &http.Client{}
+
+	// Make sure the URL is to the repository main page
+	link := strings.Split(httpUrl, "https://github.com/")
+	REST_api_link := "https://api.github.com/repos/" + link[len(link)-1] //converting github repo url to API url
+	req, err := http.NewRequest(http.MethodGet, REST_api_link, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	// Make the GET request to the GitH-ub API
+	repo_resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer repo_resp.Body.Close()
+
+	body, err := ioutil.ReadAll(repo_resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	contents := string(body)
+
+	start_index := strings.Index(contents, `"default_branch"`) + len(`"default_branch"`)
+	end_index := strings.Index(contents[start_index:], ",") + start_index
+	defaultBranch := strings.TrimSpace(contents[start_index:end_index])
+	defaultBranch = strings.Trim(defaultBranch, `"`)
+	defaultBranch = strings.Trim(defaultBranch, `:`)
+	defaultBranch = strings.Trim(defaultBranch, `"`)
+
+	return defaultBranch
+
 }

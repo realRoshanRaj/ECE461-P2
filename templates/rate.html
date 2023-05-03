@@ -1,106 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Rate</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <style>
-      body {
-        margin: 0;
-      }
-      header {
-        background-color: #f8ac4c;
-        color: white;
-        padding: 20px;
-        text-align: center;
-      }
-      main {
-        display: flex;
-        height: calc(100vh - 84px);
-      }
-      .btn-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .btn-container button {
-        flex-basis: calc(33.33% - 20px);
-        margin: 10px;
-        padding: 20px 30px;
-        font-size: 1.2rem;
-      }
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        flex-basis: 50%;
-        border-right: 5px solid #f8ac4c;
-        padding: 20px;
-      }
-      .form-container label {
-        font-weight: bold;
-        font-size: 2rem;
-      }
-      .form-container input {
-        margin: 10px;
-        width: auto;
-        height: 50px;
-        font-size: 1.5rem;
-      }
-      .result-container {
-        font-size: 3.5rem; 
-        text-align: right;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: space-evenly;
-        flex-basis: 50%;
-        padding: 20px;
-      }
-      .result-container p {
-        text-align: right;
-        color:#f8ac4c
-      }
-      .result-container span {
-        text-align: right;
-        display: inline-block;
-        padding: 10px;
-        border-radius: 10px;
-        color: white;
-        margin-bottom: 10px;
-        width: calc(100% - 20px);
-        height: calc((100% / 8) - 20px);
-        background-color: #f8ac4c;
-      }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  </head>
-  <body>
-    <header>
-      <h1>Rate</h1>
-    </header>
-    <main>
-      <div class="form-container">
+<head>
+  <title>Rate</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    header {
+      background-color: #1e567b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 84px);
+    }
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
+    .form-container label {
+      margin-top: 10px;
+    }
+    .form-container input, select {
+      margin-bottom: 10px;
+    }
+    .form-container input[type=submit] {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rate</h1>
+  </header>
+  <main>
+    <div class="form-container">
+      <!-- The form takes the package id and submits a post request to rate which redirects it to the results page -->
         <form action="/rate" method="post">
-          <label for="ID">ID:</label>
-          <textarea id="ID" name="ID"></textarea><br><br>
-          <input type="submit" value="Submit" class="btn btn-primary">
-          <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
+            <label for="id">ID:</label>
+            <input type="text" id="id" name="id" class="form-control">
+            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="button" value="Back" class="btn btn-dark" onclick="window.location.href='/'">
         </form>
-      </div>
-      {{if .}}
-      <div class="result-container">
-        <span class="bus-factor">Bus Factor: {{printf "%.2f" (index . 0)}}</span>
-        <span class="correctness">Correctness: {{printf "%.2f" (index . 1)}}</span>
-        <span class="ramp-up">Ramp Up: {{printf "%.2f" (index . 2)}}</span>
-        <span class="responsive-maintainer">Responsive Maintainer: {{printf "%.2f" (index . 3)}}</span>
-        <span class="license-score">License Score: {{printf "%.2f" (index . 4)}}</span>
-        <span class="good-pinning-practice">Good Pinning Practice: {{printf "%.2f" (index . 5)}}</span>
-        <span class="pull-request">Pull Request: {{printf "%.2f" (index . 6)}}</span>
-        <span class="net-score">Net Score: {{printf "%.2f" (index . 7)}}</span>
-      </div>
-      {{end}} 
-    </main>
-  </body>
+    </div>
+  </main>
+</body>
 </html>

@@ -12,21 +12,20 @@ import (
 	"pkgmanager/pkg/utils"
 	"strconv"
 
-	"strings"
-
 	"github.com/apsystole/log"
 	"github.com/go-chi/chi"
 )
 
 func CreatePackage(w http.ResponseWriter, r *http.Request) {
-	// initialize a packagedata struct based on the request body
+	// Initialize a packagedata struct regardless of whether Content or URL being used
 	packageData := models.PackageData{}
+
+	// Load the request body into a package data struct
 	body, err := ioutil.ReadAll(r.Body)
-
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-
 	err = json.NewDecoder(r.Body).Decode(&packageData)
 
+	// Debug statements telling us about the input package
 	log.Debugln(string(body))
 	log.Debugf("CreatePackage called %+v", packageData)
 
@@ -34,55 +33,53 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
-	// metadata := models.Metadata{Name: "package_Name", Version: "package_Version", ID: "packageData_ID"}
+
 	var metadata models.Metadata
 	var contentTooBig bool = false
+	// Checking what the type of the input is, URL or Content
 	if packageData.Content == "" && packageData.URL != "" {
-		// URL method
-		// TODO: http.StatusFailedDependency (424) if package rating doesn't meet requirements (BUT IS ALWAYS TRUE)
+		// URL method first
 		rating := metrics.GenerateMetrics(packageData.URL)
+		// Checking if it scores high enough on our metrics
 		log.Printf("Package Ingestion Rating: %+v\n", rating)
 		if !metrics.MeasureIngestibility(rating) {
 			w.WriteHeader(http.StatusFailedDependency) // 424
 			return
 		}
+		// Next we get the metadata from the URL
 		var found bool
 		metadata, found = utils.ExtractMetadataFromURL(packageData.URL)
 		if !found {
 			w.WriteHeader(http.StatusBadRequest) // 400
 			return
 		}
-		// packageType = 0 // URL method
-		// packageData.Content = utils.ExtractZipFromURL(packageData.URL)
 	} else if packageData.Content != "" && packageData.URL == "" {
 		// Content method (zip file)
 		var foundPackageJson bool
+		// Here we extract the metadata from the zip file
 		metadata, foundPackageJson, contentTooBig = utils.ExtractMetadataFromZip(packageData.Content)
-		// log.Info("length of content: ", strconv.Itoa(len(packageData.Content)))
 		if !foundPackageJson {
 			w.WriteHeader(http.StatusBadRequest) // 400
 			return
 		}
-		// packageType = 1 // Content method
 	} else {
-		// Both zip file and url provided
-
+		// If both the zip file and url provided
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
 
-	// Initialize package info struct that uses packagedata struct
+	// Initialize package info struct that uses packagedata and metadata struct
 	packageInfo := models.PackageInfo{
 		Data:     packageData,
 		Metadata: metadata,
 	}
-	//output the packageInfo json to console
+	// Log the metadata
 	log.Printf("Create: %+v\n", packageInfo.Metadata)
-	// log.Info("I'm here", unsafe.Sizeof(metadata), unsafe.Sizeof(packageInfo))
 
 	// Create package in database
 	_, statusCode := db.CreatePackage(&packageInfo, contentTooBig)
 
+	// Respond appropriately
 	if statusCode == http.StatusCreated {
 		responseJSON(w, http.StatusCreated, packageInfo)
 	} else {
@@ -93,10 +90,10 @@ func CreatePackage(w http.ResponseWriter, r *http.Request) {
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
 	log.Debugf("DownloadPackage called %s", packageID)
-	// TODO: also need to return the content if URL only exists
+	// Gets the package from the database
 	pkgInfo, statusCode := db.GetPackageByID(packageID, 1)
 	if statusCode == http.StatusOK {
-		// if there is no content in the database, then download the content from the URL
+		// If there is no content in the package, then download the content from the URL
 		if pkgInfo.Data.Content == "" {
 			pkgInfo.Data.Content = utils.ExtractZipFromURL(pkgInfo.Metadata.Repository)
 		}
@@ -108,7 +105,7 @@ func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 
 func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
-	// initialize a packagedata struct based on the request body
+	// Initialize a packagedata struct based on the request body
 	packageInfo := models.PackageInfo{}
 	err := json.NewDecoder(r.Body).Decode(&packageInfo)
 	log.Debugf("UpdatePackage (%s) called %+v", packageID, packageInfo)
@@ -123,7 +120,6 @@ func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 		packageInfo.Metadata.Repository = packageInfo.Data.URL
 	} else if packageInfo.Data.Content != "" && packageInfo.Data.URL == "" {
 		// Content method (zip file)
-
 		// Find the repository for the new package
 		metadata, foundPackageJson, _ := utils.ExtractMetadataFromZip(packageInfo.Data.Content)
 		if !foundPackageJson {
@@ -135,13 +131,14 @@ func UpdatePackage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
+	// Update the package in the database
 	statusCode := db.UpdatePackageByID(packageID, packageInfo)
 	w.WriteHeader(statusCode)
-	// responseJSON(w, http.StatusCreated, packageID)
 }
 
 func DeletePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
+	// Delete the package in the database
 	statusCode := db.DeletePackageByID(packageID)
 	w.WriteHeader(statusCode) // handles error/status codes
 }
@@ -149,30 +146,21 @@ func DeletePackage(w http.ResponseWriter, r *http.Request) {
 func RatePackage(w http.ResponseWriter, r *http.Request) {
 	packageID := chi.URLParam(r, "id")
 	log.Debugf("RatePackage called %s", packageID)
+	// Getting the package from the database
 	pkgInfo, statusCode := db.GetPackageByID(packageID, 0)
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode) // handles the 404 error
 		return
 	}
 
+	// Sending the URL to get the metrics
 	metrics := metrics.GenerateMetrics(pkgInfo.Metadata.Repository)
-	// if metrics != nil {
 	responseJSON(w, http.StatusOK, metrics)
-	// } else {
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// }
-
-	// payload := []byte(packageID)
-	// w.WriteHeader(http.StatusCreated)
-	// _, err := w.Write(payload) // put json here
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
 }
 
 func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
 	packageName := chi.URLParam(r, "name")
+	// Get all the package history from the database with the given name
 	pkgHistory, statusCode := db.GetPackageHistoryByName(packageName)
 	if statusCode == http.StatusOK {
 		responseJSON(w, http.StatusOK, pkgHistory)
@@ -183,25 +171,109 @@ func GetPackageHistoryByName(w http.ResponseWriter, r *http.Request) {
 
 func DeletePackageByName(w http.ResponseWriter, r *http.Request) {
 	packageName := chi.URLParam(r, "name")
+	// Deletes all packages with this name
 	statusCode := db.DeletePackageByName(packageName)
 	w.WriteHeader(statusCode) // handles error/status codes
 }
 
-func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
+func CreateReview(w http.ResponseWriter, r *http.Request) {
+	// Read the request body
 	reqBody, err := io.ReadAll(r.Body)
-	if err!=nil{
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // 500
+		return
+	}
+
+	// Convert the request body from a json to a map
+	var requestBod map[string]string
+	err = json.Unmarshal(reqBody, &requestBod)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	// Get the review elements from the request
+	userName := requestBod["userName"]
+	stars, err := strconv.Atoi(requestBod["stars"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	if stars < 0 || stars > 5 {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	review := requestBod["review"]
+	packageName := requestBod["packageName"]
+
+	// Create the review in the database
+	statusCode := db.CreateReview(userName, stars, review, packageName)
+
+	if statusCode == http.StatusCreated {
+		responseJSON(w, http.StatusCreated, requestBod)
+	} else {
+		w.WriteHeader(statusCode)
+	}
+}
+
+func DeleteReview(w http.ResponseWriter, r *http.Request) {
+	// Get the request body
+	reqBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // 500
+		return
+	}
+
+	// Convert the Json into a map
+	var requestBod map[string]string
+	err = json.Unmarshal(reqBody, &requestBod)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest) // 400
+		return
+	}
+	// Get the review identifiers
+	userName := requestBod["userName"]
+	packageName := requestBod["packageName"]
+
+	//Delete the review from the database
+	statusCode := db.DeleteReview(userName, packageName)
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, requestBod)
+	} else {
+		w.WriteHeader(statusCode)
+	}
+}
+
+func GetPackagePopularity(w http.ResponseWriter, r *http.Request) {
+	// Get the popularity score by combining the review stars, the github stars, and the number of downloads
+	packageName := chi.URLParam(r, "name")
+	popularity, statusCode := db.GetPackagePopularityByName(packageName)
+
+	if statusCode == http.StatusOK {
+		responseJSON(w, http.StatusOK, popularity)
+	} else {
+		w.WriteHeader(statusCode) // handles the 404 error
+	}
+}
+
+func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
+	// Get the request body
+	reqBody, err := io.ReadAll(r.Body)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError) // 400
 		return
 	}
 
+	// Get the regex from the request
 	var regexMap map[string]string
 	err = json.Unmarshal(reqBody, &regexMap)
-	if err != nil{
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
 	regex := regexMap["RegEx"]
 
+	// Search the database for packages names/readmes matching the regex
 	packages, statusCode := db.GetPackageByRegex(string(regex))
 
 	if statusCode == http.StatusOK {
@@ -211,101 +283,97 @@ func GetPackageByRegex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-const MAX_PER_PAGE = 8
+func GetPackagesFromQueries(w http.ResponseWriter, r *http.Request) {
+	// Page length set to 10
+	const MAX_PER_PAGE = 10
 
-func GetPackages(w http.ResponseWriter, r *http.Request) {
-	var pkgs []models.PackageQuery
+	// Get the queries from the request
+	var queries []models.PackageQuery
 	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
-	err = json.NewDecoder(r.Body).Decode(&pkgs)
-	log.Debugln(string(body))
-
+	err = json.NewDecoder(r.Body).Decode(&queries)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		return
 	}
-	var Version string
-	var name string
-	mode := "Exact"
-	for _, pkg := range pkgs {
-		Version = pkg.Version
-		name = pkg.Name
-	}
 
-	if strings.Contains(Version, "-") {
-		mode = "Bounded range"
-	} else if strings.Contains(Version, "^") {
-		mode = "Carat"
-	} else if strings.Contains(Version, "~") {
-		mode = "Tilde"
-	}
-
-	pageNumStr := r.URL.Query().Get("query")
-	pageNum, err := strconv.Atoi(pageNumStr)
+	// Get offset from the query parameter
+	offsetStr := r.URL.Query().Get("offset")
+	offset, err := strconv.Atoi(offsetStr)
 	if err != nil {
-		pageNum = 1
+		offset = 1
 	}
 
-	startIndex := (pageNum - 1) * MAX_PER_PAGE
-	endIndex := startIndex + MAX_PER_PAGE
-
-	packages, statusCode := db.GetPackages(Version, name, mode)
-
+	// Get matching packages from the database
+	packages, statusCode := db.GetPackagesFromQueries(queries, (offset-1)*MAX_PER_PAGE, MAX_PER_PAGE) // Database takes offset in terms of index not pages
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)
 		return
 	}
 
-	if pageNum <= 0 || startIndex >= len(packages) {
-		responseJSON(w, http.StatusOK, []models.PackageQuery{})
-		return
+	// If no packages matching query return empty response with same offset
+	if len(packages) == 0 {
+		packages = []models.Metadata{}
+		offset--
 	}
 
-	if endIndex > len(packages) {
-		endIndex = len(packages)
-	}
+	w.Header().Set("offset", strconv.Itoa(offset+1))
 
-	responseJSON(w, http.StatusOK, packages[startIndex:endIndex])
+	responseJSON(w, http.StatusOK, packages)
 }
 
-// respondJSON makes the response with payload as json format
-func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
+func responseJSON(w http.ResponseWriter, status int, payload interface{}) { // respondJSON makes the response with payload as json format
+	// Convert payload to Json object
 	response, err := json.Marshal(payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	//print the payload to log
+
+	// Print the payload to log
 	prettyPrint, err := json.MarshalIndent(payload, "", "  ")
 	log.Debugln(string(prettyPrint))
+
+	// Write the response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write([]byte(response))
 }
 
 func ResetRegistry(w http.ResponseWriter, r *http.Request) {
-
+	// Delete the packages from the database
 	err := db.DeletePackages()
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	// Delete the history from the database
 	err = db.DeleteHistory()
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = db.ClearZipStorage()
+	// Delete the reviews from the database
+	err = db.DeleteReviews()
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	// Delete the files that are too large from the database
+	err = db.ClearZipStorage()
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
