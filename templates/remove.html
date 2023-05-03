@@ -3,6 +3,8 @@
 <head>
   <title>Delete</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -36,14 +38,13 @@
       font-size: 1.2rem;
     }
   </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <header>
     <h1>Delete</h1>
   </header>
   <main>
+    <!-- The form allows users to pick between removing by name or id -->
     <div class="form-container">
         <form action="/remove" method="post">
             <label for="searchBy">Remove By:</label>

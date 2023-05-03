@@ -3,6 +3,8 @@
 <head>
   <title>Delete Review</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -36,14 +38,13 @@
       font-size: 1.2rem;
     }
   </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <header>
     <h1>Delete Review</h1>
   </header>
   <main>
+    <!-- Takes the userName and packageName from the user and sneds a post request to delete review -->
     <div class="form-container">
         <form action="/delete_review" method="post">
             <label for="userName">Your Name:</label>
