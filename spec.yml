@@ -568,6 +568,49 @@ paths:
         $ref: '#/components/schemas/AuthenticationToken'
       in: header
       required: true
+  /popularity/{name}:
+    get:
+      parameters:
+      - examples:
+          ExampleToken:
+            value: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        name: X-Authorization
+        description: ""
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+        in: header
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: number 
+              examples:
+                ExampleResponse:
+                  value: 1.5
+          description: Return the popularity of a package.
+        
+        "404":
+          description: Package does not exist.
+    parameters:
+    - examples:
+        ExampleName:
+          value: Underscore
+      name: name
+      schema:
+        $ref: '#/components/schemas/PackageName'
+      in: path
+      required: true
+    - examples:
+        ExampleToken:
+          value: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+      name: X-Authorization
+      description: ""
+      schema:
+        $ref: '#/components/schemas/AuthenticationToken'
+      in: header
+      required: true
 components:
   schemas:
     Package:
@@ -807,8 +850,7 @@ components:
           type: string
         stars:
           description: "number of stars for the package"
-          type: integer
-          format: int32
+          type: string
         review:
           description: "review for the package"
           type: string
