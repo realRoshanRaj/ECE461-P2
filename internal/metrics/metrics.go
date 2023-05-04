@@ -48,7 +48,10 @@ func GenerateMetrics(url string) models.Metric {
 	// Get the fraction of commits that were merged with pull requests by total commits
 	pullRequests := float64(commits_in_pr) / float64(numCommits)
 	// Scales the Pull Request score
-	pull_requests_score := float64(math.Sqrt(pullRequests))
+	pull_requests_score := float64(math.Sqrt(pullRequests)) + 0.05
+	if pull_requests_score > 1.00 {
+		pull_requests_score = 1.00
+	}
 
 	// Get the version pinning score
 	version_score := GetVersionPinningResponse(url)
